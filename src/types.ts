@@ -90,7 +90,7 @@ export function toBchTransactionRequest(
 ): BchTransactionRequest {
   const extra = requirements.extra;
   const isCashToken = extra.assetTransferMethod === 'cashtoken';
-  const value = isCashToken ? BigInt(extra.value ?? '687') : BigInt(requirements.amount);
+  const value = isCashToken ? BigInt(extra.value ?? '1000') : BigInt(requirements.amount);
   return {
     network: toBchTransactionNetwork(requirements.network),
     recipient: { address: requirements.payTo },

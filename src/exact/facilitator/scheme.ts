@@ -167,18 +167,39 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     try {
       txid = await this.provider.broadcast(rawTransaction);
     } catch (error) {
-      const status = await this.provider.getTransactionStatus(verified.txid);
-      if (status.kind !== 'mempool' && status.kind !== 'confirmed') {
-        await this.settlementStore.release(verified.txid);
+      const message = error instanceof Error ? error.message : String(error);
+      let status: Awaited<ReturnType<BchProvider['getTransactionStatus']>>;
+      try {
+        status = await this.provider.getTransactionStatus(verified.txid);
+      } catch {
         return {
           success: false,
-          errorReason: `broadcast_failed:${error instanceof Error ? error.message : String(error)}`,
+          errorReason: `broadcast outcome unknown:${message}`,
           transaction: verified.txid,
           network: this.provider.network,
           payer: verified.payer,
         };
       }
-      txid = verified.txid;
+      if (status.kind === 'mempool' || status.kind === 'confirmed') {
+        txid = verified.txid;
+      } else if (status.kind === 'notFound') {
+        await this.settlementStore.release(verified.txid);
+        return {
+          success: false,
+          errorReason: `broadcast_failed:${message}`,
+          transaction: verified.txid,
+          network: this.provider.network,
+          payer: verified.payer,
+        };
+      } else {
+        return {
+          success: false,
+          errorReason: `broadcast outcome unknown:${message}`,
+          transaction: verified.txid,
+          network: this.provider.network,
+          payer: verified.payer,
+        };
+      }
     }
     if (txid.toLowerCase() !== verified.txid.toLowerCase()) {
       await this.settlementStore.release(verified.txid);
@@ -225,7 +246,13 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     const raw = base64ToBytes(body.transaction);
     const transaction = parseTransaction(raw);
     const merchant = decodeBchAddressScript(typed.payTo, typed.network);
-    const target = createBchPaymentTarget(typed.asset, typed.amount, typed.extra, this.policy);
+    const target = createBchPaymentTarget(
+      typed.asset,
+      typed.amount,
+      typed.extra,
+      this.policy,
+      merchant.scriptPubKey,
+    );
     if (target.kind === 'cashtoken' && !merchant.tokenSupport) {
       throw new Error('CashToken payments require a token-support merchant CashAddr');
     }

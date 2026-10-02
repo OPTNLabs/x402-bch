@@ -207,10 +207,33 @@ describe('BCH CashAddr and transaction primitives', () => {
         token: {
           category,
           amount: '0',
-          nft: { capability: 'none', commitment: 'aa'.repeat(41) },
+          nft: { capability: 'none', commitment: 'aa'.repeat(129) },
         },
       }),
-    ).toThrow('CashToken NFT commitment exceeds 40 bytes');
+    ).toThrow('CashToken commitment is too large');
+  });
+
+  it('sizes an omitted 128-byte NFT output above the 1,000-satoshi floor', () => {
+    const category = 'ab'.repeat(32);
+    const target = createBchPaymentTarget(
+      category,
+      '0',
+      {
+        assetTransferMethod: 'cashtoken',
+        token: {
+          category,
+          amount: '0',
+          nft: { capability: 'none', commitment: 'cd'.repeat(128) },
+        },
+      },
+      undefined,
+      p2pkhScript(new Uint8Array(20).fill(1)),
+    );
+    expect(target).toMatchObject({ kind: 'cashtoken' });
+    if (target.kind === 'cashtoken') {
+      expect(target.nft?.commitment).toHaveLength(128);
+      expect(target.merchantValue).toBeGreaterThan(1000n);
+    }
   });
 
   it('verifies the local CashToken P2SH32 fixture', () => {

@@ -21,7 +21,11 @@ export const MAX_CASH_TOKEN_AMOUNT = 0x7fffffffffffffffn;
 /** Standard dust threshold for a native BCH output. */
 export const BCH_DUST_THRESHOLD = 546n;
 
-/** Conservative standard dust threshold for a token-bearing BCH output. */
+/**
+ * Flat standardness floor for a short token-bearing P2PKH output.
+ * Omitted merchant values use the size-aware rule in `crypto.ts`, which is
+ * at least 1,000 satoshis and can be higher for a long NFT commitment.
+ */
 export const CASH_TOKEN_DUST_THRESHOLD = 687n;
 
 /** SLIP-0044 coin type used by BCH Chipnet wallets. */

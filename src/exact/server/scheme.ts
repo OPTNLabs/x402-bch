@@ -7,7 +7,15 @@ import type {
   Price,
   SchemeNetworkServer,
 } from '@x402/core/types';
-import { BCH_ASSET, DEFAULT_BCH_POLICY, isCashTokenCategory } from '../../crypto';
+import {
+  BCH_ASSET,
+  CASHTOKEN_OUTPUT_DUST,
+  DEFAULT_BCH_POLICY,
+  MAX_TOKEN_COMMITMENT_LENGTH,
+  createBchPaymentTarget,
+  decodeBchAddressScript,
+  isCashTokenCategory,
+} from '../../crypto';
 import { MAX_CASH_TOKEN_AMOUNT, MAX_U64 } from '../../constants';
 import type { BchPrice, ExactBchRequirements } from '../../types';
 
@@ -70,18 +78,18 @@ export class ExactBchServerScheme implements SchemeNetworkServer {
         bchPrice.amount,
         bchPrice.extra?.token as Record<string, unknown> | undefined,
       );
-      const tokenValue = bchPrice.extra?.value ?? String(DEFAULT_BCH_POLICY.cashTokenDustThreshold);
-      if (typeof tokenValue !== 'string') {
-        throw new Error('CashToken value must be a satoshi string');
+      assertCommitment(commitmentFromExtra(bchPrice.extra));
+      const quoted = bchPrice.extra?.value;
+      if (quoted !== undefined) {
+        if (typeof quoted !== 'string') throw new Error('CashToken value must be a satoshi string');
+        assertSatoshiAmount(quoted);
       }
-      assertSatoshiAmount(tokenValue);
       return {
         amount: bchPrice.amount,
         asset: bchPrice.asset,
         extra: {
           assetTransferMethod: 'cashtoken',
           paymentFlow: 'upfront',
-          value: tokenValue,
           ...bchPrice.extra,
         },
       };
@@ -135,12 +143,19 @@ export class ExactBchServerScheme implements SchemeNetworkServer {
     if (assetTransferMethod === 'cashtoken' && !isCashTokenCategory(paymentRequirements.asset)) {
       throw new Error('CashToken payments require a 32-byte category asset');
     }
-    const tokenValue =
-      assetTransferMethod === 'cashtoken'
-        ? ((existing.value as string | undefined) ??
-          String(DEFAULT_BCH_POLICY.cashTokenDustThreshold))
-        : undefined;
-    if (tokenValue !== undefined) assertSatoshiAmount(tokenValue);
+    const token = existing.token as { nft?: { commitment?: string } } | undefined;
+    assertCommitment(token?.nft?.commitment);
+    let tokenValue: string | undefined;
+    if (assetTransferMethod === 'cashtoken') {
+      const quoted = existing.value;
+      if (quoted !== undefined) {
+        if (typeof quoted !== 'string') throw new Error('CashToken value must be a satoshi string');
+        assertSatoshiAmount(quoted);
+        tokenValue = quoted;
+      } else {
+        tokenValue = advertisedTokenOutputValue(paymentRequirements, assetTransferMethod);
+      }
+    }
     return {
       ...paymentRequirements,
       extra: {
@@ -151,6 +166,56 @@ export class ExactBchServerScheme implements SchemeNetworkServer {
       },
     } as ExactBchRequirements;
   }
+}
+
+function advertisedTokenOutputValue(
+  requirements: PaymentRequirements,
+  assetTransferMethod: string,
+): string {
+  const network = requirements.network;
+  if (network !== 'bch:bitcoincash' && network !== 'bch:bchtest') return cashTokenValueFloor();
+  try {
+    const merchant = decodeBchAddressScript(requirements.payTo, network);
+    const target = createBchPaymentTarget(
+      requirements.asset,
+      requirements.amount,
+      { ...requirements.extra, assetTransferMethod },
+      DEFAULT_BCH_POLICY,
+      merchant.scriptPubKey,
+    );
+    if (target.kind !== 'cashtoken')
+      throw new Error('CashToken price did not produce a token output');
+    return target.merchantValue.toString();
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('commitment')) throw error;
+    return cashTokenValueFloor();
+  }
+}
+
+function cashTokenValueFloor(): string {
+  return String(
+    DEFAULT_BCH_POLICY.dustThreshold > CASHTOKEN_OUTPUT_DUST
+      ? DEFAULT_BCH_POLICY.dustThreshold
+      : CASHTOKEN_OUTPUT_DUST,
+  );
+}
+
+function assertCommitment(commitment: unknown): void {
+  if (commitment === undefined) return;
+  if (typeof commitment !== 'string' || !/^(?:[0-9a-fA-F]{2})*$/.test(commitment)) {
+    throw new Error('CashToken NFT commitment must be hex');
+  }
+  if (commitment.length / 2 > MAX_TOKEN_COMMITMENT_LENGTH) {
+    throw new Error('CashToken commitment is too large');
+  }
+}
+
+function commitmentFromExtra(extra: Record<string, unknown> | undefined): unknown {
+  const token = extra?.token;
+  if (typeof token !== 'object' || token === null || !('nft' in token)) return undefined;
+  const nft = token.nft;
+  if (typeof nft !== 'object' || nft === null || !('commitment' in nft)) return undefined;
+  return nft.commitment;
 }
 
 /** Validate canonical satoshi text and standard BCH dust/range limits. */

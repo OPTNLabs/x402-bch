@@ -20,6 +20,28 @@ payments require a token-aware CashAddr. CashScript contracts are represented by
 compiled locking bytecode; x402 pays the contract output but does not execute
 or validate the contract's later spending conditions.
 
+## Rust
+
+The same BCH exact rules are implemented for Rust in the `x402-chain-bch` crate.
+It is not on crates.io yet. Until that crate is merged upstream, depend on the
+open branch:
+
+```toml
+x402-chain-bch = { git = "https://github.com/CyberAshven/x402-rs", branch = "feat/bch-x402-rs-integration" }
+```
+
+- npm package: https://www.npmjs.com/package/@optnlabs/x402-bch
+- TypeScript pull request: https://github.com/OPTNLabs/x402-bch/pull/1
+- Rust pull request: https://github.com/lightswarm124/x402-rs/pull/1
+- Upstream BCH pull request: https://github.com/x402-rs/x402-rs/pull/129
+- Closed earlier upstream request: https://github.com/x402-rs/x402-rs/pull/128
+
+Chipnet payments from these branches:
+
+- setup transaction: https://chipnet.chaingraph.cash/tx/210f4659913fa77500ce547d7103f2e163bc39b1ecb287dfb7b0748fdb8627a3
+- TypeScript exact NFT payment: https://chipnet.chaingraph.cash/tx/7c46af9c142e092a82f1cfafe87212bbd9d4b15b9b6a52f10e6bf1b28331baef
+- Rust exact native payment: https://chipnet.chaingraph.cash/tx/57b434f19d901960802ef93f601358ed7d5996b73f94e6f689c2be8b18943c09
+
 ## BCH transaction model
 
 Unlike account-based networks, BCH does not have a balance, nonce, or
@@ -83,11 +105,13 @@ client.register('bch:*', clientScheme);
 `value`, the BCH satoshis assigned to the merchant output. For a fungible
 CashToken, `token.amount` contains the token quantity and `token.category`
 contains the category. For an NFT it additionally contains
-`nft.capability` (`none`, `mutable`, or `minting`) and its commitment; an empty
-commitment is valid. Token-bearing P2PKH outputs use a conservative default of
-687 satoshis for standardness, while native BCH outputs use the 546-satoshi
-default. Wallets may receive a different explicit `value` when the payment
-requirements specify one.
+`nft.capability` (`none`, `mutable`, or `minting`) and a commitment of 0 to
+128 bytes. When a CashToken price omits `value`, the server and client fill a
+size-aware default: the greater of 1,000 satoshis, the policy dust threshold,
+and that output's standard relay dust. A 128-byte commitment can make the
+relay dust larger than 1,000 satoshis. An explicit `value` is preserved and
+rejected when it is below the output's dust threshold. Native BCH outputs keep
+the 546-satoshi dust floor.
 
 `BchSigner` is retained for integrations that already own UTXO selection and
 transaction construction. `FulcrumProvider` implements the Electrum Cash

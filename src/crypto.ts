@@ -26,9 +26,11 @@ import {
   isPayToScriptHash32,
   binsAreEqual,
   isHex,
-  createVirtualMachineBCH,
+  createVirtualMachineBch2026,
+  getDustThreshold,
   verifyTransactionTokens,
 } from '@bitauth/libauth';
+import { ConsensusBch2026 } from '@bitauth/libauth/build/lib/vm/instruction-sets/bch/2026/bch-2026-consensus.js';
 import type { BchNetwork, BchOutPoint, BchSourceOutput, TokenCapability } from './types';
 import {
   BCH_ASSET,
@@ -101,6 +103,12 @@ export type BchPolicy = {
   maxOutputs: number;
 };
 
+/** Floor for an omitted CashToken `value`. The value actually used is this floor, the policy dust threshold, or the output's standard relay dust, whichever is greatest. */
+export const CASHTOKEN_OUTPUT_DUST = 1000n;
+
+/** Current BCH consensus maximum, from the resolved Libauth 2026 VM settings. */
+export const MAX_TOKEN_COMMITMENT_LENGTH = ConsensusBch2026.maximumTokenCommitmentLength;
+
 /** Conservative default policy for exact BCH payments. */
 export const DEFAULT_BCH_POLICY: BchPolicy = {
   feeRateSatPerByte: 1n,
@@ -116,7 +124,8 @@ export const DEFAULT_BCH_POLICY: BchPolicy = {
  *
  * Native BCH uses `amount` and assigns the same value to the merchant output.
  * CashToken payments use `amount` for token quantity and `extra.value` for
- * the BCH satoshis carried by the merchant token output.
+ * the BCH satoshis carried by the merchant token output. An omitted `value`
+ * uses the size-aware dust floor. An explicit `value` is preserved.
  *
  * @throws If the asset, amount, category, NFT state, or BCH output value is
  * invalid or outside BCH/ CashToken limits.
@@ -134,6 +143,7 @@ export function createBchPaymentTarget(
     };
   },
   policy: BchPolicy = DEFAULT_BCH_POLICY,
+  merchantScript?: Uint8Array,
 ): BchPaymentTarget {
   if (!/^(0|[1-9][0-9]*)$/.test(amount)) {
     throw new Error('BCH amount must be canonical unsigned units');
@@ -164,8 +174,8 @@ export function createBchPaymentTarget(
     if (!/^(?:[0-9a-fA-F]{2})*$/.test(extra.token.nft.commitment)) {
       throw new Error('CashToken NFT commitment must be even-length hex');
     }
-    if (extra.token.nft.commitment.length > 80) {
-      throw new Error('CashToken NFT commitment exceeds 40 bytes');
+    if (extra.token.nft.commitment.length / 2 > MAX_TOKEN_COMMITMENT_LENGTH) {
+      throw new Error('CashToken commitment is too large');
     }
   }
   if (
@@ -174,7 +184,16 @@ export function createBchPaymentTarget(
   ) {
     throw new Error('CashToken amount is outside the BCH token range');
   }
-  const merchantValue = extra.value ?? policy.cashTokenDustThreshold.toString();
+  const nft =
+    extra.token?.nft === undefined
+      ? undefined
+      : {
+          capability: extra.token.nft.capability,
+          commitment: hexToBytes(extra.token.nft.commitment),
+        };
+  const merchantValue =
+    extra.value ??
+    omittedTokenOutputValue(merchantScript, category, parsedAmount, nft, policy).toString();
   if (!/^(0|[1-9][0-9]*)$/.test(merchantValue)) {
     throw new Error('CashToken output value must be canonical satoshis');
   }
@@ -187,15 +206,32 @@ export function createBchPaymentTarget(
     category,
     amount: parsedAmount,
     merchantValue: parsedMerchantValue,
-    ...(extra.token?.nft === undefined
-      ? {}
-      : {
-          nft: {
-            capability: extra.token.nft.capability,
-            commitment: hexToBytes(extra.token.nft.commitment),
-          },
-        }),
+    ...(nft === undefined ? {} : { nft }),
   };
+}
+
+/**
+ * Satoshis to advertise when a CashToken price omits `value`.
+ * Explicit quotes must not be passed here.
+ */
+export function omittedTokenOutputValue(
+  lockingScript: Uint8Array | undefined,
+  category: string,
+  amount: bigint,
+  nft: CashToken['nft'] | undefined,
+  policy: BchPolicy,
+): bigint {
+  if (nft !== undefined && nft.commitment.length > MAX_TOKEN_COMMITMENT_LENGTH) {
+    throw new Error('CashToken commitment is too large');
+  }
+  const token: CashToken = { category, amount, ...(nft === undefined ? {} : { nft }) };
+  const standard =
+    lockingScript !== undefined && isSupportedMerchantScript(lockingScript)
+      ? dustMinimum(lockingScript, token, policy)
+      : policy.dustThreshold;
+  const floor =
+    policy.dustThreshold > CASHTOKEN_OUTPUT_DUST ? policy.dustThreshold : CASHTOKEN_OUTPUT_DUST;
+  return standard > floor ? standard : floor;
 }
 
 /** Encode bytes as lowercase hexadecimal. */
@@ -474,7 +510,9 @@ function assertToken(token: CashToken): void {
     if (!['none', 'mutable', 'minting'].includes(token.nft.capability)) {
       throw new Error('invalid CashToken NFT capability');
     }
-    if (token.nft.commitment.length > 40) throw new Error('CashToken commitment is too large');
+    if (token.nft.commitment.length > MAX_TOKEN_COMMITMENT_LENGTH) {
+      throw new Error('CashToken commitment is too large');
+    }
   }
 }
 
@@ -556,7 +594,7 @@ export function verifyTransactionInputs(
 }
 
 function verifyTransactionScripts(transaction: BchTransaction, sources: BchSourceOutput[]): void {
-  const vmResult = createVirtualMachineBCH().verify({
+  const vmResult = createVirtualMachineBch2026().verify({
     transaction: toLibauthTransaction(transaction),
     sourceOutputs: sources.map(toLibauthSourceOutput),
   });
@@ -621,13 +659,22 @@ export function verifyPayment(
     throw new Error('invalid input count');
   }
   if (transaction.lockTime !== 0) throw new Error('non-zero locktime is unsupported');
-  const merchantDustThreshold =
-    target.kind === 'cashtoken' ? policy.cashTokenDustThreshold : policy.dustThreshold;
-  if (target.merchantValue < merchantDustThreshold) throw new Error('merchant output is dust');
+  const merchantToken =
+    target.kind === 'cashtoken'
+      ? {
+          category: target.category,
+          amount: target.amount,
+          ...(target.nft === undefined ? {} : { nft: target.nft }),
+        }
+      : undefined;
+  if (target.merchantValue < dustMinimum(merchantScript, merchantToken, policy)) {
+    throw new Error('merchant output is dust');
+  }
   if (sources.length !== transaction.inputs.length) throw new Error('source output count mismatch');
   const tokenValidation = verifyTransactionTokens(
     toLibauthTransaction(transaction),
     sources.map(toLibauthSourceOutput),
+    { maximumTokenCommitmentLength: MAX_TOKEN_COMMITMENT_LENGTH },
   );
   if (tokenValidation !== true) throw new Error(tokenValidation);
   const inputPayerHashes = verifyTransactionInputs(transaction, sources);
@@ -672,9 +719,10 @@ export function verifyPayment(
       assertToken(output.token);
       addTokenToLedger(outputTokenLedger, output.token);
     }
-    const outputDustThreshold =
-      output.token === undefined ? policy.dustThreshold : policy.cashTokenDustThreshold;
-    if (!isOpReturnScript(output.scriptPubKey) && output.value < outputDustThreshold) {
+    if (
+      !isOpReturnScript(output.scriptPubKey) &&
+      output.value < dustMinimum(output.scriptPubKey, output.token, policy)
+    ) {
       throw new Error('transaction output is dust');
     }
     outputValue = addU64(outputValue, output.value, 'BCH output value');
@@ -702,6 +750,20 @@ export function verifyPayment(
       ? payerIdentity(sources[0], network)
       : encodeCashAddr(payerHash, network);
   return { txid: transactionId(transaction), payer, fee };
+}
+
+export function dustMinimum(
+  scriptPubKey: Uint8Array,
+  token: CashToken | undefined,
+  policy: BchPolicy,
+): bigint {
+  if (isOpReturnScript(scriptPubKey)) return 0n;
+  const standard = getDustThreshold({
+    lockingBytecode: scriptPubKey,
+    valueSatoshis: 0n,
+    ...(token === undefined ? {} : { token: toLibauthToken(token) }),
+  });
+  return standard > policy.dustThreshold ? standard : policy.dustThreshold;
 }
 
 function matchesMerchantToken(token: CashToken | undefined, target: BchPaymentTarget): boolean {

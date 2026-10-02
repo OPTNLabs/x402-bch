@@ -1,5 +1,11 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { decodeBchAddressScript, hexToBytes, bytesToHex, type CashToken } from './crypto';
+import {
+  MAX_TOKEN_COMMITMENT_LENGTH,
+  decodeBchAddressScript,
+  hexToBytes,
+  bytesToHex,
+  type CashToken,
+} from './crypto';
 import { MAX_CASH_TOKEN_AMOUNT, MAX_U64 } from './constants';
 import type {
   BchNetwork,
@@ -220,8 +226,13 @@ function parseTokenData(value: unknown): CashToken | undefined {
       throw new Error('invalid CashToken NFT capability');
     }
     const commitmentValue = nftObject.commitmentHex ?? nftObject.commitment ?? '';
-    const commitment =
-      typeof commitmentValue === 'string' ? hexToBytes(commitmentValue) : new Uint8Array();
+    if (typeof commitmentValue !== 'string' || !/^(?:[0-9a-fA-F]{2})*$/.test(commitmentValue)) {
+      throw new Error('CashToken NFT commitment must be hex');
+    }
+    const commitment = hexToBytes(commitmentValue);
+    if (commitment.length > MAX_TOKEN_COMMITMENT_LENGTH) {
+      throw new Error('CashToken commitment is too large');
+    }
     nft = { capability, commitment };
   }
   if (amount === 0n && nft === undefined) throw new Error('CashToken output has no token data');

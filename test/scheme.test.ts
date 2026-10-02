@@ -2,9 +2,17 @@ import { describe, expect, it, vi } from 'vitest';
 import { ExactBchScheme } from '../src/exact/client';
 import { ExactBchFacilitatorScheme } from '../src/exact/facilitator';
 import { ExactBchServerScheme } from '../src/exact/server';
-import { hash160, parseTransaction, p2pkhScript, transactionId } from '../src/crypto';
+import {
+  base64ToBytes,
+  decodeCashAddrScript,
+  encodeCashAddrScript,
+  hash160,
+  parseTransaction,
+  p2pkhScript,
+  transactionId,
+} from '../src/crypto';
 import { createSecp256k1BchSignerFromMnemonic } from '../src/signer';
-import type { BchSettlementStore } from '../src/settlementStore';
+import { InMemoryBchSettlementStore, type BchSettlementStore } from '../src/settlementStore';
 import type { BchNetwork, BchProvider } from '../src/types';
 
 const NETWORK: BchNetwork = 'bch:bitcoincash';
@@ -145,5 +153,140 @@ describe('BCH x402 v2 exact scheme', () => {
 
     expect(settled).toMatchObject({ success: false });
     expect(settled.errorReason).toMatch(/^settlement_pending:/);
+  });
+
+  it('adds an ordinary BCH input when a CashToken UTXO cannot fund the real fee', async () => {
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const scriptPubKey = p2pkhScript(hash160(signer.getPublicKey()));
+    const category = '11'.repeat(32);
+    const provider = makeProvider();
+    const payTo = encodeCashAddrScript(
+      decodeCashAddrScript(
+        'bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk',
+        NETWORK,
+      ).scriptPubKey,
+      NETWORK,
+      true,
+    );
+    vi.mocked(provider.listUtxos).mockResolvedValue([
+      {
+        txid: '11'.repeat(32),
+        vout: 0,
+        value: 1_000n,
+        scriptPubKey,
+        token: { category, amount: 5n },
+      },
+      { txid: '22'.repeat(32), vout: 0, value: 50_000n, scriptPubKey },
+    ]);
+    const client = new ExactBchScheme(signer, provider);
+    const created = await client.createPaymentPayload(2, {
+      scheme: 'exact',
+      network: NETWORK,
+      asset: category,
+      amount: '2',
+      payTo,
+      maxTimeoutSeconds: 300,
+      extra: { assetTransferMethod: 'cashtoken', paymentFlow: 'upfront', value: '1000' },
+    });
+    const transaction = parseTransaction(base64ToBytes(created.payload.transaction));
+    expect(transaction.inputs).toHaveLength(2);
+    expect(transaction.outputs[0]?.token).toMatchObject({ category, amount: 2n });
+    expect(transaction.outputs[1]?.token).toEqual({ category, amount: 3n });
+  });
+
+  it('adds an ordinary BCH input when an NFT-only estimate underfunds the real fee', async () => {
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const scriptPubKey = p2pkhScript(hash160(signer.getPublicKey()));
+    const category = '11'.repeat(32);
+    const commitment = new Uint8Array(40).fill(0xaa);
+    const provider = makeProvider();
+    const payTo = encodeCashAddrScript(
+      decodeCashAddrScript(
+        'bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk',
+        NETWORK,
+      ).scriptPubKey,
+      NETWORK,
+      true,
+    );
+    vi.mocked(provider.listUtxos).mockResolvedValue([
+      {
+        txid: '11'.repeat(32),
+        vout: 0,
+        value: 1_258n,
+        scriptPubKey,
+        token: { category, amount: 0n, nft: { capability: 'none', commitment } },
+      },
+      { txid: '22'.repeat(32), vout: 0, value: 10_000n, scriptPubKey },
+    ]);
+    const client = new ExactBchScheme(signer, provider);
+    const created = await client.createPaymentPayload(2, {
+      scheme: 'exact',
+      network: NETWORK,
+      asset: category,
+      amount: '0',
+      payTo,
+      maxTimeoutSeconds: 300,
+      extra: {
+        assetTransferMethod: 'cashtoken',
+        paymentFlow: 'upfront',
+        value: '1000',
+        token: {
+          category,
+          amount: '0',
+          nft: { capability: 'none', commitment: 'aa'.repeat(40) },
+        },
+      },
+    });
+    const transaction = parseTransaction(base64ToBytes(created.payload.transaction));
+    expect(transaction.inputs).toHaveLength(2);
+    expect(transaction.inputs[1]?.outpoint.txid).toBe('22'.repeat(32));
+    expect(transaction.outputs[0]?.value).toBe(1_000n);
+    expect(transaction.outputs[0]?.token).toEqual({
+      category,
+      amount: 0n,
+      nft: { capability: 'none', commitment },
+    });
+  });
+
+  it('keeps the settlement claim when broadcast fails and transaction state is unknown', async () => {
+    const provider = makeProvider();
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const store = new InMemoryBchSettlementStore();
+    const release = vi.spyOn(store, 'release');
+    const client = new ExactBchScheme(signer, provider);
+    const facilitator = new ExactBchFacilitatorScheme(provider, { settlementStore: store });
+    const created = await client.createPaymentPayload(2, REQUIREMENTS);
+    const payload = { ...created, accepted: REQUIREMENTS };
+    vi.mocked(provider.broadcast).mockRejectedValue(new Error('connection reset'));
+    vi.mocked(provider.getTransactionStatus).mockResolvedValue({ kind: 'unknown' });
+
+    const settled = await facilitator.settle(payload, REQUIREMENTS);
+
+    expect(settled.success).toBe(false);
+    expect(settled.errorReason).toMatch(/broadcast outcome unknown/);
+    expect(release).not.toHaveBeenCalled();
+    await facilitator.settle(payload, REQUIREMENTS);
+    expect(provider.broadcast).toHaveBeenCalledOnce();
+  });
+
+  it('releases the settlement claim when the lost broadcast is confirmed absent', async () => {
+    const provider = makeProvider();
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const store = new InMemoryBchSettlementStore();
+    const release = vi.spyOn(store, 'release');
+    const client = new ExactBchScheme(signer, provider);
+    const facilitator = new ExactBchFacilitatorScheme(provider, { settlementStore: store });
+    const created = await client.createPaymentPayload(2, REQUIREMENTS);
+    const payload = { ...created, accepted: REQUIREMENTS };
+    vi.mocked(provider.broadcast).mockRejectedValue(new Error('rejected'));
+    vi.mocked(provider.getTransactionStatus).mockResolvedValue({ kind: 'notFound' });
+
+    const settled = await facilitator.settle(payload, REQUIREMENTS);
+
+    expect(settled.success).toBe(false);
+    expect(settled.errorReason ?? '').not.toMatch(/broadcast outcome unknown/);
+    expect(release).toHaveBeenCalledOnce();
+    await facilitator.settle(payload, REQUIREMENTS);
+    expect(provider.broadcast).toHaveBeenCalledTimes(2);
   });
 });
