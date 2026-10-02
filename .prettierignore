@@ -1,3 +1,6 @@
 # build output
 dist/
 node_modules/
+
+# Rust crate; its JSON fixtures are shared byte-for-byte with x402-rs
+rust/

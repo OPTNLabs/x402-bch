@@ -1,0 +1,5 @@
+[env]
+# Clang 15 and later rejects an implicit memmove call in the wasm32 build of
+# libsecp256k1. The wasm sysroot supplies the symbol; this keeps that C file
+# building. Native builds do not use this flag.
+CFLAGS_wasm32_unknown_unknown = { value = "-Wno-error=implicit-function-declaration", force = true }

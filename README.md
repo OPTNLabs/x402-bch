@@ -22,17 +22,28 @@ or validate the contract's later spending conditions.
 
 ## Rust
 
-The same BCH exact rules are implemented for Rust in the `x402-chain-bch` crate.
-It is not on crates.io yet. Until that crate is merged upstream, depend on the
-open branch:
+The Rust SDK is the `x402-chain-bch` crate in [`rust/x402-chain-bch`](rust/x402-chain-bch).
+Protocol message types come from published [`x402-types` 2.0.2](https://crates.io/crates/x402-types).
+This crate is not on crates.io yet.
 
 ```toml
-x402-chain-bch = { git = "https://github.com/CyberAshven/x402-rs", branch = "feat/bch-x402-rs-integration" }
+x402-chain-bch = { git = "https://github.com/OPTNLabs/x402-bch" }
 ```
+
+Until that lands on `main`, use the stacked branch:
+
+```toml
+x402-chain-bch = { git = "https://github.com/CyberAshven/x402-bch", branch = "feat/rust-sdk" }
+```
+
+TypeScript installs the same package with `npm install @optnlabs/x402-bch`.
+Both SDKs use `extra.value` for CashToken merchant satoshis. Rust still
+accepts `tokenOutputValue` when reading an older message.
 
 - npm package: https://www.npmjs.com/package/@optnlabs/x402-bch
 - TypeScript pull request: https://github.com/OPTNLabs/x402-bch/pull/1
-- Rust pull request: https://github.com/lightswarm124/x402-rs/pull/1
+- Rust SDK pull request: https://github.com/OPTNLabs/x402-bch/pull/2
+- Upstream Rust contribution: https://github.com/lightswarm124/x402-rs/pull/1
 - Upstream BCH pull request: https://github.com/x402-rs/x402-rs/pull/129
 - Closed earlier upstream request: https://github.com/x402-rs/x402-rs/pull/128
 
@@ -83,6 +94,18 @@ import { ExactBchScheme } from '@optnlabs/x402-bch/exact/client';
 
 client.register('bch:*', new ExactBchScheme(signer, provider));
 ```
+
+`x402Client` spend controls allow only default USD stablecoin assets unless
+the application opts in, so allow BCH with a per-payment cap in satoshis:
+
+```ts
+client.setSpendControls({
+  allowedAssets: [{ network: 'bch:bitcoincash', asset: 'BCH', maxAmountPerPayment: '10000' }],
+});
+```
+
+A CashToken entry uses the token category as `asset`, and its cap applies to
+the token amount.
 
 For a low-level integration, `BchSigner` signs BCH sighash digests and
 `BchProvider` supplies UTXOs and authoritative source outputs. For a normal
@@ -176,6 +199,12 @@ facilitator.register(
 Mempool/0-conf mode is opt-in. The `noDoubleSpendProof` strategy accepts an
 unconfirmed transaction only while the provider reports no BCH double-spend
 proof; a proof is conflict evidence, not confirmation.
+
+The upfront flow settles before the resource handler runs, so a server answers
+within the request only with `mempool` or `noDoubleSpendProof`. With a
+confirmation count, settlement returns `settlement_pending:<txid>` until the
+transaction confirms, and retrying the same payment does not broadcast it
+again.
 
 ## Server
 

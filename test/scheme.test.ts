@@ -155,6 +155,25 @@ describe('BCH x402 v2 exact scheme', () => {
     expect(settled.errorReason).toMatch(/^settlement_pending:/);
   });
 
+  it('accepts a broadcast before the provider indexes it', async () => {
+    // Right after relaying a broadcast, Fulcrum can still answer "not found".
+    const provider = makeProvider();
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const created = await new ExactBchScheme(signer, provider).createPaymentPayload(
+      2,
+      REQUIREMENTS,
+    );
+    const payload = { ...created, accepted: REQUIREMENTS };
+    vi.mocked(provider.getTransactionStatus).mockResolvedValue({ kind: 'notFound' });
+
+    const mempool = new ExactBchFacilitatorScheme(provider, {
+      settlementStrategy: { kind: 'mempool' },
+    });
+    expect(await mempool.settle(payload, REQUIREMENTS)).toMatchObject({ success: true });
+    const confirmations = new ExactBchFacilitatorScheme(provider);
+    expect(await confirmations.settle(payload, REQUIREMENTS)).toMatchObject({ success: false });
+  });
+
   it('adds an ordinary BCH input when a CashToken UTXO cannot fund the real fee', async () => {
     const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
     const scriptPubKey = p2pkhScript(hash160(signer.getPublicKey()));

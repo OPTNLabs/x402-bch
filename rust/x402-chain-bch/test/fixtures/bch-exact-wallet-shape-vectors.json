@@ -1,0 +1,1048 @@
+{
+  "cases": [
+    {
+      "expect": "ok",
+      "id": "external-native-op-return",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a4730440220790f50032e27a00bb0dc50b7c0bdacf5e31928b749c547c037b5d71c7e50a0c70220469de60d0f887d2b8242b8e09de9ac74d66b9c73889a850d49c297b96fd86d844121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188ac0000000000000000066a046d656d6fe87a0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-two-change-outputs",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006b4830450221008db7104c6986e53a83ba3fbfbf6f1f29a6fc9cb03803012ac642a14c85e4f93d0220056b791aebff3f2b3052c56c2b6de41b26da3998fe1ff219148f93be031824464121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188ac50c30000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac98b70000000000001976a9146300d436e9e49eaa5b1ca4042926f1fc241f0c6388ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-p2sh32-output",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022055e51fe7e726d0477fd21edab8e9a98463a793faf938b02a269c48eacf1a364f02207a131a3dbe775c4dcc77a03719048668bd68d957fbcfd35a1912f8d3271422c64121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188ac881300000000000023aa2055555555555555555555555555555555555555555555555555555555555555558760670100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-returns-unrelated-token",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        },
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "7",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 2000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b48304502210096fa83636d5e20fb6df9cda1796eb47909171262518321b75b987be46d8697c202202749eb4c2c2e0f9c4ac59382c5933292b20f3bcb8e2a485f184bc35f45e2e47f4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006b483045022100b655f866ebbc0d440790833fc3edbeae17c29a74aa4d0887c5cc5ad55fd30b3802200d699deee98a5020de1364b90978781ed12fe70275d27fd658ea7fdd5ac0ba794121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188ace8030000000000003cef4444444444444444444444444444444444444444444444444444444444444444100776a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88acd07e0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "7",
+                "category": "4444444444444444444444444444444444444444444444444444444444444444"
+              },
+              "value": "0.00002000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        },
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "7",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 2000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-two-payers",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 60000
+        },
+        {
+          "height": 10,
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 50000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006a473044022056d10f3fb2df4754385358dbec5cf1be76d55c3906be67f37ac9d60463100172022048204b14a445da09f414bc86ce380970985be4182400dc82fa3ddcff81b385364121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a4730440220591278cdcf699e5fca0f883e98e3615e2d413e47b81f62002c913688004cdd98022048374fbe494c774601f08d7bdf43781513b5e867c142100e26df2258c962fd42412102b99598e860cc552e90f7e999418cefcd10cac8e1f31059fd03a559c30e78be53ffffffff02e8030000000000001976a914111111111111111111111111111111111111111188acf8a10100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00060000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9146300d436e9e49eaa5b1ca4042926f1fc241f0c6388ac" },
+              "value": "0.00050000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 60000,
+          "vout": 0
+        },
+        {
+          "script": "76a9146300d436e9e49eaa5b1ca4042926f1fc241f0c6388ac",
+          "token": null,
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 50000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-cashtoken-returns-unrelated-token",
+      "listunspent": [
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "10",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        },
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "3",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 2000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "4",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": { "assetTransferMethod": "cashtoken", "paymentFlow": "upfront", "value": "1000" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b4830450221008fd31278673831ae351a90073de176fc07ba2485d2040381c0357472b566d8860220539c1da2f348942d66f6039c484f5ce4baf5204800b5512c0b9386c7e15448134121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006b483045022100c146e7ddd1ac832599ffbc41f2f8167e08545373db2f584fa18afb3aeb76186e02207d8e2ef020510785320e7fb8eed9816a6f4c6d6c2633f4701d95926bdf323ac74121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff04e80300000000000046ef11111111111111111111111111111111111111111111111111111111111111111004aa20222222222222222222222222222222222222222222222222222222222222222287e8030000000000003cef1111111111111111111111111111111111111111111111111111111111111111100676a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000003cef4444444444444444444444444444444444444444444444444444444444444444100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88acdc7c0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "10",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111"
+              },
+              "value": "0.00100000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "3",
+                "category": "4444444444444444444444444444444444444444444444444444444444444444"
+              },
+              "value": "0.00002000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "10",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        },
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "3",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 2000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-nft-returns-second-nft",
+      "listunspent": [
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        },
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+          },
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 2000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "0",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006a47304402202136ad0e9625c08463039d1f374e94f9306b165e29139ef8e33b0afb9bda99dc0220749f785a5fabc33427826d215a9323a74166bf52d83655ce6ae9343cc347c9e64121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a473044022057d9ff9b41e937858bddedfac34eef4938220d2c2a7947fb643f9db0edf3ef6602204c2d0edad8db53bb61fa13ff9cd31844cf5d0691b67dd6f93ad7a62cd63126c54121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000006eef11111111111111111111111111111111111111111111111111111111111111116028aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20222222222222222222222222222222222222222222222222222222222222222287e80300000000000044ef11111111111111111111111111111111111111111111111111111111111111116108bbbbbbbbbbbbbbbb76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88acd07e0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "0",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111",
+                "nft": {
+                  "capability": "none",
+                  "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              },
+              "value": "0.00100000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "0",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111",
+                "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+              },
+              "value": "0.00002000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        },
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+          },
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 2000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-burns-token",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        },
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "7",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 2000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b483045022100b04ca3c655a0f1beb014e288e3e8120b455306556af9e26738b83d86a961105102206a146108e80f293a17ff087fc1a5410904a7c31dccc18c97bf7a08a93bd73faf4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006b483045022100b6b423db246a1acc03ba32bf51bf431b62cb3001af9787b0fa1d95981d4d7acd02206af81e41b0ce7c2238a5ee1d83477cb4db0ebf876ac1b601f1db7dd84e5daa7e4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e8030000000000001976a914111111111111111111111111111111111111111188acb8820100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "7",
+                "category": "4444444444444444444444444444444444444444444444444444444444444444"
+              },
+              "value": "0.00002000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        },
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "7",
+            "category": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 2000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-mints-token",
+      "listunspent": [
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "4",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "4",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": { "assetTransferMethod": "cashtoken", "paymentFlow": "upfront", "value": "1000" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006b483045022100a19c671ea246b9fa15993cf27e6b86a271845db027c99ca592fbcc67265abd9a02204157ee1cc9aac5c391be22a6ba9ce9a3919726bfe8e8f3cb766cf7c77edb40374121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e80300000000000046ef11111111111111111111111111111111111111111111111111111111111111111004aa20222222222222222222222222222222222222222222222222222222222222222287e8030000000000003cef1111111111111111111111111111111111111111111111111111111111111111100576a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00770100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "4",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111"
+              },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "4",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-changes-nft-capability",
+      "listunspent": [
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        },
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+          },
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 2000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "0",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b483045022100cf5d4398759f6f82dc3bc75a7c301b48b02561057982b95e440a1b15b9fa48ff02203210209cd0a84209facefd7453ab329b8fdd551ab4e55533a3d3e7e67e3d88f54121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006b483045022100f30b409003d4c0a27344782fd5c3fe7dd93b11a5622a403bf10aab60c5e5397b022071e231448d41850294850a5650c64da14d5740bbd1f40acc217f313e505d83c34121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000006eef11111111111111111111111111111111111111111111111111111111111111116028aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20222222222222222222222222222222222222222222222222222222222222222287e80300000000000044ef11111111111111111111111111111111111111111111111111111111111111116008bbbbbbbbbbbbbbbb76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88acd07e0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "0",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111",
+                "nft": {
+                  "capability": "none",
+                  "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              },
+              "value": "0.00100000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "tokenData": {
+                "amount": "0",
+                "category": "1111111111111111111111111111111111111111111111111111111111111111",
+                "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+              },
+              "value": "0.00002000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        },
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": { "capability": "mutable", "commitment": "bbbbbbbbbbbbbbbb" }
+          },
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 2000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-17-outputs",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022023f98b169a4747964d78d90bf5a3b1a00c48beb2cbcd10c1d52f2a22615cf5a9022038051ba0a269d313bac709c6f8493dd78298d33cc6295c60c9bb506278ec4d524121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff11e8030000000000001976a914111111111111111111111111111111111111111188ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ace8030000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-second-merchant-output",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402206c2bad07f02e5a48dbc8e3b78c4f501a1ee63dd0b0652f6210ccbf1c477719be02200548678624db44175488daa8c2b6c0d4805678e61d5e6e10b1f98af9594422ad4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188acd0070000000000001976a914111111111111111111111111111111111111111188ac18730100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-dust-output",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402204e1589151a9e3cde46e0cf14a1e488764caf9ecddc1465468f7182389285dbea022059287d139ece34f086e0cd5ede5d45c7739a774043dcb1bf95c5da1952d492b34121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff03e8030000000000001976a914111111111111111111111111111111111111111188acf4010000000000001976a9146300d436e9e49eaa5b1ca4042926f1fc241f0c6388acf4780100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-p2sh20-input",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006c4730440220661c7154efe76988ec41bcad6451e022137ac9845e05cb6837714f0898d4f24b02207bac8a61bb52c00dafa90c302e302d29be42f571859c8a81b9a3916bd3ffb591412321033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78acffffffff02e8030000000000001976a914111111111111111111111111111111111111111188ace87a0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "a9145f00979cd6ab6aae04764bcab391c8ee6362afaf87" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "a9145f00979cd6ab6aae04764bcab391c8ee6362afaf87",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "ok",
+      "id": "external-native-p2pkh-and-p2sh32-inputs",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 50000
+        },
+        {
+          "height": 10,
+          "tx_hash": "0202020202020202020202020202020202020202020202020202020202020202",
+          "tx_pos": 0,
+          "value": 50000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b483045022100ec669f2e3826e81272122954e55fc4ad11c833f4d1d1cef195f8aa22ec7fccae02201e8b1928022abbf7a0f86111a9b38d742fd1a99235ce7772bc0e97d571ceb9344121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006d483045022100d47d3ccd5f8b0a872214eeba4abc9c631f666ee8540847b7b588893b34e2881e02206b7d02b88c1d46a87747a25a1215dca9a589634ad6652555d9b326d1c0b80488412321033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78acffffffff02e8030000000000001976a914111111111111111111111111111111111111111188ace87a0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
+              "value": "0.00050000"
+            }
+          ]
+        },
+        "0202020202020202020202020202020202020202020202020202020202020202": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": {
+                "hex": "aa20781d86996f83f4c554b139225b186957e68ca4d7d77c820c578dc8d54e38dcbe87"
+              },
+              "value": "0.00050000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 50000,
+          "vout": 0
+        },
+        {
+          "script": "aa20781d86996f83f4c554b139225b186957e68ca4d7d77c820c578dc8d54e38dcbe87",
+          "token": null,
+          "txid": "0202020202020202020202020202020202020202020202020202020202020202",
+          "value": 50000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-p2sh-wrong-redeem-script",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006d4730440220661c7154efe76988ec41bcad6451e022137ac9845e05cb6837714f0898d4f24b02207bac8a61bb52c00dafa90c302e302d29be42f571859c8a81b9a3916bd3ffb591412421033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ac61ffffffff02e8030000000000001976a914111111111111111111111111111111111111111188ace87a0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": { "hex": "a9145f00979cd6ab6aae04764bcab391c8ee6362afaf87" },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "a9145f00979cd6ab6aae04764bcab391c8ee6362afaf87",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    },
+    {
+      "expect": "reject",
+      "id": "external-reject-p2sh-non-push-unlocking",
+      "listunspent": [
+        {
+          "height": 10,
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "external",
+      "requirements": {
+        "amount": "1000",
+        "asset": "BCH",
+        "extra": { "assetTransferMethod": "native", "paymentFlow": "upfront" },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006d614730440220661c7154efe76988ec41bcad6451e022137ac9845e05cb6837714f0898d4f24b02207bac8a61bb52c00dafa90c302e302d29be42f571859c8a81b9a3916bd3ffb591412321033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78acffffffff02e8030000000000001976a914111111111111111111111111111111111111111188ace87a0100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactions": {
+        "0101010101010101010101010101010101010101010101010101010101010101": {
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": {
+                "hex": "aa20781d86996f83f4c554b139225b186957e68ca4d7d77c820c578dc8d54e38dcbe87"
+              },
+              "value": "0.00100000"
+            }
+          ]
+        }
+      },
+      "walletUtxos": [
+        {
+          "script": "aa20781d86996f83f4c554b139225b186957e68ca4d7d77c820c578dc8d54e38dcbe87",
+          "token": null,
+          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 100000,
+          "vout": 0
+        }
+      ]
+    }
+  ],
+  "offline": true,
+  "resource": "https://merchant.example/item"
+}

@@ -6,3 +6,4 @@ coverage/
 examples/*.local.ts
 .env
 .env.local
+target/
