@@ -5,18 +5,21 @@ The protocol contract is defined in `spec/` and deterministic fixtures in
 fixtures and produce the same canonical JSON, transaction bytes, txid, and
 validation verdict.
 
-| Language   | Package path                   | Status                   |
-| ---------- | ------------------------------ | ------------------------ |
-| TypeScript | repository root                | reference implementation |
-| Rust       | `packages/rust/x402-chain-bch` | SDK implementation       |
-| Go         | `packages/go`                  | conformance scaffold     |
-| Java       | `packages/java`                | conformance scaffold     |
-| Python     | `packages/python`              | conformance scaffold     |
-| C++        | `packages/cpp`                 | conformance scaffold     |
+| Language   | Package path                   | Status                       |
+| ---------- | ------------------------------ | ---------------------------- |
+| TypeScript | `packages/typescript`          | complete SDK implementation  |
+| Rust       | `packages/rust/x402-chain-bch` | SDK implementation           |
+| Go         | `packages/go`                  | protocol-core implementation |
+| Java       | `packages/java`                | protocol-core implementation |
+| Python     | `packages/python`              | protocol-core implementation |
+| C++        | `packages/cpp`                 | protocol-core implementation |
 
-The non-TypeScript packages begin with wire-level conformance. They must not
-claim transaction-signing or BCH VM support until their implementation passes
-the corresponding vectors.
+The Rust and TypeScript packages include transaction construction/validation,
+wallet boundaries, provider integration, and settlement behavior. Go, Java,
+Python, and C++ currently implement the same wallet-agnostic protocol core and
+transaction envelope contract; signing, BCH VM execution, and provider
+transport remain explicit language-specific adapters to be added behind that
+contract.
 
 Parity rules:
 

@@ -33,7 +33,7 @@ for (const testCase of fixture.cases) {
 console.log(`conformance fixtures: ${fixture.cases.length} cases validated`);
 
 const root = new URL('..', import.meta.url).pathname;
-execFileSync('python3', [join(root, 'packages/python/run_conformance.py')], {
+execFileSync('python3', [join(root, 'packages/python/tests/run_conformance.py')], {
   cwd: join(root, 'packages/python'),
   stdio: 'inherit',
 });
@@ -42,14 +42,26 @@ try {
   const javaDir = join(root, 'packages/java');
   execFileSync(
     'javac',
-    ['-d', temp, join(javaDir, 'X402Bch.java'), join(javaDir, 'ConformanceTest.java')],
+    [
+      '-d',
+      temp,
+      join(javaDir, 'src/main/java/X402Bch.java'),
+      join(javaDir, 'src/test/java/ConformanceTest.java'),
+    ],
     { stdio: 'inherit' },
   );
-  execFileSync('java', ['-cp', temp, 'ConformanceTest'], { stdio: 'inherit' });
+  execFileSync('java', ['-cp', temp, 'x402bch.ConformanceTest'], { stdio: 'inherit' });
   const cppBinary = join(temp, 'conformance_test');
   execFileSync(
     'g++',
-    ['-std=c++17', join(root, 'packages/cpp/conformance_test.cpp'), '-o', cppBinary],
+    [
+      '-std=c++17',
+      '-I',
+      join(root, 'packages/cpp/include'),
+      join(root, 'packages/cpp/tests/conformance_test.cpp'),
+      '-o',
+      cppBinary,
+    ],
     { stdio: 'inherit' },
   );
   execFileSync(cppBinary, [], { stdio: 'inherit' });

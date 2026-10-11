@@ -1,4 +1,5 @@
 # x402-BCH Java
 
-Java wire-level implementation for the x402-BCH conformance contract. Use the
-shared fixtures under `spec/conformance/v1` before adding chain integrations.
+Java implementation of the wallet-agnostic x402-BCH protocol core, including
+requirements and payment-payload binding plus request commitments. The shared
+fixtures under `spec/conformance/v1` define cross-language behavior.

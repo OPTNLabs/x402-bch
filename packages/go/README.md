@@ -1,5 +1,7 @@
 # x402-BCH Go
 
-Go wire-level implementation for the x402-BCH conformance contract. BCH
-transaction signing, wallet keys, and provider transport remain application
-owned layers to be added behind the same contract.
+Go implementation of the wallet-agnostic x402-BCH protocol core. It validates
+requirements and payment payloads, binds a submitted transaction envelope to
+the accepted request, and computes request commitments. BCH signing and
+provider transport are explicit adapter boundaries, matching the TypeScript
+and Rust packages.
