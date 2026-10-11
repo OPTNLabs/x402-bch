@@ -116,9 +116,13 @@ export class ExactBchScheme implements SchemeNetworkClient {
     }
     if (target.kind === 'cashtoken') {
       for (const utxo of pureBchUtxos) {
+        // Token prefixes and NFT commitments add output bytes that the
+        // ordinary input estimate does not include. Keep this conservative so
+        // a token-only selection cannot fail later during fee convergence.
+        const estimatedSize = 10n + BigInt(selected.length * 180 + 168);
         if (
           selectedTokenAmount >= target.amount &&
-          selectedValue >= target.merchantValue + 10n * this.policy.feeRateSatPerByte
+          selectedValue >= target.merchantValue + estimatedSize * this.policy.feeRateSatPerByte
         ) {
           break;
         }

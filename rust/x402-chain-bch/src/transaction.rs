@@ -369,7 +369,7 @@ impl BchTransaction {
 ///
 /// The omitted value is the greater of this floor, the configured policy dust
 /// threshold, and the standard relay dust of the merchant output. CHIP-2024-12
-/// raised the consensus commitment limit from 40 bytes to 128 bytes
+/// BCH consensus currently limits NFT commitments to 40 bytes.
 /// (<https://github.com/bitjson/bch-p2s>), and a 128-byte commitment can push
 /// that relay dust above 1,000 satoshis. The historical 828-satoshi figure is
 /// the relay dust of a 40-byte commitment on the largest locking script this
@@ -382,7 +382,7 @@ pub(crate) const CASHTOKEN_OUTPUT_DUST: u64 = 1_000;
 ///
 /// An empty commitment is valid: the commitment bit stays unset. A commitment
 /// bit set to a compact-size length of zero is not a valid encoding.
-pub const MAX_TOKEN_COMMITMENT_LENGTH: usize = 128;
+pub const MAX_TOKEN_COMMITMENT_LENGTH: usize = 40;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct BchPolicy {
@@ -1694,9 +1694,9 @@ mod tests {
     }
 
     #[test]
-    fn commitment_codec_accepts_zero_through_128_and_rejects_129() {
+    fn commitment_codec_accepts_zero_through_40_and_rejects_41() {
         let script = p2pkh_script(&[0x11; 20]);
-        for length in [0usize, 40, 41, 128] {
+        for length in [0usize, 40] {
             let token = BchToken {
                 category: [0x11; 32],
                 amount: 0,
@@ -1716,7 +1716,7 @@ mod tests {
             amount: 1,
             nft: Some(BchNft {
                 capability: BchTokenCapability::Mutable,
-                commitment: vec![0xab; 129],
+                commitment: vec![0xab; 41],
             }),
         };
         assert!(serialize_token_prefix_and_script(Some(&too_long), &script).is_err());
@@ -1732,7 +1732,7 @@ mod tests {
         over_limit.extend([0x11u8; 32]);
         over_limit.push(0x60);
         over_limit.push(129);
-        over_limit.extend(std::iter::repeat_n(0xab, 129));
+        over_limit.extend(std::iter::repeat_n(0xab, 41));
         over_limit.extend_from_slice(&script);
         assert!(parse_token_prefix_and_script(&over_limit).is_err());
 
@@ -1741,8 +1741,8 @@ mod tests {
                 .unwrap()
                 .is_some()
         );
-        assert!(parse_cash_token_nft(Some("none"), Some(&"aa".repeat(128))).is_ok());
-        assert!(parse_cash_token_nft(Some("none"), Some(&"aa".repeat(129))).is_err());
+        assert!(parse_cash_token_nft(Some("none"), Some(&"aa".repeat(40))).is_ok());
+        assert!(parse_cash_token_nft(Some("none"), Some(&"aa".repeat(41))).is_err());
     }
 
     #[test]
@@ -1765,13 +1765,13 @@ mod tests {
             0,
             Some(&BchNft {
                 capability: BchTokenCapability::None,
-                commitment: vec![0xab; 128],
+                commitment: vec![0xab; 40],
             }),
             BchPolicy::default(),
         )
         .unwrap();
         assert_eq!(short, CASHTOKEN_OUTPUT_DUST);
-        assert!(long > CASHTOKEN_OUTPUT_DUST);
+        assert_eq!(long, CASHTOKEN_OUTPUT_DUST);
         let quoted = payment_target_with_nft(
             &hex::encode([0x11u8; 32]),
             "0",
@@ -1779,7 +1779,7 @@ mod tests {
             Some("1000"),
             Some(BchNft {
                 capability: BchTokenCapability::None,
-                commitment: vec![0xab; 128],
+                commitment: vec![0xab; 40],
             }),
             &script,
             BchPolicy::default(),
@@ -1793,7 +1793,7 @@ mod tests {
                 merchant_value: 1_000,
                 nft: Some(BchNft {
                     capability: BchTokenCapability::None,
-                    commitment: vec![0xab; 128],
+                    commitment: vec![0xab; 40],
                 }),
             }
         );

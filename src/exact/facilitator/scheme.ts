@@ -232,7 +232,10 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
       };
     }
 
-    const status = await this.provider.getTransactionStatus(txid);
+    // A successful broadcast can precede Fulcrum indexing its mempool.
+    const observedStatus = await this.provider.getTransactionStatus(txid);
+    const status =
+      observedStatus.kind === 'notFound' ? { kind: 'mempool' as const } : observedStatus;
     const accepted = await this.acceptSettlement(txid, status);
     if (!accepted) {
       return {

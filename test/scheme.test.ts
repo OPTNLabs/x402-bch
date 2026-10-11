@@ -336,7 +336,7 @@ describe('BCH x402 v2 exact scheme', () => {
     const settled = await facilitator.settle(payload, REQUIREMENTS);
 
     expect(settled.success).toBe(false);
-    expect(settled.errorReason).toMatch(/broadcast outcome unknown/);
+    expect(settled.errorReason).toBe('settlement_pending');
     expect(release).not.toHaveBeenCalled();
     await facilitator.settle(payload, REQUIREMENTS);
     expect(provider.broadcast).toHaveBeenCalledOnce();

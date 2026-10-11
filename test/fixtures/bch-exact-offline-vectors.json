@@ -1153,1272 +1153,9 @@
       ]
     },
     {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2pkh-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402202b47f20274f63291917acd603b2aede60fe6d5d984c09a2db14eadcb6d0ec4280220186743d87e489237de814c714af790b0c93d54f36f57159224eee1062802602d4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000065ef111111111111111111111111111111111111111111111111111111111111111160295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a76a914111111111111111111111111111111111111111188ac8a810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "wallet-nft-only-p2pkh-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "wallet",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402202b47f20274f63291917acd603b2aede60fe6d5d984c09a2db14eadcb6d0ec4280220186743d87e489237de814c714af790b0c93d54f36f57159224eee1062802602d4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000065ef111111111111111111111111111111111111111111111111111111111111111160295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a76a914111111111111111111111111111111111111111188ac8a810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2sh20-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006b48304502210086c172011d661c64a2474098696c256ae6391e25e5624457d5f08406d40cdfd7022001a3791296e93048a6a62ca0d7cb43a3a0515d1029c17fed4ea21f9807f78f584121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000063ef111111111111111111111111111111111111111111111111111111111111111160295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aa9143333333333333333333333333333333333333333878c810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2sh32-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022078cd98b301f793b2659e33396ae61074f43ad325fc77e76ae9ecda581f91d24a0220695042986e9dc1493a8935fff7db78806066b279c8894dc8fc963ff595ce7fd34121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e8030000000000006fef111111111111111111111111111111111111111111111111111111111111111160295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa2022222222222222222222222222222222222222222222222222222222222222228780810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2pkh-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022060079b47ac4777d9e99444dc41a8c2b9c2460881ade9a258b4f9c5e11503b5da02200546a4174b2c72af2b40dd3c465fe8bddc718ea1b5cbf251ce9686727323bf274121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000066ef111111111111111111111111111111111111111111111111111111111111111170295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a0276a914111111111111111111111111111111111111111188ac67810100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "wallet-nft-fungible-p2pkh-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "wallet",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022060079b47ac4777d9e99444dc41a8c2b9c2460881ade9a258b4f9c5e11503b5da02200546a4174b2c72af2b40dd3c465fe8bddc718ea1b5cbf251ce9686727323bf274121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000066ef111111111111111111111111111111111111111111111111111111111111111170295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a0276a914111111111111111111111111111111111111111188ac67810100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2sh20-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a4730440220621d2770445b3c7a4c567b80619e48c03fef802fc933cd8a05173419dba18d3c02203e2759c12cf528129a08eb405b5f2b99d93a007a3f658e1ccffa16c4bfb9266d4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000064ef111111111111111111111111111111111111111111111111111111111111111170295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a02a91433333333333333333333333333333333333333338769810100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2sh32-41",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1000"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402206851faf87d13a935c50ded4f1323d0585c807eaebfeefbbc1f0aac5ae2c3e70802200d7261bcf68ed460376c764e3350b1025a1bf1591f311ea0445598c8af5d093e4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000070ef111111111111111111111111111111111111111111111111111111111111111170295a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a02aa202222222222222222222222222222222222222222222222222222222222222222875d810100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2pkh-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1035"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022016c15c4079d680792776adbd95deee6115c5b8d0e39e7e7d09209b54769a2f28022035cbb17e3e92a99d0c68a72940e4990571c0ca10961e6a12f3cdbdbf6a2aaa9d4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020b04000000000000bcef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a76a914111111111111111111111111111111111111111188ac11810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "wallet-nft-only-p2pkh-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "wallet",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1035"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022016c15c4079d680792776adbd95deee6115c5b8d0e39e7e7d09209b54769a2f28022035cbb17e3e92a99d0c68a72940e4990571c0ca10961e6a12f3cdbdbf6a2aaa9d4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020b04000000000000bcef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a76a914111111111111111111111111111111111111111188ac11810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2sh20-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1029"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402205ba781ae6994e8591ebaf25d07db5b98dccf732d3b1e699a18d9f058d903734f022042bb37c7a0d651130d4fcfaec53c689698b7ce697a37ac7405a2f6d9657bf49a4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020504000000000000baef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aa91433333333333333333333333333333333333333338718810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-only-p2sh32-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "0",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1065"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022077d93ebd24746eba57e932659d97987ec825ba3c09f396eb90f123130fbf45d302202b7d3c0fb4df223fa72b681e125f6e34a4b353346198bf44326491ebdaf8c4c84121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff022904000000000000c6ef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa20222222222222222222222222222222222222222222222222222222222222222287e8800100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "0",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2pkh-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1038"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022003c2e89c145702bb37df96b3c43b5f77b67adf79cc134f714c3ada6adb07f1170220241f25056c5041b7c9b21077d6152f27989ca693b56ac99615951a8563b0ab614121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020e04000000000000bdef111111111111111111111111111111111111111111111111111111111111111170805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a0276a914111111111111111111111111111111111111111188acea800100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "wallet-nft-fungible-p2pkh-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "wallet",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1038"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a473044022003c2e89c145702bb37df96b3c43b5f77b67adf79cc134f714c3ada6adb07f1170220241f25056c5041b7c9b21077d6152f27989ca693b56ac99615951a8563b0ab614121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020e04000000000000bdef111111111111111111111111111111111111111111111111111111111111111170805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a0276a914111111111111111111111111111111111111111188acea800100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2sh20-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1032"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006b483045022100919a34361c698a5d391c5c287363d72e2aed61b93c5a9c62c7a24d7dd37a6a7f0220125d075e11b78f8c44e451ab17a001fed5c69e6aa30e26489e9a0d168e3ac26e4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff020804000000000000bbef111111111111111111111111111111111111111111111111111111111111111170805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a02a914333333333333333333333333333333333333333387f1800100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
-      "expect": "ok",
-      "id": "mnemonic-nft-fungible-p2sh32-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
-      "mode": "mnemonic",
-      "requirements": {
-        "amount": "2",
-        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
-        "extra": {
-          "assetTransferMethod": "cashtoken",
-          "paymentFlow": "upfront",
-          "token": {
-            "amount": "2",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "value": "1068"
-        },
-        "maxTimeoutSeconds": 300,
-        "network": "bch:bitcoincash",
-        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
-        "scheme": "exact"
-      },
-      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402205d3aa7931f487dbed1fdb0c2d2633c7b270520b0adc4f95469c02b5604de0d9c022025ee6e232ec95b1d43170a433ff948a0f28ad98656bb0f3a08185e70808981ff4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff022c04000000000000c7ef111111111111111111111111111111111111111111111111111111111111111170805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a02aa20222222222222222222222222222222222222222222222222222222222222222287c1800100000000003cef1111111111111111111111111111111111111111111111111111111111111111100376a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
-      "transactions": {
-        "0101010101010101010101010101010101010101010101010101010101010101": {
-          "vout": [
-            {
-              "n": 0,
-              "scriptPubKey": { "hex": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac" },
-              "tokenData": {
-                "amount": "5",
-                "category": "1111111111111111111111111111111111111111111111111111111111111111",
-                "nft": {
-                  "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-                }
-              },
-              "value": "0.00100000"
-            }
-          ]
-        }
-      },
-      "walletUtxos": [
-        {
-          "script": "76a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac",
-          "token": {
-            "amount": "5",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
-            }
-          },
-          "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 100000,
-          "vout": 0
-        }
-      ]
-    },
-    {
       "expect": "reject",
-      "id": "mnemonic-explicit-1000-p2pkh-128",
-      "listunspent": [
-        {
-          "height": 10,
-          "token_data": {
-            "amount": "0",
-            "category": "1111111111111111111111111111111111111111111111111111111111111111",
-            "nft": {
-              "capability": "none",
-              "commitment": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
-            }
-          },
-          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
-          "tx_pos": 0,
-          "value": 100000
-        }
-      ],
+      "id": "mnemonic-nft-only-p2pkh-41",
+      "listunspent": [],
       "mode": "mnemonic",
       "requirements": {
         "amount": "0",
@@ -2431,7 +1168,7 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
           "value": "1000"
@@ -2442,6 +1179,201 @@
         "scheme": "exact"
       },
       "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "reject",
+      "id": "mnemonic-nft-only-p2sh20-41",
+      "listunspent": [],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "0",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
+        "scheme": "exact"
+      },
+      "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "reject",
+      "id": "mnemonic-nft-only-p2sh32-41",
+      "listunspent": [],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "0",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "reject",
+      "id": "mnemonic-nft-fungible-p2pkh-41",
+      "listunspent": [],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "2",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "2",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
+        "scheme": "exact"
+      },
+      "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "reject",
+      "id": "mnemonic-nft-fungible-p2sh20-41",
+      "listunspent": [],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "2",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "2",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rqenxvenxvenxvenxvenxvenxvenxvenxvr96ydd40",
+        "scheme": "exact"
+      },
+      "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "reject",
+      "id": "mnemonic-nft-fungible-p2sh32-41",
+      "listunspent": [],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "2",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "2",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+        "scheme": "exact"
+      },
+      "transactionHex": null,
+      "transactions": {},
+      "walletUtxos": []
+    },
+    {
+      "expect": "ok",
+      "id": "mnemonic-explicit-1000-p2pkh-128",
+      "listunspent": [
+        {
+          "height": 10,
+          "token_data": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "abababababababababababababababababababababababababababababababababababababababab"
+            }
+          },
+          "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
+          "tx_pos": 0,
+          "value": 100000
+        }
+      ],
+      "mode": "mnemonic",
+      "requirements": {
+        "amount": "0",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "token": {
+            "amount": "0",
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "nft": {
+              "capability": "none",
+              "commitment": "abababababababababababababababababababababababababababababababababababababababab"
+            }
+          },
+          "value": "1000"
+        },
+        "maxTimeoutSeconds": 300,
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:zqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy7m9s3er2",
+        "scheme": "exact"
+      },
+      "transactionHex": "02000000010101010101010101010101010101010101010101010101010101010101010101000000006a47304402201906b40120183ada6fb6e2a6504d6c48afb2d1397adaca17518d6143c3ee683b02201842d2864937dd60ac70de36f8ead6e866d9d0b1345fbfe1e15a6ae4a5982f5f4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e80300000000000064ef11111111111111111111111111111111111111111111111111111111111111116028abababababababababababababababababababababababababababababababababababababababab76a914111111111111111111111111111111111111111188ac8c810100000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
       "transactions": {
         "0101010101010101010101010101010101010101010101010101010101010101": {
           "vout": [
@@ -2453,7 +1385,7 @@
                 "category": "1111111111111111111111111111111111111111111111111111111111111111",
                 "nft": {
                   "capability": "none",
-                  "commitment": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+                  "commitment": "abababababababababababababababababababababababababababababababababababababababab"
                 }
               },
               "value": "0.00100000"
@@ -2469,7 +1401,7 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+              "commitment": "abababababababababababababababababababababababababababababababababababababababab"
             }
           },
           "txid": "0101010101010101010101010101010101010101010101010101010101010101",
@@ -2489,12 +1421,12 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
           "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
           "tx_pos": 0,
-          "value": 1065
+          "value": 1000
         },
         {
           "height": 10,
@@ -2515,17 +1447,17 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
-          "value": "1065"
+          "value": "1000"
         },
         "maxTimeoutSeconds": 300,
         "network": "bch:bitcoincash",
         "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
         "scheme": "exact"
       },
-      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b483045022100e8dd2c69cce50c00d951dd2ce26bf2a81057ebba3fab9315f03338789d8986e502206f34eeb1b96943b67f9eaa38b45914abec6fa95214ca34fce281e712d53092334121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a473044022006ae0d300913d8ca592135b33867e9465c04a6c25ce1e89e7d3a2fcfc5f9574b022037fefc9af8405605e91cc8fc7526d6de7a228cd971b1c0711aee7bb35dcdaec74121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff022904000000000000c6ef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa202222222222222222222222222222222222222222222222222222222222222222872dc10000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b4830450221009a93145940aa1063f5a1d26d81536daf88f87247ba44df2ca0c5f6de0d4d265e02207e1846af22ce79fcbed4f62e3d23f23ea32257c26f0af565f5a5ccfdebd6a07a4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a473044022014fb0529f6fa94004c705c5f09444a102c80414a4f2c5d4634a153a8472894cb022029423323271571448776b1ffed59e57aecdfbf28660d973d2476fabe79e8a6e44121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e8030000000000006eef111111111111111111111111111111111111111111111111111111111111111160285a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa2022222222222222222222222222222222222222222222222222222222222222228785c10000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
       "transactions": {
         "0101010101010101010101010101010101010101010101010101010101010101": {
           "vout": [
@@ -2537,10 +1469,10 @@
                 "category": "1111111111111111111111111111111111111111111111111111111111111111",
                 "nft": {
                   "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
                 }
               },
-              "value": "0.00001065"
+              "value": "0.00001000"
             }
           ]
         },
@@ -2562,11 +1494,11 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
           "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 1065,
+          "value": 1000,
           "vout": 0
         },
         {
@@ -2589,12 +1521,12 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
           "tx_hash": "0101010101010101010101010101010101010101010101010101010101010101",
           "tx_pos": 0,
-          "value": 1065
+          "value": 1000
         },
         {
           "height": 10,
@@ -2615,17 +1547,17 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
-          "value": "1065"
+          "value": "1000"
         },
         "maxTimeoutSeconds": 300,
         "network": "bch:bitcoincash",
         "payTo": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
         "scheme": "exact"
       },
-      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b483045022100e8dd2c69cce50c00d951dd2ce26bf2a81057ebba3fab9315f03338789d8986e502206f34eeb1b96943b67f9eaa38b45914abec6fa95214ca34fce281e712d53092334121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a473044022006ae0d300913d8ca592135b33867e9465c04a6c25ce1e89e7d3a2fcfc5f9574b022037fefc9af8405605e91cc8fc7526d6de7a228cd971b1c0711aee7bb35dcdaec74121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff022904000000000000c6ef111111111111111111111111111111111111111111111111111111111111111160805a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa202222222222222222222222222222222222222222222222222222222222222222872dc10000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
+      "transactionHex": "02000000020101010101010101010101010101010101010101010101010101010101010101000000006b4830450221009a93145940aa1063f5a1d26d81536daf88f87247ba44df2ca0c5f6de0d4d265e02207e1846af22ce79fcbed4f62e3d23f23ea32257c26f0af565f5a5ccfdebd6a07a4121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff0202020202020202020202020202020202020202020202020202020202020202000000006a473044022014fb0529f6fa94004c705c5f09444a102c80414a4f2c5d4634a153a8472894cb022029423323271571448776b1ffed59e57aecdfbf28660d973d2476fabe79e8a6e44121033d55b4269d0db7dcca7165c2a13132d9baafecf38c0e89d8383ba6c1f370fc78ffffffff02e8030000000000006eef111111111111111111111111111111111111111111111111111111111111111160285a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5aaa2022222222222222222222222222222222222222222222222222222222222222228785c10000000000001976a9145abc6066378f6c731aa6f19e0d2e469e8dec1c2e88ac00000000",
       "transactions": {
         "0101010101010101010101010101010101010101010101010101010101010101": {
           "vout": [
@@ -2637,10 +1569,10 @@
                 "category": "1111111111111111111111111111111111111111111111111111111111111111",
                 "nft": {
                   "capability": "none",
-                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+                  "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
                 }
               },
-              "value": "0.00001065"
+              "value": "0.00001000"
             }
           ]
         },
@@ -2662,11 +1594,11 @@
             "category": "1111111111111111111111111111111111111111111111111111111111111111",
             "nft": {
               "capability": "none",
-              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+              "commitment": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
             }
           },
           "txid": "0101010101010101010101010101010101010101010101010101010101010101",
-          "value": 1065,
+          "value": 1000,
           "vout": 0
         },
         {

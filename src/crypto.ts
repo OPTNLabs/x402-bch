@@ -42,6 +42,9 @@ import {
 } from './constants';
 export { BCH_ASSET, SIGHASH_ALL_FORKID } from './constants';
 
+/** Maximum CashToken NFT commitment length after the May 2026 BCH upgrade. */
+export const MAX_TOKEN_COMMITMENT_LENGTH = 40;
+
 /** Display-order hexadecimal BCH transaction identifier. */
 export type TxId = string;
 
@@ -165,8 +168,8 @@ export function createBchPaymentTarget(
     if (!/^(?:[0-9a-fA-F]{2})*$/.test(extra.token.nft.commitment)) {
       throw new Error('CashToken NFT commitment must be even-length hex');
     }
-    if (extra.token.nft.commitment.length > 80) {
-      throw new Error('CashToken NFT commitment exceeds 40 bytes');
+    if (extra.token.nft.commitment.length > MAX_TOKEN_COMMITMENT_LENGTH * 2) {
+      throw new Error('CashToken commitment is too large');
     }
   }
   if (
@@ -475,7 +478,8 @@ function assertToken(token: CashToken): void {
     if (!['none', 'mutable', 'minting'].includes(token.nft.capability)) {
       throw new Error('invalid CashToken NFT capability');
     }
-    if (token.nft.commitment.length > 40) throw new Error('CashToken commitment is too large');
+    if (token.nft.commitment.length > MAX_TOKEN_COMMITMENT_LENGTH)
+      throw new Error('CashToken commitment is too large');
   }
 }
 

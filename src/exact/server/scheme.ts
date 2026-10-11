@@ -135,6 +135,12 @@ export class ExactBchServerScheme implements SchemeNetworkServer {
     if (assetTransferMethod === 'cashtoken' && !isCashTokenCategory(paymentRequirements.asset)) {
       throw new Error('CashToken payments require a 32-byte category asset');
     }
+    if (assetTransferMethod === 'cashtoken') {
+      assertTokenAmount(
+        paymentRequirements.amount,
+        existing.token as Record<string, unknown> | undefined,
+      );
+    }
     const tokenValue =
       assetTransferMethod === 'cashtoken'
         ? ((existing.value as string | undefined) ??
@@ -174,5 +180,14 @@ function assertTokenAmount(amount: string, token: Record<string, unknown> | unde
   const hasNft = token !== undefined && token.nft !== undefined;
   if ((value === 0n && !hasNft) || value > MAX_CASH_TOKEN_AMOUNT) {
     throw new Error('CashToken amount is outside the BCH token range');
+  }
+  const nft = token?.nft as { commitment?: unknown } | undefined;
+  if (
+    nft?.commitment !== undefined &&
+    (typeof nft.commitment !== 'string' ||
+      !/^(?:[0-9a-fA-F]{2})*$/.test(nft.commitment) ||
+      nft.commitment.length > 80)
+  ) {
+    throw new Error('CashToken commitment is too large');
   }
 }

@@ -5,14 +5,14 @@ The protocol contract is defined in `spec/` and deterministic fixtures in
 fixtures and produce the same canonical JSON, transaction bytes, txid, and
 validation verdict.
 
-| Language | Package path | Status |
-| --- | --- | --- |
-| TypeScript | repository root | reference implementation |
-| Rust | `rust/x402-chain-bch` | SDK implementation |
-| Go | `packages/go` | conformance scaffold |
-| Java | `packages/java` | conformance scaffold |
-| Python | `packages/python` | conformance scaffold |
-| C++ | `packages/cpp` | conformance scaffold |
+| Language   | Package path          | Status                   |
+| ---------- | --------------------- | ------------------------ |
+| TypeScript | repository root       | reference implementation |
+| Rust       | `rust/x402-chain-bch` | SDK implementation       |
+| Go         | `packages/go`         | conformance scaffold     |
+| Java       | `packages/java`       | conformance scaffold     |
+| Python     | `packages/python`     | conformance scaffold     |
+| C++        | `packages/cpp`        | conformance scaffold     |
 
 The non-TypeScript packages begin with wire-level conformance. They must not
 claim transaction-signing or BCH VM support until their implementation passes

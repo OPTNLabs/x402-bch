@@ -1006,9 +1006,9 @@ mod tests {
     }
 
     #[test]
-    fn parses_commitments_through_128_bytes_and_rejects_129() {
+    fn parses_commitments_through_40_bytes_and_rejects_41() {
         let category = "11".repeat(32);
-        for length in [0usize, 40, 41, 128] {
+        for length in [0usize, 40] {
             let commitment = "ab".repeat(length);
             let parsed = parse_token_data(Some(&json!({
                 "category": category,
@@ -1022,7 +1022,7 @@ mod tests {
         let error = parse_token_data(Some(&json!({
             "category": category,
             "amount": "1",
-            "nft": { "capability": "minting", "commitment": "cd".repeat(129) }
+            "nft": { "capability": "minting", "commitment": "cd".repeat(41) }
         })))
         .unwrap_err();
         assert!(error.to_string().contains("too large"), "{error}");

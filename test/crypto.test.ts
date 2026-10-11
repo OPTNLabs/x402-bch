@@ -213,7 +213,7 @@ describe('BCH CashAddr and transaction primitives', () => {
     ).toThrow('CashToken commitment is too large');
   });
 
-  it('sizes an omitted 128-byte NFT output above the 1,000-satoshi floor', () => {
+  it('accepts the maximum 40-byte NFT commitment at the token dust floor', () => {
     const category = 'ab'.repeat(32);
     const target = createBchPaymentTarget(
       category,
@@ -223,7 +223,7 @@ describe('BCH CashAddr and transaction primitives', () => {
         token: {
           category,
           amount: '0',
-          nft: { capability: 'none', commitment: 'cd'.repeat(128) },
+          nft: { capability: 'none', commitment: 'cd'.repeat(40) },
         },
       },
       undefined,
@@ -231,8 +231,8 @@ describe('BCH CashAddr and transaction primitives', () => {
     );
     expect(target).toMatchObject({ kind: 'cashtoken' });
     if (target.kind === 'cashtoken') {
-      expect(target.nft?.commitment).toHaveLength(128);
-      expect(target.merchantValue).toBeGreaterThan(1000n);
+      expect(target.nft?.commitment).toHaveLength(40);
+      expect(target.merchantValue).toBe(1000n);
     }
   });
 

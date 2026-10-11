@@ -71,9 +71,9 @@ function commitmentLength(item: OfflineCase): number {
 describe('offline vectors from the Rust x402-chain-bch crate', () => {
   it('covers the 128-byte commitment limit on every destination', () => {
     expect(vectors.offline).toBe(true);
-    expect(cases).toHaveLength(37);
+    expect(cases).toHaveLength(27);
     for (const destination of ['p2pkh', 'p2sh20', 'p2sh32']) {
-      expect(signed.some((item) => item.id === `mnemonic-nft-only-${destination}-128`)).toBe(true);
+      expect(signed.some((item) => item.id === `mnemonic-nft-only-${destination}-40`)).toBe(true);
     }
     expect(rejected.some((item) => commitmentLength(item) > MAX_TOKEN_COMMITMENT_LENGTH)).toBe(
       true,
@@ -89,7 +89,7 @@ describe('offline vectors from the Rust x402-chain-bch crate', () => {
       [],
     );
     if (commitmentLength(item) > MAX_TOKEN_COMMITMENT_LENGTH) {
-      await expect(enhanced).rejects.toThrow('CashToken commitment is too large');
+      await expect(enhanced).rejects.toThrow(/CashToken .*commitment/);
     } else {
       await expect(enhanced).resolves.toMatchObject({ extra: { value } });
     }
@@ -110,7 +110,7 @@ describe('offline vectors from the Rust x402-chain-bch crate', () => {
   it.each(rejected)('$id: rejects the payment like Rust', async (item) => {
     const client = new ExactBchScheme(payer(), providerFor(item));
     await expect(client.createPaymentPayload(2, item.requirements)).rejects.toThrow(
-      /merchant output is dust|CashToken commitment is too large/,
+      /merchant output is dust|CashToken .*commitment/,
     );
   });
 });

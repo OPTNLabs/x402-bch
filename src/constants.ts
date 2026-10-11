@@ -26,7 +26,7 @@ export const BCH_DUST_THRESHOLD = 546n;
  * Omitted merchant values use the size-aware rule in `crypto.ts`, which is
  * at least 1,000 satoshis and can be higher for a long NFT commitment.
  */
-export const CASH_TOKEN_DUST_THRESHOLD = 687n;
+export const CASH_TOKEN_DUST_THRESHOLD = 1000n;
 
 /** SLIP-0044 coin type used by BCH Chipnet wallets. */
 export const CHIPNET_BIP44_COIN_TYPE = 1;

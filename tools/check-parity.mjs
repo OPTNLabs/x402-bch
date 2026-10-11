@@ -5,10 +5,12 @@ import { join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 
-const fixture = JSON.parse(await readFile(
-  new URL('../spec/conformance/v1/payment-requirements.json', import.meta.url),
-  'utf8',
-));
+const fixture = JSON.parse(
+  await readFile(
+    new URL('../spec/conformance/v1/payment-requirements.json', import.meta.url),
+    'utf8',
+  ),
+);
 
 if (fixture.version !== 1 || !Array.isArray(fixture.cases) || fixture.cases.length < 1) {
   throw new Error('invalid conformance fixture');
@@ -18,8 +20,10 @@ for (const testCase of fixture.cases) {
   if (requirements.x402Version !== 2) throw new Error(`${testCase.name}: x402 version`);
   if (requirements.scheme !== 'exact') throw new Error(`${testCase.name}: scheme`);
   if (!/^\d+$/.test(requirements.amount)) throw new Error(`${testCase.name}: amount`);
-  if (requirements.extra?.requestHash !== undefined &&
-      !/^[0-9a-f]{64}$/.test(requirements.extra.requestHash)) {
+  if (
+    requirements.extra?.requestHash !== undefined &&
+    !/^[0-9a-f]{64}$/.test(requirements.extra.requestHash)
+  ) {
     throw new Error(`${testCase.name}: requestHash`);
   }
   if (expected.requestHashBytes !== undefined && expected.requestHashBytes !== 32) {
@@ -36,7 +40,11 @@ try {
   execFileSync('javac', ['-d', temp, join(javaDir, 'ConformanceTest.java')], { stdio: 'inherit' });
   execFileSync('java', ['-cp', temp, 'ConformanceTest'], { stdio: 'inherit' });
   const cppBinary = join(temp, 'conformance_test');
-  execFileSync('g++', ['-std=c++17', join(root, 'packages/cpp/conformance_test.cpp'), '-o', cppBinary], { stdio: 'inherit' });
+  execFileSync(
+    'g++',
+    ['-std=c++17', join(root, 'packages/cpp/conformance_test.cpp'), '-o', cppBinary],
+    { stdio: 'inherit' },
+  );
   execFileSync(cppBinary, [], { stdio: 'inherit' });
 } finally {
   rmSync(temp, { recursive: true, force: true });
