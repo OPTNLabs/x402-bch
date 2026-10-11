@@ -29,6 +29,7 @@ import {
   createVirtualMachineBCH,
   verifyTransactionTokens,
 } from '@bitauth/libauth';
+import { sha256 } from '@noble/hashes/sha256';
 import type { BchNetwork, BchOutPoint, BchSourceOutput, TokenCapability } from './types';
 import {
   BCH_ASSET,
@@ -491,6 +492,29 @@ export function parseTransaction(raw: Uint8Array): BchTransaction {
 /** Serialize a transaction using Libauth BCH encoding. */
 export function serializeTransaction(transaction: BchTransaction): Uint8Array {
   return encodeTransactionBCH(toLibauthTransaction(transaction));
+}
+
+/** Build the canonical zero-value OP_RETURN commitment for an x402 request. */
+export function requestHashScript(requestHash: string): Uint8Array {
+  if (!/^[0-9a-fA-F]{64}$/.test(requestHash)) {
+    throw new Error('request hash must be 32-byte hexadecimal');
+  }
+  return Uint8Array.from([0x6a, 0x20, ...hexToBytes(requestHash)]);
+}
+
+/** Hash the exact canonical request identifier supplied by the server. */
+export function hashRequestUrl(url: string): string {
+  if (url.length === 0) throw new Error('request URL must not be empty');
+  return bytesToHex(sha256(new TextEncoder().encode(url)));
+}
+
+/** Return the request commitment carried by a transaction, if present. */
+export function getRequestHashCommitment(transaction: BchTransaction): string | undefined {
+  const commitment = transaction.outputs.find((output) => {
+    const script = output.scriptPubKey;
+    return output.value === 0n && script.length === 34 && script[0] === 0x6a && script[1] === 0x20;
+  });
+  return commitment === undefined ? undefined : bytesToHex(commitment.scriptPubKey.slice(2));
 }
 
 /** Calculate the transaction ID from its serialized transaction bytes. */

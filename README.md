@@ -195,6 +195,10 @@ transaction is the x402 settlement object.
 
 ## Examples
 
+For a single end-to-end integration guide, including client/server HTTP
+boundaries and the BCH covenant/facilitator distinction, see
+[`docs/integration.md`](docs/integration.md).
+
 The `examples/` directory keeps each integration concern in a separate file and
 uses `common.ts` for shared network, wallet, and provider helpers:
 

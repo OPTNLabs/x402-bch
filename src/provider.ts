@@ -157,6 +157,27 @@ export class FulcrumProvider implements BchProvider {
     }
   }
 
+  /** Fetch the canonical serialized transaction for chain-first settlement recognition. */
+  async getTransaction(txid: string): Promise<Uint8Array | undefined> {
+    try {
+      const result = await this.transport.request('blockchain.transaction.get', [txid]);
+      if (typeof result !== 'string' || !/^[0-9a-fA-F]+$/.test(result)) {
+        throw new Error('Fulcrum transaction response is not raw hexadecimal data');
+      }
+      return hexToBytes(result);
+    } catch (error) {
+      const message = String(error).toLowerCase();
+      if (
+        message.includes('not found') ||
+        message.includes('no such') ||
+        message.includes('no transaction matching')
+      ) {
+        return undefined;
+      }
+      throw error;
+    }
+  }
+
   /** Return the current Fulcrum chain tip height. */
   async getTipHeight(): Promise<number> {
     const result = await this.transport.request('blockchain.headers.subscribe', []);

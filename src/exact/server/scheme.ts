@@ -141,6 +141,10 @@ export class ExactBchServerScheme implements SchemeNetworkServer {
           String(DEFAULT_BCH_POLICY.cashTokenDustThreshold))
         : undefined;
     if (tokenValue !== undefined) assertSatoshiAmount(tokenValue);
+    const requestHash = existing.requestHash;
+    if (requestHash !== undefined && !/^[0-9a-fA-F]{64}$/.test(String(requestHash))) {
+      throw new Error('BCH requestHash must be a 32-byte hexadecimal commitment');
+    }
     return {
       ...paymentRequirements,
       extra: {

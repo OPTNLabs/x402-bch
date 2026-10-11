@@ -5,11 +5,13 @@ import {
   bytesToBase64,
   createBchPaymentTarget,
   decodeBchAddressScript,
+  getRequestHashCommitment,
   hash160,
   isSupportedMerchantScript,
   p2pkhScript,
   pushData,
   parseTransaction,
+  requestHashScript,
   serializeTransaction,
   signingHash,
   verifyPayment,
@@ -138,6 +140,7 @@ export class ExactBchScheme implements SchemeNetworkClient {
       target,
       signer,
       this.policy,
+      request.requestHash,
     );
     verifyPayment(
       transaction,
@@ -151,6 +154,7 @@ export class ExactBchScheme implements SchemeNetworkClient {
       target,
       this.policy,
     );
+    assertRequestHashCommitment(transaction, requirements.extra.requestHash);
     return {
       x402Version,
       payload: { transaction: bytesToBase64(serializeTransaction(transaction)) },
@@ -182,6 +186,7 @@ export class ExactBchScheme implements SchemeNetworkClient {
       target,
       this.policy,
     );
+    assertRequestHashCommitment(transaction, requirements.extra.requestHash);
     return { x402Version, payload: { transaction: bytesToBase64(raw) } };
   }
 }
@@ -208,6 +213,7 @@ export async function buildAndSignTransaction(
   merchantAmountOrTarget: bigint | BchPaymentTarget,
   signer: BchSigner,
   policy: BchPolicy = DEFAULT_BCH_POLICY,
+  requestHash?: string,
 ): Promise<BchTransaction> {
   const target: BchPaymentTarget =
     typeof merchantAmountOrTarget === 'bigint'
@@ -258,6 +264,7 @@ export async function buildAndSignTransaction(
               : {}),
           }
         : undefined,
+      requestHash,
     );
     await signTransaction(transaction, selected, signer);
     const requiredFee = BigInt(serializeTransaction(transaction).length) * policy.feeRateSatPerByte;
@@ -324,6 +331,7 @@ function makeUnsignedTransaction(
   merchantScript: Uint8Array,
   target: BchPaymentTarget,
   change?: BchTxOutput,
+  requestHash?: string,
 ): BchTransaction {
   const inputs: BchTxInput[] = selected.map((utxo) => ({
     outpoint: { txid: utxo.txid, vout: utxo.vout },
@@ -346,7 +354,22 @@ function makeUnsignedTransaction(
     },
   ];
   if (change) outputs.push(change);
+  if (requestHash !== undefined) {
+    outputs.push({ value: 0n, scriptPubKey: requestHashScript(requestHash) });
+  }
   return { version: 2, inputs, outputs, lockTime: 0 };
+}
+
+function assertRequestHashCommitment(
+  transaction: BchTransaction,
+  requestHash: string | undefined,
+): void {
+  if (
+    requestHash !== undefined &&
+    getRequestHashCommitment(transaction) !== requestHash.toLowerCase()
+  ) {
+    throw new Error('signed BCH transaction does not commit to the requested resource hash');
+  }
 }
 
 /** Validate x402 BCH requirements before wallet or signer work begins. */
