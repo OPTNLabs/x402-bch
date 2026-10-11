@@ -1,0 +1,24 @@
+[workspace]
+resolver = "3"
+members = ["rust/x402-chain-bch"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.93.0"
+repository = "https://github.com/OPTNLabs/x402-bch"
+homepage = "https://github.com/OPTNLabs/x402-bch"
+authors = ["OPTN Labs"]
+keywords = ["bitcoin-cash", "payments", "x402", "cashtokens", "http-402"]
+categories = ["cryptography::cryptocurrencies", "finance"]
+
+[workspace.dependencies]
+alloy-primitives = { version = "1.4.1" }
+async-trait = { version = "0.1" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["raw_value"] }
+thiserror = { version = "2.0" }
+tokio = { version = "1.35", features = ["io-util", "net", "sync", "rt-multi-thread"] }
+# Published protocol types. The BCH implementation in this repository is the one this package ships.
+x402-types = { version = "2.0.2" }

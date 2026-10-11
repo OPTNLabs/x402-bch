@@ -20,6 +20,39 @@ payments require a token-aware CashAddr. CashScript contracts are represented by
 compiled locking bytecode; x402 pays the contract output but does not execute
 or validate the contract's later spending conditions.
 
+## Rust
+
+The Rust SDK is the `x402-chain-bch` crate in [`rust/x402-chain-bch`](rust/x402-chain-bch).
+Protocol message types come from published [`x402-types` 2.0.2](https://crates.io/crates/x402-types).
+This crate is not on crates.io yet.
+
+```toml
+x402-chain-bch = { git = "https://github.com/OPTNLabs/x402-bch" }
+```
+
+Until that lands on `main`, use the stacked branch:
+
+```toml
+x402-chain-bch = { git = "https://github.com/CyberAshven/x402-bch", branch = "feat/rust-sdk" }
+```
+
+TypeScript installs the same package with `npm install @optnlabs/x402-bch`.
+Both SDKs use `extra.value` for CashToken merchant satoshis. Rust still
+accepts `tokenOutputValue` when reading an older message.
+
+- npm package: https://www.npmjs.com/package/@optnlabs/x402-bch
+- TypeScript pull request: https://github.com/OPTNLabs/x402-bch/pull/1
+- Rust SDK pull request: https://github.com/OPTNLabs/x402-bch/pull/2
+- Upstream Rust contribution: https://github.com/lightswarm124/x402-rs/pull/1
+- Upstream BCH pull request: https://github.com/x402-rs/x402-rs/pull/129
+- Closed earlier upstream request: https://github.com/x402-rs/x402-rs/pull/128
+
+Chipnet payments from these branches:
+
+- setup transaction: https://chipnet.chaingraph.cash/tx/210f4659913fa77500ce547d7103f2e163bc39b1ecb287dfb7b0748fdb8627a3
+- TypeScript exact NFT payment: https://chipnet.chaingraph.cash/tx/7c46af9c142e092a82f1cfafe87212bbd9d4b15b9b6a52f10e6bf1b28331baef
+- Rust exact native payment: https://chipnet.chaingraph.cash/tx/57b434f19d901960802ef93f601358ed7d5996b73f94e6f689c2be8b18943c09
+
 ## BCH transaction model
 
 Unlike account-based networks, BCH does not have a balance, nonce, or
@@ -62,6 +95,18 @@ import { ExactBchScheme } from '@optnlabs/x402-bch/exact/client';
 client.register('bch:*', new ExactBchScheme(signer, provider));
 ```
 
+`x402Client` spend controls allow only default USD stablecoin assets unless
+the application opts in, so allow BCH with a per-payment cap in satoshis:
+
+```ts
+client.setSpendControls({
+  allowedAssets: [{ network: 'bch:bitcoincash', asset: 'BCH', maxAmountPerPayment: '10000' }],
+});
+```
+
+A CashToken entry uses the token category as `asset`, and its cap applies to
+the token amount.
+
 For a low-level integration, `BchSigner` signs BCH sighash digests and
 `BchProvider` supplies UTXOs and authoritative source outputs. For a normal
 wallet integration, implement `BchWallet.createPayment(request)` and let the
@@ -83,11 +128,13 @@ client.register('bch:*', clientScheme);
 `value`, the BCH satoshis assigned to the merchant output. For a fungible
 CashToken, `token.amount` contains the token quantity and `token.category`
 contains the category. For an NFT it additionally contains
-`nft.capability` (`none`, `mutable`, or `minting`) and its commitment; an empty
-commitment is valid. Token-bearing P2PKH outputs use a conservative default of
-687 satoshis for standardness, while native BCH outputs use the 546-satoshi
-default. Wallets may receive a different explicit `value` when the payment
-requirements specify one.
+`nft.capability` (`none`, `mutable`, or `minting`) and a commitment of 0 to
+128 bytes. When a CashToken price omits `value`, the server and client fill a
+size-aware default: the greater of 1,000 satoshis, the policy dust threshold,
+and that output's standard relay dust. A 128-byte commitment can make the
+relay dust larger than 1,000 satoshis. An explicit `value` is preserved and
+rejected when it is below the output's dust threshold. Native BCH outputs keep
+the 546-satoshi dust floor.
 
 `BchSigner` is retained for integrations that already own UTXO selection and
 transaction construction. `FulcrumProvider` implements the Electrum Cash
@@ -152,6 +199,12 @@ facilitator.register(
 Mempool/0-conf mode is opt-in. The `noDoubleSpendProof` strategy accepts an
 unconfirmed transaction only while the provider reports no BCH double-spend
 proof; a proof is conflict evidence, not confirmation.
+
+The upfront flow settles before the resource handler runs, so a server answers
+within the request only with `mempool` or `noDoubleSpendProof`. With a
+confirmation count, settlement returns `settlement_pending:<txid>` until the
+transaction confirms, and retrying the same payment does not broadcast it
+again.
 
 ## Server
 
