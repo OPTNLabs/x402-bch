@@ -33,11 +33,18 @@ for (const testCase of fixture.cases) {
 console.log(`conformance fixtures: ${fixture.cases.length} cases validated`);
 
 const root = new URL('..', import.meta.url).pathname;
-execFileSync('python3', [join(root, 'packages/python/test_conformance.py')], { stdio: 'inherit' });
+execFileSync('python3', [join(root, 'packages/python/run_conformance.py')], {
+  cwd: join(root, 'packages/python'),
+  stdio: 'inherit',
+});
 const temp = mkdtempSync(join(tmpdir(), 'x402-bch-parity-'));
 try {
   const javaDir = join(root, 'packages/java');
-  execFileSync('javac', ['-d', temp, join(javaDir, 'ConformanceTest.java')], { stdio: 'inherit' });
+  execFileSync(
+    'javac',
+    ['-d', temp, join(javaDir, 'X402Bch.java'), join(javaDir, 'ConformanceTest.java')],
+    { stdio: 'inherit' },
+  );
   execFileSync('java', ['-cp', temp, 'ConformanceTest'], { stdio: 'inherit' });
   const cppBinary = join(temp, 'conformance_test');
   execFileSync(
