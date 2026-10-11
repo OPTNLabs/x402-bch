@@ -50,7 +50,10 @@ try {
     ],
     { stdio: 'inherit' },
   );
-  execFileSync('java', ['-cp', temp, 'x402bch.ConformanceTest'], { stdio: 'inherit' });
+  execFileSync('java', ['-cp', temp, 'x402bch.ConformanceTest'], {
+    cwd: root,
+    stdio: 'inherit',
+  });
   const cppBinary = join(temp, 'conformance_test');
   execFileSync(
     'g++',
@@ -64,7 +67,7 @@ try {
     ],
     { stdio: 'inherit' },
   );
-  execFileSync(cppBinary, [], { stdio: 'inherit' });
+  execFileSync(cppBinary, [], { cwd: root, stdio: 'inherit' });
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

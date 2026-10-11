@@ -33,4 +33,6 @@ Parity rules:
    controls only.
 5. A fixture change is a protocol change and must update every language test.
 
-Run `npm run parity:check` for the repository-level fixture check.
+Run `npm --prefix packages/typescript run parity:check` for the repository-level
+fixture check. The shared `spec/` directory and `tools/check-parity.mjs` remain
+at repository root because every language package consumes them.

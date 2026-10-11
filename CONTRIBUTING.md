@@ -14,13 +14,21 @@ Requirements:
 - npm 9 or newer
 
 ```bash
-npm install
+cd packages/typescript
+npm ci
 npm test
 npm run typecheck
 npm run typecheck:examples
 npm run build
 npm run lint:check
 npm run format:check
+```
+
+The TypeScript package is the npm workspace for these commands. From the
+repository root, the equivalent cross-language parity command is:
+
+```bash
+npm --prefix packages/typescript run parity:check
 ```
 
 The package uses Libauth for BCH primitives. Do not copy low-level BCH
@@ -47,6 +55,8 @@ packages/go/                  Go protocol-core package
 packages/java/                Java protocol-core package
 packages/python/              Python protocol-core package
 packages/cpp/                 C++ protocol-core package
+spec/                         shared protocol and conformance fixtures
+tools/check-parity.mjs        repository-level cross-language parity runner
 ```
 
 ## BCH implementation rules

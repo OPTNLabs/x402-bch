@@ -2,21 +2,21 @@
   "name": "@optnlabs/x402-bch",
   "version": "0.1.0",
   "type": "module",
-  "module": "./packages/typescript/dist/esm/index.js",
-  "types": "./packages/typescript/dist/esm/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsup --config packages/typescript/tsup.config.ts",
+    "build": "tsup",
     "test": "vitest run",
-    "test:chipnet": "node packages/typescript/scripts/chipnet-smoke.mjs",
+    "test:chipnet": "node scripts/chipnet-smoke.mjs",
     "test:watch": "vitest",
-    "parity:check": "node tools/check-parity.mjs",
+    "parity:check": "node ../../tools/check-parity.mjs",
     "check": "npm test && npm run typecheck && npm run typecheck:examples && npm run lint:check && npm run format:check && npm run build",
-    "release:check": "npm run check && node packages/typescript/scripts/verify-package.mjs",
+    "release:check": "npm run check && node scripts/verify-package.mjs",
     "prepublishOnly": "npm run release:check",
-    "format:check": "prettier -c .prettierrc --check \"**/*.{ts,js,cjs,json,md}\"",
-    "lint:check": "eslint --config packages/typescript/eslint.config.js packages/typescript/src packages/typescript/test --ext .ts",
-    "typecheck": "tsc -p packages/typescript/tsconfig.json --noEmit",
-    "typecheck:examples": "tsc -p packages/typescript/examples/tsconfig.json"
+    "format:check": "prettier -c ../../.prettierrc --ignore-path ../../.prettierignore --check \"**/*.{ts,js,cjs,json,md}\"",
+    "lint:check": "eslint --config eslint.config.js src test --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:examples": "tsc -p examples/tsconfig.json"
   },
   "keywords": [
     "x402",
@@ -55,23 +55,23 @@
   },
   "exports": {
     ".": {
-      "types": "./packages/typescript/dist/esm/index.d.ts",
-      "import": "./packages/typescript/dist/esm/index.js"
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js"
     },
     "./exact/client": {
-      "types": "./packages/typescript/dist/esm/exact/client/index.d.ts",
-      "import": "./packages/typescript/dist/esm/exact/client/index.js"
+      "types": "./dist/esm/exact/client/index.d.ts",
+      "import": "./dist/esm/exact/client/index.js"
     },
     "./exact/server": {
-      "types": "./packages/typescript/dist/esm/exact/server/index.d.ts",
-      "import": "./packages/typescript/dist/esm/exact/server/index.js"
+      "types": "./dist/esm/exact/server/index.d.ts",
+      "import": "./dist/esm/exact/server/index.js"
     },
     "./exact/facilitator": {
-      "types": "./packages/typescript/dist/esm/exact/facilitator/index.d.ts",
-      "import": "./packages/typescript/dist/esm/exact/facilitator/index.js"
+      "types": "./dist/esm/exact/facilitator/index.d.ts",
+      "import": "./dist/esm/exact/facilitator/index.js"
     }
   },
   "files": [
-    "packages/typescript/dist/esm"
+    "dist/esm"
   ]
 }

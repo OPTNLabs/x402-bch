@@ -26,10 +26,10 @@ jobs:
       - name: Install native dependencies
         run: sudo apt-get update && sudo apt-get install -y g++ python3
       - name: Install JavaScript dependencies
-        run: npm ci
+        run: npm ci --prefix packages/typescript
       - name: Run cross-language parity
-        run: npm run parity:check
+        run: npm --prefix packages/typescript run parity:check
       - name: Run TypeScript checks
-        run: npm run check
+        run: npm --prefix packages/typescript run check
       - name: Run Rust checks
         run: cargo test --manifest-path packages/rust/Cargo.toml --locked -p x402-chain-bch --lib

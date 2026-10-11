@@ -279,5 +279,6 @@ uses `common.ts` for shared network, wallet, and provider helpers:
 Typecheck them with:
 
 ```bash
+cd packages/typescript
 npm run typecheck:examples
 ```
