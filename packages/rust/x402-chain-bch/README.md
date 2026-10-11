@@ -68,14 +68,14 @@ outputs are BCH decimal values, while blockchain.scripthash.listunspent returns
 integer satoshis.
 
 The crate test suite includes `test/fixtures/bch-exact-p2pkh.json`, a
-deterministic native-BCH P2PKH payment fixture shared with the TypeScript
-package [`@optnlabs/x402-bch`](https://www.npmjs.com/package/@optnlabs/x402-bch).
+deterministic native-BCH P2PKH payment fixture also covered by the independent
+TypeScript package [`@optnlabs/x402-bch`](https://www.npmjs.com/package/@optnlabs/x402-bch).
 It covers the serialized transaction, source output, merchant amount, payer,
 transaction ID, and fee so integrations can compare results across both SDKs.
 `test/fixtures/bch-exact-offline-vectors.json` and
 `test/fixtures/bch-exact-wallet-shape-vectors.json` are written by this crate's
-tests and checked by the TypeScript package. The tests fail if the generated
-vectors stop matching the committed copies.
+tests and checked against committed copies by the TypeScript package's parity
+tests. Neither package imports the other's source or test files.
 
 ## Related packages and pull requests
 

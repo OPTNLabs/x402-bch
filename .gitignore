@@ -1,5 +1,6 @@
 node_modules/
 dist/
+build/
 target/
 packages/rust/target/
 __pycache__/

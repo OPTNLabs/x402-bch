@@ -2494,7 +2494,7 @@ mod cross_language_conformance {
     #[test]
     fn shared_payment_requirements_fixture_has_supported_wire_shapes() {
         let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../spec/conformance/v1/payment-requirements.json"
+            "../../spec/conformance/v1/payment-requirements.json"
         ))
         .expect("valid cross-language fixture");
         assert_eq!(fixture["version"], 1);

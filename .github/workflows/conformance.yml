@@ -24,11 +24,11 @@ jobs:
         with:
           rust-src-dir: packages/rust
       - name: Install native dependencies
-        run: sudo apt-get update && sudo apt-get install -y g++ python3
+        run: sudo apt-get update && sudo apt-get install -y g++ python3 cmake make
       - name: Install JavaScript dependencies
         run: npm ci --prefix packages/typescript
       - name: Run cross-language parity
-        run: npm --prefix packages/typescript run parity:check
+        run: node tools/check-parity.mjs
       - name: Run TypeScript checks
         run: npm --prefix packages/typescript run check
       - name: Run Rust checks

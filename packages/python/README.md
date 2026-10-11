@@ -3,4 +3,8 @@
 Python implementation of the wallet-agnostic x402-BCH protocol core,
 including lossless requirements, payment-payload binding, transaction envelope
 validation, and request commitments. BCH and CashToken quantities remain
-decimal strings.
+decimal strings. The conformance fixture is local to this package.
+
+```bash
+python3 tests/run_conformance.py
+```

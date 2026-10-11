@@ -1,9 +1,9 @@
 # x402-BCH cross-language conformance
 
-The protocol contract is defined in `spec/` and deterministic fixtures in
-`spec/conformance/`. Every language implementation must consume the same
-fixtures and produce the same canonical JSON, transaction bytes, txid, and
-validation verdict.
+Each language package contains its own copy of the protocol fixture under
+`spec/conformance/v1`. Every package can build and test without importing code
+or files from another language package. The root parity tool compares those
+fixtures and runs the package-local conformance commands.
 
 | Language   | Package path                   | Status                       |
 | ---------- | ------------------------------ | ---------------------------- |
@@ -33,6 +33,6 @@ Parity rules:
    controls only.
 5. A fixture change is a protocol change and must update every language test.
 
-Run `npm --prefix packages/typescript run parity:check` for the repository-level
-fixture check. The shared `spec/` directory and `tools/check-parity.mjs` remain
-at repository root because every language package consumes them.
+Run `node tools/check-parity.mjs` from the repository root for the repository-level
+fixture and package parity check. The root `tools/check-parity.mjs` is an
+aggregate developer tool; it is not a runtime dependency of any package.

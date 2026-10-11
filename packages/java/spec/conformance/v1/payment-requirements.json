@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "native-bch",
+      "requirements": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bchtest",
+        "amount": "1000",
+        "asset": "BCH",
+        "payTo": "bchtest:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy9d3j2n3",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "native",
+          "paymentFlow": "upfront"
+        }
+      },
+      "expected": {
+        "wireAmount": "1000",
+        "assetTransferMethod": "native",
+        "paymentFlow": "upfront"
+      }
+    },
+    {
+      "name": "request-hash",
+      "requirements": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bchtest",
+        "amount": "1000",
+        "asset": "BCH",
+        "payTo": "bchtest:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy9d3j2n3",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "native",
+          "paymentFlow": "upfront",
+          "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": { "requestHashBytes": 32 }
+    }
+  ]
+}

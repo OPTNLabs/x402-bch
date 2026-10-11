@@ -11,7 +11,7 @@ import (
 func TestPaymentRequirementsFixture(t *testing.T) {
 	root, err := os.Getwd()
 	if err != nil { t.Fatal(err) }
-	data, err := os.ReadFile(filepath.Join(root, "..", "..", "spec", "conformance", "v1", "payment-requirements.json"))
+	data, err := os.ReadFile(filepath.Join(root, "spec", "conformance", "v1", "payment-requirements.json"))
 	if err != nil { t.Fatal(err) }
 	var fixture struct { Version int `json:"version"`; Cases []struct { Requirements struct { Version int `json:"x402Version"`; Scheme string `json:"scheme"`; Amount string `json:"amount"`; Extra struct { RequestHash string `json:"requestHash"` } `json:"extra"` } `json:"requirements"` } `json:"cases"` }
 	if err := json.Unmarshal(data, &fixture); err != nil { t.Fatal(err) }

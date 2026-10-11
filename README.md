@@ -53,6 +53,17 @@ Chipnet payments from these branches:
 - TypeScript exact NFT payment: https://chipnet.chaingraph.cash/tx/7c46af9c142e092a82f1cfafe87212bbd9d4b15b9b6a52f10e6bf1b28331baef
 - Rust exact native payment: https://chipnet.chaingraph.cash/tx/57b434f19d901960802ef93f601358ed7d5996b73f94e6f689c2be8b18943c09
 
+## Independent language packages
+
+Each language lives in its own package directory with its own build metadata,
+tests, and local conformance fixture. Packages do not import source files or
+test fixtures from one another. The repository-level parity command compares
+those local fixtures and runs the package checks together:
+
+```bash
+node tools/check-parity.mjs
+```
+
 ## BCH transaction model
 
 Unlike account-based networks, BCH does not have a balance, nonce, or

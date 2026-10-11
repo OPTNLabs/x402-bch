@@ -28,7 +28,7 @@ The TypeScript package is the npm workspace for these commands. From the
 repository root, the equivalent cross-language parity command is:
 
 ```bash
-npm --prefix packages/typescript run parity:check
+node tools/check-parity.mjs
 ```
 
 The package uses Libauth for BCH primitives. Do not copy low-level BCH
@@ -50,12 +50,17 @@ packages/typescript/src/
     facilitator/            verification, broadcast, and settlement policy
 packages/typescript/examples/ focused client, server, wallet, and provider examples
 packages/typescript/test/     deterministic fixtures and unit tests
+packages/typescript/spec/     TypeScript-local conformance fixtures
 packages/rust/                Cargo workspace and Rust SDK
+packages/rust/spec/           Rust-local conformance fixtures
 packages/go/                  Go protocol-core package
+packages/go/spec/             Go-local conformance fixtures
 packages/java/                Java protocol-core package
+packages/java/spec/           Java-local conformance fixtures
 packages/python/              Python protocol-core package
+packages/python/spec/         Python-local conformance fixtures
 packages/cpp/                 C++ protocol-core package
-spec/                         shared protocol and conformance fixtures
+packages/cpp/spec/            C++-local conformance fixtures
 tools/check-parity.mjs        repository-level cross-language parity runner
 ```
 

@@ -5,3 +5,10 @@ requirements and payment payloads, binds a submitted transaction envelope to
 the accepted request, and computes request commitments. BCH signing and
 provider transport are explicit adapter boundaries, matching the TypeScript
 and Rust packages.
+
+The package is standalone and keeps its conformance fixture under
+`spec/conformance/v1`.
+
+```bash
+go test ./...
+```

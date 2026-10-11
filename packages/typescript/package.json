@@ -7,13 +7,13 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
+    "test:conformance": "vitest run test/protocol.test.ts",
     "test:chipnet": "node scripts/chipnet-smoke.mjs",
     "test:watch": "vitest",
-    "parity:check": "node ../../tools/check-parity.mjs",
     "check": "npm test && npm run typecheck && npm run typecheck:examples && npm run lint:check && npm run format:check && npm run build",
     "release:check": "npm run check && node scripts/verify-package.mjs",
     "prepublishOnly": "npm run release:check",
-    "format:check": "prettier -c ../../.prettierrc --ignore-path ../../.prettierignore --check \"**/*.{ts,js,cjs,json,md}\"",
+    "format:check": "prettier --config .prettierrc --ignore-path .prettierignore --check \"**/*.{ts,js,cjs,json,md}\"",
     "lint:check": "eslint --config eslint.config.js src test --ext .ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:examples": "tsc -p examples/tsconfig.json"

@@ -2,5 +2,3 @@
 dist/
 node_modules/
 target/
-
-packages/rust/

@@ -5,7 +5,7 @@ import re
 
 def test_payment_requirements_fixture():
     fixture = json.loads(
-        (Path(__file__).parents[3] / "spec/conformance/v1/payment-requirements.json").read_text()
+        (Path(__file__).parents[1] / "spec/conformance/v1/payment-requirements.json").read_text()
     )
     assert fixture["version"] == 1
     assert fixture["cases"]
