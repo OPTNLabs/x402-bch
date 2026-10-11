@@ -1,15 +1,17 @@
 import type { PaymentPayload, PaymentRequirements, SchemeNetworkClient } from '@x402/core/types';
 import {
   DEFAULT_BCH_POLICY,
+  BCH_ASSET,
   bytesToBase64,
   createBchPaymentTarget,
-  dustMinimum,
   decodeBchAddressScript,
+  getRequestHashCommitment,
   hash160,
   isSupportedMerchantScript,
   p2pkhScript,
   pushData,
   parseTransaction,
+  requestHashScript,
   serializeTransaction,
   signingHash,
   verifyPayment,
@@ -58,26 +60,19 @@ export class ExactBchScheme implements SchemeNetworkClient {
   ): Promise<Pick<PaymentPayload, 'x402Version' | 'payload'>> {
     if (x402Version !== 2) throw new Error('BCH exact supports x402 version 2 only');
     const requirements = validateRequirements(paymentRequirements, this.provider.network);
-    const merchant = decodeBchAddressScript(requirements.payTo, requirements.network);
+    const request = toBchTransactionRequest(requirements);
+    if (isBchWallet(this.signerOrWallet)) {
+      return this.createWalletPaymentPayload(x402Version, requirements, request);
+    }
     const target = createBchPaymentTarget(
-      requirements.asset,
-      requirements.amount,
+      request.token?.category ?? BCH_ASSET,
+      (request.token?.amount ?? request.value).toString(),
       requirements.extra,
       this.policy,
-      merchant.scriptPubKey,
     );
-    const request = toBchTransactionRequest(requirements);
-    const walletRequest =
-      request.token !== undefined &&
-      requirements.extra.assetTransferMethod === 'cashtoken' &&
-      requirements.extra.value === undefined
-        ? { ...request, value: target.merchantValue }
-        : request;
+    const merchant = decodeBchAddressScript(request.recipient.address, requirements.network);
     if (target.kind === 'cashtoken' && !merchant.tokenSupport) {
       throw new Error('CashToken payments require a token-support merchant CashAddr');
-    }
-    if (isBchWallet(this.signerOrWallet)) {
-      return this.createWalletPaymentPayload(x402Version, requirements, walletRequest, target);
     }
 
     const signer = this.signerOrWallet;
@@ -111,53 +106,42 @@ export class ExactBchScheme implements SchemeNetworkClient {
       selected.push(utxo);
       selectedValue += utxo.value;
       selectedTokenAmount += utxo.token?.amount ?? 0n;
-      if (this.selectionFunded(target, selected, selectedValue, selectedTokenAmount)) break;
+      const estimatedSize = 10n + BigInt(selected.length * 180 + 68);
+      if (
+        selectedTokenAmount >= (target.kind === 'cashtoken' ? target.amount : 0n) &&
+        selectedValue >= target.merchantValue + estimatedSize * this.policy.feeRateSatPerByte
+      ) {
+        break;
+      }
     }
-    let nextPureBch = 0;
     if (target.kind === 'cashtoken') {
-      while (nextPureBch < pureBchUtxos.length) {
-        if (this.selectionFunded(target, selected, selectedValue, selectedTokenAmount)) break;
-        const utxo = pureBchUtxos[nextPureBch];
-        nextPureBch += 1;
+      for (const utxo of pureBchUtxos) {
+        if (
+          selectedTokenAmount >= target.amount &&
+          selectedValue >= target.merchantValue + 10n * this.policy.feeRateSatPerByte
+        ) {
+          break;
+        }
         selected.push(utxo);
         selectedValue += utxo.value;
       }
     }
 
     if (
-      selected.length === 0 ||
       (target.kind === 'cashtoken' && selectedTokenAmount < target.amount) ||
       selectedValue < target.merchantValue
     ) {
       throw new Error('insufficient BCH/CashToken UTXOs for payment and fee');
     }
 
-    let transaction: BchTransaction;
-    for (;;) {
-      try {
-        transaction = await buildAndSignTransaction(
-          selected,
-          merchant.scriptPubKey,
-          target,
-          signer,
-          this.policy,
-        );
-        break;
-      } catch (error) {
-        if (
-          target.kind === 'cashtoken' &&
-          fundingShortfall(error) &&
-          nextPureBch < pureBchUtxos.length
-        ) {
-          const utxo = pureBchUtxos[nextPureBch];
-          nextPureBch += 1;
-          selected.push(utxo);
-          selectedValue += utxo.value;
-          continue;
-        }
-        throw error;
-      }
-    }
+    const transaction = await buildAndSignTransaction(
+      selected,
+      merchant.scriptPubKey,
+      target,
+      signer,
+      this.policy,
+      request.requestHash,
+    );
     verifyPayment(
       transaction,
       selected.map((utxo) => ({
@@ -170,40 +154,27 @@ export class ExactBchScheme implements SchemeNetworkClient {
       target,
       this.policy,
     );
+    assertRequestHashCommitment(transaction, requirements.extra.requestHash);
     return {
       x402Version,
       payload: { transaction: bytesToBase64(serializeTransaction(transaction)) },
     };
   }
 
-  private selectionFunded(
-    target: BchPaymentTarget,
-    selected: BchUtxo[],
-    selectedValue: bigint,
-    selectedTokenAmount: bigint,
-  ): boolean {
-    const requiredAmount = target.kind === 'cashtoken' ? target.amount : 0n;
-    if (selectedTokenAmount < requiredAmount) return false;
-    const estimatedSize = 10n + BigInt(selected.length * 180 + 68);
-    const remainder =
-      target.kind === 'cashtoken' && selectedTokenAmount > target.amount
-        ? selectedTokenAmount - target.amount
-        : 0n;
-    const dust = remainder > 0n ? this.policy.cashTokenDustThreshold : 0n;
-    return (
-      selectedValue >= target.merchantValue + estimatedSize * this.policy.feeRateSatPerByte + dust
-    );
-  }
-
   private async createWalletPaymentPayload(
     x402Version: number,
     requirements: ExactBchRequirements,
     request: ReturnType<typeof toBchTransactionRequest>,
-    target: BchPaymentTarget,
   ): Promise<Pick<PaymentPayload, 'x402Version' | 'payload'>> {
     const raw = await (this.signerOrWallet as BchWallet).createPayment(request);
     const transaction = parseTransaction(raw);
     const merchant = decodeBchAddressScript(request.recipient.address, requirements.network);
+    const target = createBchPaymentTarget(
+      requirements.asset,
+      requirements.amount,
+      requirements.extra,
+      this.policy,
+    );
     const sources = await Promise.all(
       transaction.inputs.map((input) => this.provider.getSourceOutput(input.outpoint)),
     );
@@ -215,6 +186,7 @@ export class ExactBchScheme implements SchemeNetworkClient {
       target,
       this.policy,
     );
+    assertRequestHashCommitment(transaction, requirements.extra.requestHash);
     return { x402Version, payload: { transaction: bytesToBase64(raw) } };
   }
 }
@@ -222,17 +194,6 @@ export class ExactBchScheme implements SchemeNetworkClient {
 /** Narrow the client signer boundary to an application-owned wallet adapter. */
 function isBchWallet(value: BchSigner | BchWallet): value is BchWallet {
   return 'createPayment' in value;
-}
-
-function fundingShortfall(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : '';
-  return (
-    message === 'selected BCH UTXOs do not cover fee' ||
-    message === 'selected BCH UTXOs do not cover token change dust' ||
-    message === 'CashToken change requires a dust-valued BCH change output' ||
-    message === 'BCH fee/change calculation did not converge' ||
-    message === 'transaction output is dust'
-  );
 }
 
 /**
@@ -252,6 +213,7 @@ export async function buildAndSignTransaction(
   merchantAmountOrTarget: bigint | BchPaymentTarget,
   signer: BchSigner,
   policy: BchPolicy = DEFAULT_BCH_POLICY,
+  requestHash?: string,
 ): Promise<BchTransaction> {
   const target: BchPaymentTarget =
     typeof merchantAmountOrTarget === 'bigint'
@@ -263,17 +225,9 @@ export async function buildAndSignTransaction(
   if (!isSupportedMerchantScript(merchantScript)) {
     throw new Error('BCH exact requires P2PKH, P2SH20, or P2SH32 merchant output');
   }
-  const merchantToken =
-    target.kind === 'cashtoken'
-      ? {
-          category: target.category,
-          amount: target.amount,
-          ...(target.nft === undefined ? {} : { nft: target.nft }),
-        }
-      : undefined;
-  if (target.merchantValue < dustMinimum(merchantScript, merchantToken, policy)) {
-    throw new Error('merchant output is dust');
-  }
+  const merchantDustThreshold =
+    target.kind === 'cashtoken' ? policy.cashTokenDustThreshold : policy.dustThreshold;
+  if (target.merchantValue < merchantDustThreshold) throw new Error('merchant output is dust');
   const inputValue = selected.reduce(
     (total, utxo) => addU64(total, utxo.value, 'BCH input value'),
     0n,
@@ -291,11 +245,8 @@ export async function buildAndSignTransaction(
   let change = inputValue - target.merchantValue;
   for (let attempt = 0; attempt < 32; attempt += 1) {
     const tokenChange = target.kind === 'cashtoken' ? inputTokenAmount - target.amount : 0n;
-    const changeToken =
-      tokenChange > 0n && target.kind === 'cashtoken'
-        ? { category: target.category, amount: tokenChange }
-        : undefined;
-    const changeDustThreshold = dustMinimum(changeScript, changeToken, policy);
+    const changeDustThreshold =
+      tokenChange > 0n ? policy.cashTokenDustThreshold : policy.dustThreshold;
     const includeChange = change >= changeDustThreshold || tokenChange > 0n;
     if (includeChange && change < changeDustThreshold) {
       throw new Error('CashToken change requires a dust-valued BCH change output');
@@ -313,6 +264,7 @@ export async function buildAndSignTransaction(
               : {}),
           }
         : undefined,
+      requestHash,
     );
     await signTransaction(transaction, selected, signer);
     const requiredFee = BigInt(serializeTransaction(transaction).length) * policy.feeRateSatPerByte;
@@ -379,6 +331,7 @@ function makeUnsignedTransaction(
   merchantScript: Uint8Array,
   target: BchPaymentTarget,
   change?: BchTxOutput,
+  requestHash?: string,
 ): BchTransaction {
   const inputs: BchTxInput[] = selected.map((utxo) => ({
     outpoint: { txid: utxo.txid, vout: utxo.vout },
@@ -401,7 +354,22 @@ function makeUnsignedTransaction(
     },
   ];
   if (change) outputs.push(change);
+  if (requestHash !== undefined) {
+    outputs.push({ value: 0n, scriptPubKey: requestHashScript(requestHash) });
+  }
   return { version: 2, inputs, outputs, lockTime: 0 };
+}
+
+function assertRequestHashCommitment(
+  transaction: BchTransaction,
+  requestHash: string | undefined,
+): void {
+  if (
+    requestHash !== undefined &&
+    getRequestHashCommitment(transaction) !== requestHash.toLowerCase()
+  ) {
+    throw new Error('signed BCH transaction does not commit to the requested resource hash');
+  }
 }
 
 /** Validate x402 BCH requirements before wallet or signer work begins. */

@@ -9,6 +9,7 @@
     "test": "vitest run",
     "test:chipnet": "node scripts/chipnet-smoke.mjs",
     "test:watch": "vitest",
+    "parity:check": "node tools/check-parity.mjs",
     "check": "npm test && npm run typecheck && npm run typecheck:examples && npm run lint:check && npm run format:check && npm run build",
     "release:check": "npm run check && node scripts/verify-package.mjs",
     "prepublishOnly": "npm run release:check",

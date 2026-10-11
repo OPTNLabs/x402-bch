@@ -4,6 +4,11 @@ These examples are intentionally framework-neutral. They show the boundary
 between x402 and the BCH wallet/provider/application that owns UTXOs, change,
 signing, and broadcast.
 
+See [`../docs/integration.md`](../docs/integration.md) for the end-to-end
+client/server flow and an explanation of why a BCH deployment may embed the
+facilitator role in the merchant while still needing provider-backed
+verification, broadcast, and settlement tracking.
+
 ## Check the examples
 
 From the repository root:

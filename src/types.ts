@@ -34,6 +34,8 @@ export type BchTransactionRequest = {
   /** BCH satoshis assigned to the merchant output, independent of token amount. */
   value: bigint;
   token?: CashTokenRequest;
+  /** Optional 32-byte request commitment placed in a zero-value OP_RETURN output. */
+  requestHash?: string;
 };
 
 export type BchWalletAddress = {
@@ -95,6 +97,7 @@ export function toBchTransactionRequest(
     network: toBchTransactionNetwork(requirements.network),
     recipient: { address: requirements.payTo },
     value,
+    ...(typeof extra.requestHash === 'string' ? { requestHash: extra.requestHash } : {}),
     ...(isCashToken
       ? {
           token: {
@@ -112,6 +115,8 @@ export type BchNativeExtra = {
   assetTransferMethod: 'native';
   /** x402 flow supported by BCH exact payments. */
   paymentFlow: 'upfront';
+  /** SHA-256 commitment to the canonical paid request, when required. */
+  requestHash?: string;
 };
 
 export type BchCashTokenExtra = {
@@ -119,6 +124,8 @@ export type BchCashTokenExtra = {
   assetTransferMethod: 'cashtoken';
   /** x402 flow supported by BCH exact payments. */
   paymentFlow: 'upfront';
+  /** SHA-256 commitment to the canonical paid request, when required. */
+  requestHash?: string;
   /** BCH value assigned to the merchant's token-bearing output. */
   value?: string;
   token?: {
@@ -198,6 +205,8 @@ export interface BchProvider {
   broadcast(rawTransaction: Uint8Array): Promise<string>;
   /** Return mempool, confirmation, or not-found state for a transaction. */
   getTransactionStatus(txid: string): Promise<BchTransactionStatus>;
+  /** Retrieve the canonical serialized transaction observed by the provider. */
+  getTransaction?(txid: string): Promise<Uint8Array | undefined>;
   /** Return the current chain tip height. */
   getTipHeight(): Promise<number>;
   /** Check whether the provider knows a double-spend proof for a transaction. */

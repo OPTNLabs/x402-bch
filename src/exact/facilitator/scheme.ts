@@ -8,8 +8,10 @@ import type {
 import {
   DEFAULT_BCH_POLICY,
   base64ToBytes,
+  bytesToBase64,
   createBchPaymentTarget,
   decodeBchAddressScript,
+  getRequestHashCommitment,
   parseTransaction,
   transactionId,
   verifyPayment,
@@ -120,6 +122,36 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
       };
     }
 
+    // A retry may arrive after the local settlement store was lost. If the
+    // provider has observed this txid, validate the provider's transaction as
+    // the source of truth and do not require its inputs to remain unspent.
+    const observed = await this.provider.getTransaction?.(candidateTxid);
+    if (observed !== undefined) {
+      try {
+        const observedTransaction = parseTransaction(observed);
+        if (transactionId(observedTransaction).toLowerCase() !== candidateTxid.toLowerCase()) {
+          throw new Error('provider returned a transaction with a mismatched txid');
+        }
+        const verified = await this.verifyPayment(
+          { ...payload, payload: { ...payload.payload, transaction: bytesToBase64(observed) } },
+          requirements,
+          false,
+        );
+        const status = await this.provider.getTransactionStatus(candidateTxid);
+        if (await this.acceptSettlement(candidateTxid, status)) {
+          return {
+            success: true,
+            transaction: candidateTxid,
+            network: this.provider.network,
+            payer: verified.payer,
+          };
+        }
+      } catch {
+        // Fall through to the normal path so malformed provider data cannot
+        // turn into an accepted payment.
+      }
+    }
+
     const binding = settlementBinding(payload, requirements);
     const claim = await this.settlementStore.claim(candidateTxid, binding);
     if (claim === 'conflict') {
@@ -136,7 +168,7 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
       if (!(await this.acceptSettlement(candidateTxid, existingStatus))) {
         return {
           success: false,
-          errorReason: `settlement_pending:${candidateTxid}`,
+          errorReason: 'settlement_pending',
           transaction: candidateTxid,
           network: this.provider.network,
         };
@@ -167,39 +199,27 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     try {
       txid = await this.provider.broadcast(rawTransaction);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      let status: Awaited<ReturnType<BchProvider['getTransactionStatus']>>;
-      try {
-        status = await this.provider.getTransactionStatus(verified.txid);
-      } catch {
-        return {
-          success: false,
-          errorReason: `broadcast outcome unknown:${message}`,
-          transaction: verified.txid,
-          network: this.provider.network,
-          payer: verified.payer,
-        };
-      }
-      if (status.kind === 'mempool' || status.kind === 'confirmed') {
-        txid = verified.txid;
-      } else if (status.kind === 'notFound') {
+      const status = await this.provider.getTransactionStatus(verified.txid);
+      if (status.kind === 'notFound') {
         await this.settlementStore.release(verified.txid);
         return {
           success: false,
-          errorReason: `broadcast_failed:${message}`,
-          transaction: verified.txid,
-          network: this.provider.network,
-          payer: verified.payer,
-        };
-      } else {
-        return {
-          success: false,
-          errorReason: `broadcast outcome unknown:${message}`,
+          errorReason: `broadcast_failed:${error instanceof Error ? error.message : String(error)}`,
           transaction: verified.txid,
           network: this.provider.network,
           payer: verified.payer,
         };
       }
+      if (status.kind === 'unknown') {
+        return {
+          success: false,
+          errorReason: 'settlement_pending',
+          transaction: verified.txid,
+          network: this.provider.network,
+          payer: verified.payer,
+        };
+      }
+      txid = verified.txid;
     }
     if (txid.toLowerCase() !== verified.txid.toLowerCase()) {
       await this.settlementStore.release(verified.txid);
@@ -217,7 +237,7 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     if (!accepted) {
       return {
         success: false,
-        errorReason: `settlement_pending:${txid}`,
+        errorReason: 'settlement_pending',
         transaction: txid,
         network: this.provider.network,
         payer: verified.payer,
@@ -245,14 +265,15 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     if (typeof body.transaction !== 'string') throw new Error('missing signed BCH transaction');
     const raw = base64ToBytes(body.transaction);
     const transaction = parseTransaction(raw);
+    const expectedRequestHash = (requirements.extra as { requestHash?: unknown }).requestHash;
+    if (
+      typeof expectedRequestHash === 'string' &&
+      getRequestHashCommitment(transaction) !== expectedRequestHash.toLowerCase()
+    ) {
+      throw new Error('payment transaction does not commit to the requested resource hash');
+    }
     const merchant = decodeBchAddressScript(typed.payTo, typed.network);
-    const target = createBchPaymentTarget(
-      typed.asset,
-      typed.amount,
-      typed.extra,
-      this.policy,
-      merchant.scriptPubKey,
-    );
+    const target = createBchPaymentTarget(typed.asset, typed.amount, typed.extra, this.policy);
     if (target.kind === 'cashtoken' && !merchant.tokenSupport) {
       throw new Error('CashToken payments require a token-support merchant CashAddr');
     }
