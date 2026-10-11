@@ -144,6 +144,60 @@ describe('BCH x402 v2 exact scheme', () => {
     const settled = await facilitator.settle(payload, REQUIREMENTS);
 
     expect(settled).toMatchObject({ success: false });
-    expect(settled.errorReason).toMatch(/^settlement_pending:/);
+    expect(settled.errorReason).toBe('settlement_pending');
+  });
+
+  it('recognizes an observed chain transaction after local settlement state is lost', async () => {
+    const provider = makeProvider();
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const client = new ExactBchScheme(signer, provider);
+    const created = await client.createPaymentPayload(2, REQUIREMENTS);
+    const payload = { ...created, accepted: REQUIREMENTS };
+    const raw = Buffer.from(payload.payload.transaction, 'base64');
+
+    vi.mocked(provider.getOutpointStatus).mockResolvedValue('spent');
+    provider.getTransaction = vi.fn(async () => Uint8Array.from(raw));
+    vi.mocked(provider.getTransactionStatus).mockResolvedValue({ kind: 'confirmed', height: 100 });
+
+    const recovered = await new ExactBchFacilitatorScheme(provider).settle(payload, REQUIREMENTS);
+
+    expect(recovered).toMatchObject({
+      success: true,
+      transaction: transactionId(parseTransaction(raw)),
+      payer: signer.getAddress(NETWORK),
+    });
+    expect(provider.broadcast).not.toHaveBeenCalled();
+  });
+
+  it('commits the advertised request hash inside the signed BCH transaction', async () => {
+    const provider = makeProvider();
+    const signer = createSecp256k1BchSignerFromMnemonic(BIP39_VECTOR_MNEMONIC);
+    const requestHash = 'ab'.repeat(32);
+    const requirements = {
+      ...REQUIREMENTS,
+      extra: { ...REQUIREMENTS.extra, requestHash },
+    };
+    const payload = {
+      ...(await new ExactBchScheme(signer, provider).createPaymentPayload(2, requirements)),
+      accepted: requirements,
+    };
+    const facilitator = new ExactBchFacilitatorScheme(provider);
+
+    expect(await facilitator.verify(payload, requirements)).toMatchObject({ isValid: true });
+    const tamperedRequirements = {
+      ...requirements,
+      extra: { ...requirements.extra, requestHash: 'cd'.repeat(32) },
+    };
+    expect(await facilitator.verify(payload, tamperedRequirements)).toMatchObject({
+      isValid: false,
+    });
+    const transaction = parseTransaction(Buffer.from(payload.payload.transaction, 'base64'));
+    expect(
+      transaction.outputs.some((output) =>
+        Buffer.from(output.scriptPubKey).equals(
+          Buffer.from([0x6a, 0x20, ...Buffer.from(requestHash, 'hex')]),
+        ),
+      ),
+    ).toBe(true);
   });
 });
