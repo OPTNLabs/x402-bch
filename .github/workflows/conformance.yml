@@ -1,0 +1,33 @@
+name: Cross-language conformance
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install native dependencies
+        run: sudo apt-get update && sudo apt-get install -y g++ python3
+      - name: Install JavaScript dependencies
+        run: npm ci
+      - name: Run cross-language parity
+        run: npm run parity:check
+      - name: Run TypeScript checks
+        run: npm run check
+      - name: Run Rust checks
+        run: cargo test --locked -p x402-chain-bch --lib
