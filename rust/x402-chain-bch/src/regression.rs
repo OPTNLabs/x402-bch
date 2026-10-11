@@ -2488,3 +2488,34 @@ fn node_check_runs_script_inputs_at_verify() {
     assert!(verdict.is_ok(), "{verdict:?}");
     assert_eq!(provider.mempool_tests(), 0);
 }
+#[cfg(test)]
+mod cross_language_conformance {
+    #[test]
+    fn shared_payment_requirements_fixture_has_supported_wire_shapes() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../spec/conformance/v1/payment-requirements.json"
+        ))
+        .expect("valid cross-language fixture");
+        assert_eq!(fixture["version"], 1);
+        let cases = fixture["cases"].as_array().expect("fixture cases");
+        assert!(!cases.is_empty());
+        for case in cases {
+            assert_eq!(case["requirements"]["x402Version"], 2);
+            assert_eq!(case["requirements"]["scheme"], "exact");
+            assert!(
+                case["requirements"]["amount"]
+                    .as_str()
+                    .unwrap()
+                    .bytes()
+                    .all(|b| b.is_ascii_digit())
+            );
+            if let Some(hash) = case["requirements"]["extra"]["requestHash"].as_str() {
+                assert_eq!(hash.len(), 64);
+                assert!(
+                    hash.bytes()
+                        .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+                );
+            }
+        }
+    }
+}
