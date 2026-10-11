@@ -79,6 +79,13 @@ pub trait BchChainProvider: ChainProviderOps + Send + Sync {
 
     async fn broadcast(&self, transaction: &[u8]) -> Result<TxId, BchProviderError>;
 
+    /// Retrieve the canonical serialized transaction observed by the provider.
+    /// This is used for chain-authoritative settlement recovery after local
+    /// facilitator state has been lost.
+    async fn transaction(&self, _txid: &TxId) -> Result<Option<Vec<u8>>, BchProviderError> {
+        Ok(None)
+    }
+
     async fn transaction_status(
         &self,
         txid: &TxId,
@@ -120,6 +127,10 @@ impl<T: BchChainProvider> BchChainProvider for Arc<T> {
 
     async fn broadcast(&self, transaction: &[u8]) -> Result<TxId, BchProviderError> {
         (**self).broadcast(transaction).await
+    }
+
+    async fn transaction(&self, txid: &TxId) -> Result<Option<Vec<u8>>, BchProviderError> {
+        (**self).transaction(txid).await
     }
 
     async fn transaction_status(
@@ -566,6 +577,30 @@ impl<T: FulcrumTransport> BchChainProvider for FulcrumProvider<T> {
             })?
             .to_string();
         TxId::from_hex(&txid).map_err(Into::into)
+    }
+
+    async fn transaction(&self, txid: &TxId) -> Result<Option<Vec<u8>>, BchProviderError> {
+        match self
+            .transport
+            .request("blockchain.transaction.get", json!([txid.to_string()]))
+            .await
+        {
+            Ok(value) => {
+                let raw = value.as_str().ok_or_else(|| {
+                    BchProviderError::InvalidResponse(
+                        "transaction.get did not return raw hexadecimal data".to_string(),
+                    )
+                })?;
+                let bytes = hex::decode(raw).map_err(|error| {
+                    BchProviderError::InvalidResponse(format!(
+                        "transaction.get returned invalid hex: {error}"
+                    ))
+                })?;
+                Ok(Some(bytes))
+            }
+            Err(error) if is_missing_transaction(&error) => Ok(None),
+            Err(error) => Err(error),
+        }
     }
 
     async fn transaction_status(

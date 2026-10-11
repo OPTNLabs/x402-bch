@@ -146,6 +146,45 @@ where
         let candidate_transaction = BchTransaction::parse(&raw_transaction)
             .map_err(|error| X402SchemeFacilitatorError::OnchainFailure(error.to_string()))?;
         let expected_txid = candidate_transaction.txid();
+        // A retry may arrive after local settlement state was lost. Prefer the
+        // provider's canonical transaction when it has observed this txid;
+        // confirmed inputs are expected to be spent and must not be rejected
+        // merely because the facilitator restarted.
+        if let Some(observed) = self
+            .provider
+            .transaction(&expected_txid)
+            .await
+            .map_err(|error| X402SchemeFacilitatorError::OnchainFailure(error.to_string()))?
+        {
+            let observed_transaction = BchTransaction::parse(&observed)
+                .map_err(|error| X402SchemeFacilitatorError::OnchainFailure(error.to_string()))?;
+            if observed_transaction.txid() != expected_txid {
+                return Err(X402SchemeFacilitatorError::OnchainFailure(
+                    "provider returned a transaction with a mismatched txid".to_string(),
+                ));
+            }
+            let verified = verify_transfer_with_transaction(
+                &self.provider,
+                &request,
+                self.policy,
+                observed_transaction,
+                false,
+            )
+            .await?;
+            let status = self
+                .provider
+                .transaction_status(&expected_txid)
+                .await
+                .map_err(|error| X402SchemeFacilitatorError::OnchainFailure(error.to_string()))?;
+            if self.settlement_accepted(&expected_txid, status).await? {
+                return Ok(v2::SettleResponse::Success {
+                    payer: verified.payment.payer.to_string(),
+                    transaction: expected_txid.to_string(),
+                    network: self.provider.chain_id().to_string(),
+                }
+                .into());
+            }
+        }
         let binding = settlement_binding(&request)
             .map_err(|error| X402SchemeFacilitatorError::OnchainFailure(error.to_string()))?;
         match self
@@ -167,11 +206,7 @@ where
                         X402SchemeFacilitatorError::OnchainFailure(error.to_string())
                     })?;
                 if !self.settlement_accepted(&expected_txid, status).await? {
-                    return Ok(v2::SettleResponse::Error {
-                        reason: format!("settlement_pending:{}", expected_txid),
-                        network: self.provider.chain_id().to_string(),
-                    }
-                    .into());
+                    return Ok(pending_response(&expected_txid, self.provider.chain_id()));
                 }
                 let verified =
                     verify_transfer_with_spent(&self.provider, &request, self.policy, false)
@@ -248,11 +283,7 @@ where
             }
             .into());
         }
-        Ok(v2::SettleResponse::Error {
-            reason: format!("settlement_pending:{}", txid),
-            network: self.provider.chain_id().to_string(),
-        }
-        .into())
+        Ok(pending_response(&txid, self.provider.chain_id()))
     }
 
     async fn supported(&self) -> Result<proto::SupportedResponse, X402SchemeFacilitatorError> {
@@ -436,6 +467,58 @@ where
         .map_err(|error| proto::PaymentVerificationError::InvalidFormat(error.to_string()))?;
     let transaction = BchTransaction::parse(&raw_transaction)
         .map_err(|error| proto::PaymentVerificationError::InvalidFormat(error.to_string()))?;
+    verify_transfer_with_transaction(provider, request, policy, transaction, require_unspent).await
+}
+
+async fn verify_transfer_with_transaction<P>(
+    provider: &P,
+    request: &VerifyRequest,
+    policy: BchPolicy,
+    transaction: BchTransaction,
+    require_unspent: bool,
+) -> Result<VerifiedBchPayment, proto::PaymentVerificationError>
+where
+    P: BchChainProvider + Send + Sync,
+{
+    let requirements = &request.payment_requirements;
+    if &request.payment_payload.accepted != requirements {
+        return Err(proto::PaymentVerificationError::AcceptedRequirementsMismatch);
+    }
+    if requirements.scheme.to_string() != "exact" {
+        return Err(proto::PaymentVerificationError::UnsupportedScheme);
+    }
+    if requirements.network != provider.chain_id() {
+        return Err(proto::PaymentVerificationError::UnsupportedChain);
+    }
+    if requirements.extra.payment_flow != "upfront"
+        || !((requirements.asset == "BCH" && requirements.extra.asset_transfer_method == "native")
+            || (requirements.asset != "BCH"
+                && requirements.extra.asset_transfer_method == "cashtoken"))
+    {
+        return Err(proto::PaymentVerificationError::InvalidFormat(
+            "BCH exact requires native or CashToken upfront payment flow".to_string(),
+        ));
+    }
+    let network = crate::BchChainReference::try_from(requirements.network.clone())
+        .map_err(|_| proto::PaymentVerificationError::UnsupportedChain)?;
+    let pay_to = CashAddr::decode_script(&requirements.pay_to, network)
+        .map_err(|error| proto::PaymentVerificationError::InvalidFormat(error.to_string()))?;
+    let merchant_script = pay_to.locking_script();
+    let target = payment_target_with_nft(
+        &requirements.asset,
+        &requirements.amount,
+        &requirements.extra.asset_transfer_method,
+        requirements.extra.token_output_value.as_deref(),
+        requested_nft(
+            &requirements.extra,
+            &requirements.asset,
+            &requirements.amount,
+        )
+        .map_err(|error| proto::PaymentVerificationError::InvalidFormat(error.to_string()))?,
+        &merchant_script,
+        policy,
+    )
+    .map_err(|error| proto::PaymentVerificationError::InvalidFormat(error.to_string()))?;
     let mut source_outputs = Vec::with_capacity(transaction.inputs.len());
     for input in &transaction.inputs {
         let source_output = provider
@@ -464,13 +547,14 @@ where
         policy,
     )
     .map_err(|error| proto::PaymentVerificationError::TransactionSimulation(error.to_string()))?;
-    // There is no script VM here. A configured node runs the scripts of
-    // non-P2PKH inputs now; otherwise the network runs them at broadcast.
+    // A configured node runs the scripts of non-P2PKH inputs now; otherwise
+    // the network runs them at broadcast. The Rust SDK does not yet embed a
+    // BCH VM, so callers should require node-backed validation for contracts.
     if require_unspent
         && source_outputs
             .iter()
             .any(|source| !is_p2pkh_script(&source.script_pubkey))
-        && let Some(Err(reason)) = provider.test_mempool_accept(&raw_transaction).await
+        && let Some(Err(reason)) = provider.test_mempool_accept(&transaction.serialize()).await
     {
         return Err(proto::PaymentVerificationError::TransactionSimulation(
             format!("BCH node rejected the transaction: {reason}"),
@@ -480,6 +564,20 @@ where
         transaction,
         payment,
     })
+}
+
+fn pending_response(
+    txid: &crate::transaction::TxId,
+    network: impl ToString,
+) -> proto::SettleResponse {
+    // x402-types 2.0.2's typed error variant cannot carry `transaction`, so
+    // construct the wire response explicitly to preserve x402 retry data.
+    proto::SettleResponse(serde_json::json!({
+        "success": false,
+        "errorReason": "settlement_pending",
+        "transaction": txid.to_string(),
+        "network": network.to_string(),
+    }))
 }
 
 fn provider_error(error: BchProviderError) -> proto::PaymentVerificationError {
