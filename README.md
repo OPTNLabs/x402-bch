@@ -146,7 +146,7 @@ outputs are BCH decimal values, while blockchain.scripthash.listunspent returns
 integer satoshis.
 
 The package test suite includes deterministic local fixtures such as
-`test/fixtures/bch-exact-p2pkh.json`. They cover the serialized transaction,
+`packages/typescript/test/fixtures/bch-exact-p2pkh.json`. They cover the serialized transaction,
 source output, merchant value, payer, transaction ID, and fee without requiring
 another repository or external service.
 
@@ -252,7 +252,7 @@ For a single end-to-end integration guide, including client/server HTTP
 boundaries and the BCH covenant/facilitator distinction, see
 [`docs/integration.md`](docs/integration.md).
 
-The `examples/` directory keeps each integration concern in a separate file and
+The `packages/typescript/examples/` directory keeps each integration concern in a separate file and
 uses `common.ts` for shared network, wallet, and provider helpers:
 
 | Example                                        | Covers                                                   |

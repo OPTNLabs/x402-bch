@@ -14,6 +14,7 @@ pub use server::BchPaymentRequirements;
 pub use types::{
     BchExtra, BchNftRequest, BchRecipient, BchTokenRequest, BchTransactionNetwork,
     BchTransactionRequest, ExactBchPayload, ExactScheme, PaymentPayload, PaymentRequirements,
+    request_hash, validate_payment_payload, validate_requirements,
 };
 
 use x402_types::scheme::X402SchemeId;

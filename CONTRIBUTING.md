@@ -30,7 +30,7 @@ Libauth primitive is available.
 ## Repository structure
 
 ```text
-src/
+packages/typescript/src/
   crypto.ts                 BCH parsing, serialization, scripts, and validation
   provider.ts               Fulcrum/provider boundary
   signer.ts                 signer and HD derivation helpers
@@ -40,8 +40,13 @@ src/
     client/                 transaction creation and wallet integration
     server/                 BCH pricing and payment requirements
     facilitator/            verification, broadcast, and settlement policy
-examples/                   focused client, server, wallet, and provider examples
-test/                       deterministic fixtures and unit tests
+packages/typescript/examples/ focused client, server, wallet, and provider examples
+packages/typescript/test/     deterministic fixtures and unit tests
+packages/rust/                Cargo workspace and Rust SDK
+packages/go/                  Go protocol-core package
+packages/java/                Java protocol-core package
+packages/python/              Python protocol-core package
+packages/cpp/                 C++ protocol-core package
 ```
 
 ## BCH implementation rules

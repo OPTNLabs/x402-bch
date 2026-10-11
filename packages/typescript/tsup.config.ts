@@ -12,4 +12,9 @@ const baseConfig = {
   target: 'es2020',
 };
 
-export default defineConfig({ ...baseConfig, format: 'esm', outDir: 'dist/esm', clean: true });
+export default defineConfig({
+  ...baseConfig,
+  format: 'esm',
+  outDir: 'packages/typescript/dist/esm',
+  clean: true,
+});

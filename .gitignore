@@ -1,11 +1,12 @@
 node_modules/
 dist/
 target/
+packages/rust/target/
 __pycache__/
 .turbo/
 coverage/
 *.log
-examples/*.local.ts
+packages/typescript/examples/*.local.ts
 .env
 .env.local
 *workspace

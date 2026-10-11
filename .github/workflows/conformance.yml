@@ -30,4 +30,4 @@ jobs:
       - name: Run TypeScript checks
         run: npm run check
       - name: Run Rust checks
-        run: cargo test --locked -p x402-chain-bch --lib
+        run: cargo test --manifest-path packages/rust/Cargo.toml --locked -p x402-chain-bch --lib

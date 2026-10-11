@@ -14,12 +14,13 @@ validation verdict.
 | Python     | `packages/python`              | protocol-core implementation |
 | C++        | `packages/cpp`                 | protocol-core implementation |
 
-The Rust and TypeScript packages include transaction construction/validation,
-wallet boundaries, provider integration, and settlement behavior. Go, Java,
-Python, and C++ currently implement the same wallet-agnostic protocol core and
-transaction envelope contract; signing, BCH VM execution, and provider
-transport remain explicit language-specific adapters to be added behind that
-contract.
+Every package exposes the same wallet-agnostic protocol-core behaviors:
+requirements validation, x402 v2 payment-payload binding, non-empty base64
+transaction-envelope validation, and SHA-256 request commitments. The Rust and
+TypeScript packages additionally include transaction construction/validation,
+wallet boundaries, provider integration, and settlement behavior. Signing,
+BCH VM execution, and provider transport remain explicit language-specific
+adapters for the other packages rather than silently divergent implementations.
 
 Parity rules:
 

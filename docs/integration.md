@@ -1,7 +1,7 @@
 # x402-BCH integration guide
 
 This guide is an executable integration map for `@optnlabs/x402-bch`.
-The TypeScript files in `examples/` are the smallest typechecked examples;
+The TypeScript files in `packages/typescript/examples/` are the smallest typechecked examples;
 the snippets below show how they fit into an HTTP application.
 
 ## What this package supports
@@ -94,7 +94,7 @@ const nftPrice = {
 
 For human-readable prices, register a `MoneyParser`; the built-in parser is
 deliberately strict and accepts atomic satoshi strings. See
-`examples/server-pricing.ts`.
+`packages/typescript/examples/server-pricing.ts`.
 
 ## Client: 402, wallet, and retry
 
@@ -200,6 +200,6 @@ token-bearing output, while token quantities are conserved independently of
 BCH value. A covenant may constrain the next spend, but it does not turn these
 UTXO lifecycle concerns into an account balance.
 
-The complete examples are indexed in `examples/README.md`, including native,
+The complete examples are indexed in `packages/typescript/examples/README.md`, including native,
 fungible-token, NFT, P2SH32/CashScript, address, HD discovery, WalletConnect,
 provider failover, validation, reservation, and settlement-store flows.

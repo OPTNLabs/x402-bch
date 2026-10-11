@@ -12,7 +12,7 @@ def test_wire_core():
     fixture = json.loads((Path(__file__).parents[3] / "spec/conformance/v1/payment-requirements.json").read_text())
     for case in fixture["cases"]:
         validate_requirements(case["requirements"])
-    assert len(request_hash({"url": "https://example.test/resource"})) == 64
+    assert request_hash('{"url":"https://example.test/resource"}') == "1f3a0cf475878c9cd4664f6812ac05722e1de2a0d00d341b9ae72cbc48e9a675"
     requirements = fixture["cases"][0]["requirements"]
     payload = {"x402Version": 2, "scheme": "exact", "network": requirements["network"],
                "payload": {"transaction": "AQID"}, "accepted": requirements}

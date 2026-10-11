@@ -1,15 +1,18 @@
 """Lossless x402-BCH wire-level primitives."""
 
 import hashlib
-import json
 import re
 import base64
 from typing import Any
 
 
 def validate_requirements(requirements: dict[str, Any]) -> None:
-    if requirements.get("x402Version") != 2 or requirements.get("scheme") != "exact":
+    if requirements.get("x402Version") not in (None, 2) or requirements.get("scheme") != "exact":
         raise ValueError("unsupported x402 requirements")
+    if requirements.get("network") not in ("bch:bitcoincash", "bch:bchtest"):
+        raise ValueError("unsupported BCH network")
+    if not requirements.get("asset") or not requirements.get("payTo"):
+        raise ValueError("asset and payTo are required")
     if not re.fullmatch(r"[0-9]+", requirements.get("amount", "")):
         raise ValueError("amount must be an unsigned decimal string")
     extra = requirements.get("extra", {})
@@ -22,12 +25,10 @@ def validate_requirements(requirements: dict[str, Any]) -> None:
 def validate_payment_payload(payload: dict[str, Any], expected: dict[str, Any]) -> None:
     """Validate the wallet-agnostic x402 BCH payment envelope and its binding."""
     validate_requirements(expected)
-    if payload.get("x402Version") != 2 or payload.get("scheme") != expected.get("scheme"):
+    if payload.get("x402Version") != 2:
         raise ValueError("payment payload does not bind to requirements")
-    if payload.get("network") != expected.get("network"):
-        raise ValueError("payment payload network mismatch")
     accepted = payload.get("accepted", {})
-    for field in ("network", "amount", "payTo"):
+    for field in ("scheme", "network", "asset", "amount", "payTo"):
         if accepted.get(field) != expected.get(field):
             raise ValueError("accepted requirements mismatch")
     transaction = payload.get("payload", {}).get("transaction", "")
@@ -38,6 +39,7 @@ def validate_payment_payload(payload: dict[str, Any], expected: dict[str, Any]) 
         raise ValueError("transaction must be non-empty base64") from error
 
 
-def request_hash(resource: Any) -> str:
-    encoded = json.dumps(resource, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return hashlib.sha256(encoded.encode()).hexdigest()
+def request_hash(canonical_request: str) -> str:
+    if not canonical_request:
+        raise ValueError("canonical request must not be empty")
+    return hashlib.sha256(canonical_request.encode()).hexdigest()

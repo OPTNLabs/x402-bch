@@ -13,25 +13,32 @@ struct Requirements {
   std::string scheme;
   std::string network;
   std::string amount;
+  std::string asset;
   std::string pay_to;
   std::string payment_flow;
 };
 
 struct PaymentPayload {
   int version;
-  std::string scheme;
-  std::string network;
   std::string transaction;
   Requirements accepted;
 };
 
 inline void validate_requirements(int version, const std::string& scheme, const std::string& amount, const std::string& flow) {
-  if (version != 2 || scheme != "exact" || !std::regex_match(amount, std::regex("[0-9]+")) || flow != "upfront") throw std::invalid_argument("unsupported x402 requirements");
+  if ((version != 0 && version != 2) || scheme != "exact" || !std::regex_match(amount, std::regex("[0-9]+")) || flow != "upfront") throw std::invalid_argument("unsupported x402 requirements");
+}
+
+inline void validate_requirements(const Requirements& requirements) {
+  validate_requirements(requirements.version, requirements.scheme, requirements.amount, requirements.payment_flow);
+  if (requirements.network != "bch:bitcoincash" && requirements.network != "bch:bchtest") throw std::invalid_argument("unsupported BCH network");
+  if (requirements.asset.empty() || requirements.pay_to.empty()) throw std::invalid_argument("asset and payTo are required");
 }
 
 inline bool valid_base64(const std::string& value) {
   if (value.empty() || value.size() % 4 != 0) return false;
-  return value.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=") == std::string::npos;
+  const size_t padding = value.size() - value.find_last_not_of('=') - 1;
+  if (padding > 2 || value.find('=') != (padding == 0 ? std::string::npos : value.size() - padding)) return false;
+  return value.substr(0, value.size() - padding).find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/") == std::string::npos;
 }
 
 inline std::string request_hash(const std::string& canonical_json) {
@@ -63,10 +70,8 @@ inline std::string request_hash(const std::string& canonical_json) {
 }
 
 inline void validate_payment_payload(const PaymentPayload& payload, const Requirements& expected) {
-  validate_requirements(expected.version, expected.scheme, expected.amount, expected.payment_flow);
-  if (payload.version != 2 || payload.scheme != expected.scheme || payload.network != expected.network)
-    throw std::invalid_argument("payment payload does not bind to requirements");
-  if (payload.accepted.network != expected.network || payload.accepted.amount != expected.amount || payload.accepted.pay_to != expected.pay_to)
+  validate_requirements(expected);
+  if (payload.version != 2 || payload.accepted.scheme != expected.scheme || payload.accepted.network != expected.network || payload.accepted.asset != expected.asset || payload.accepted.amount != expected.amount || payload.accepted.pay_to != expected.pay_to)
     throw std::invalid_argument("accepted requirements mismatch");
   if (!valid_base64(payload.transaction)) throw std::invalid_argument("transaction must be non-empty base64");
 }

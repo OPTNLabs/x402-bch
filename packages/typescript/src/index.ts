@@ -6,3 +6,4 @@ export * from './provider';
 export * from './signer';
 export * from './settlementStore';
 export * from './exact';
+export * from './protocol';

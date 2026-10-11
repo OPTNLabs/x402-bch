@@ -9,21 +9,27 @@ import java.util.regex.Pattern;
 public final class X402Bch {
   private X402Bch() {}
   public static void validateRequirements(int version, String scheme, String amount, Map<String, Object> extra) {
-    if (version != 2 || !"exact".equals(scheme) || !Pattern.matches("[0-9]+", amount) || !"upfront".equals(extra.get("paymentFlow"))) throw new IllegalArgumentException("unsupported x402 requirements");
+    if ((version != 0 && version != 2) || !"exact".equals(scheme) || !Pattern.matches("[0-9]+", amount) || !"upfront".equals(extra.get("paymentFlow"))) throw new IllegalArgumentException("unsupported x402 requirements");
+  }
+
+  public static void validateRequirements(Map<String, Object> requirements) {
+    validateRequirements(
+        requirements.containsKey("x402Version") ? ((Number) requirements.get("x402Version")).intValue() : 0,
+        (String) requirements.get("scheme"), (String) requirements.get("amount"),
+        (Map<String, Object>) requirements.get("extra"));
+    if (!(requirements.get("network").equals("bch:bitcoincash") || requirements.get("network").equals("bch:bchtest"))
+        || requirements.get("asset") == null || requirements.get("payTo") == null)
+      throw new IllegalArgumentException("invalid BCH requirements");
   }
 
   public static void validatePaymentPayload(
-      int version, String scheme, String network, String transaction,
+      int version, String transaction,
       Map<String, Object> accepted, Map<String, Object> expected) {
-    validateRequirements(
-        ((Number) expected.get("x402Version")).intValue(),
-        (String) expected.get("scheme"),
-        (String) expected.get("amount"),
-        (Map<String, Object>) expected.get("extra"));
-    if (version != 2 || !scheme.equals(expected.get("scheme")) || !network.equals(expected.get("network")))
-      throw new IllegalArgumentException("payment payload does not bind to requirements");
-    if (!network.equals(accepted.get("network")) || !expected.get("amount").equals(accepted.get("amount")) || !expected.get("payTo").equals(accepted.get("payTo")))
+    validateRequirements(expected);
+    if (version != 2 || !expected.get("scheme").equals(accepted.get("scheme")) || !expected.get("network").equals(accepted.get("network")) || !expected.get("asset").equals(accepted.get("asset")) || !expected.get("amount").equals(accepted.get("amount")) || !expected.get("payTo").equals(accepted.get("payTo")))
       throw new IllegalArgumentException("accepted requirements mismatch");
+    if (transaction.isEmpty() || transaction.length() % 4 != 0 || !Pattern.matches("[A-Za-z0-9+/]+={0,2}", transaction))
+      throw new IllegalArgumentException("transaction must be non-empty base64");
     try {
       if (Base64.getDecoder().decode(transaction).length == 0) throw new IllegalArgumentException("empty transaction");
     } catch (IllegalArgumentException error) { throw new IllegalArgumentException("transaction must be non-empty base64", error); }

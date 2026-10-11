@@ -27,7 +27,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.ts', 'test/**/*'],
+    files: ['**/*.test.ts', 'packages/typescript/test/**/*'],
     languageOptions: {
       parser: tsParser,
       sourceType: 'module',

@@ -37,5 +37,6 @@ pub use transaction::{
     BchTransaction, OutPoint, SourceOutput, TxId,
 };
 pub use v2_bch_exact::{BchExtra, ExactBchPayload, V2BchExact, V2BchExactClient};
+pub use v2_bch_exact::{request_hash, validate_payment_payload, validate_requirements};
 #[cfg(target_arch = "wasm32")]
 pub use wasm::{BchBrowserClient, BchBrowserWalletClient, JsFulcrumTransport};
