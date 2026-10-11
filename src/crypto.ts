@@ -653,9 +653,15 @@ export function verifyPayment(
     target.kind === 'cashtoken' ? policy.cashTokenDustThreshold : policy.dustThreshold;
   if (target.merchantValue < merchantDustThreshold) throw new Error('merchant output is dust');
   if (sources.length !== transaction.inputs.length) throw new Error('source output count mismatch');
-  const tokenValidation = verifyTransactionTokens(
+  const verifyTokensWithConsensus = verifyTransactionTokens as unknown as (
+    transaction: ReturnType<typeof toLibauthTransaction>,
+    sourceOutputs: ReturnType<typeof toLibauthSourceOutput>[],
+    consensus: { maximumTokenCommitmentLength: number },
+  ) => string | true;
+  const tokenValidation = verifyTokensWithConsensus(
     toLibauthTransaction(transaction),
     sources.map(toLibauthSourceOutput),
+    { maximumTokenCommitmentLength: MAX_TOKEN_COMMITMENT_LENGTH },
   );
   if (tokenValidation !== true) throw new Error(tokenValidation);
   const inputPayerHashes = verifyTransactionInputs(transaction, sources);
