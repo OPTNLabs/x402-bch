@@ -22,7 +22,7 @@ or validate the contract's later spending conditions.
 
 ## Rust
 
-The Rust SDK is the `x402-chain-bch` crate in [`rust/x402-chain-bch`](rust/x402-chain-bch).
+The Rust SDK is the `x402-chain-bch` crate in [`packages/rust/x402-chain-bch`](packages/rust/x402-chain-bch).
 Protocol message types come from published [`x402-types` 2.0.2](https://crates.io/crates/x402-types).
 This crate is not on crates.io yet.
 

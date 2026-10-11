@@ -5,7 +5,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --config packages/typescript/tsup.config.ts",
     "test": "vitest run",
     "test:chipnet": "node scripts/chipnet-smoke.mjs",
     "test:watch": "vitest",
@@ -14,9 +14,9 @@
     "release:check": "npm run check && node scripts/verify-package.mjs",
     "prepublishOnly": "npm run release:check",
     "format:check": "prettier -c .prettierrc --check \"**/*.{ts,js,cjs,json,md}\"",
-    "lint:check": "eslint src test --ext .ts",
-    "typecheck": "tsc --noEmit",
-    "typecheck:examples": "tsc -p examples/tsconfig.json"
+    "lint:check": "eslint packages/typescript/src packages/typescript/test --ext .ts",
+    "typecheck": "tsc -p packages/typescript/tsconfig.json --noEmit",
+    "typecheck:examples": "tsc -p packages/typescript/examples/tsconfig.json"
   },
   "keywords": [
     "x402",
