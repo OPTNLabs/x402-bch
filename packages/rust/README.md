@@ -200,7 +200,10 @@ a transport that performs certificate validation. Availability redundancy is
 not chain verification: applications should compare chain tip/header data
 across independent servers when making operational decisions.
 
-See `examples/bch-browser` for a working page. Wasm builds need Clang.
+The repository does not currently include a browser example page. Applications
+can bind `JsFulcrumTransport` to their own JSON-RPC client and use
+`BchBrowserClient` or `BchBrowserWalletClient`; the CI release gate compiles
+this adapter for `wasm32-unknown-unknown`. Wasm builds need Clang.
 `.cargo/config.toml` allows the implicit `memmove` declaration in the bundled
 libsecp256k1 wasm sources.
 
