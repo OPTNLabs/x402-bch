@@ -42,7 +42,7 @@ import {
 } from './constants';
 export { BCH_ASSET, SIGHASH_ALL_FORKID } from './constants';
 
-/** Maximum CashToken NFT commitment length after the May 2026 BCH upgrade. */
+/** Shared x402 policy cap for portable CashToken NFT commitments. */
 export const MAX_TOKEN_COMMITMENT_LENGTH = 40;
 
 /** Display-order hexadecimal BCH transaction identifier. */
@@ -521,9 +521,36 @@ export function getRequestHashCommitment(transaction: BchTransaction): string | 
   return commitment === undefined ? undefined : bytesToHex(commitment.scriptPubKey.slice(2));
 }
 
+/** Require the canonical zero-value OP_RETURN commitment for an x402 request. */
+export function assertRequestHashCommitment(
+  transaction: BchTransaction,
+  requestHash: string,
+): void {
+  if (!/^[0-9a-fA-F]{64}$/.test(requestHash)) {
+    throw new Error('request hash must be 32-byte hexadecimal');
+  }
+  if (getRequestHashCommitment(transaction) !== requestHash.toLowerCase()) {
+    throw new Error('payment transaction does not commit to the requested resource hash');
+  }
+}
+
 /** Calculate the transaction ID from its serialized transaction bytes. */
 export function transactionId(transaction: BchTransaction): string {
   return hashTransaction(serializeTransaction(transaction));
+}
+
+/** Require provider-returned bytes to recompute to the submitted txid. */
+export function assertProviderTransactionId(
+  candidateTxid: string,
+  rawTransaction: Uint8Array,
+): void {
+  if (!/^[0-9a-fA-F]{64}$/.test(candidateTxid)) {
+    throw new Error('candidate transaction ID is invalid');
+  }
+  const observedTxid = transactionId(parseTransaction(rawTransaction));
+  if (observedTxid.toLowerCase() !== candidateTxid.toLowerCase()) {
+    throw new Error('provider returned a transaction with a mismatched txid');
+  }
 }
 
 /**
@@ -581,6 +608,38 @@ export function verifyTransactionInputs(
       ? extractP2pkhIdentity(transaction, index, source)
       : undefined,
   );
+}
+
+/**
+ * Verify the push-only P2SH unlocking boundary and redeem-script commitment.
+ * This does not replace full BCH VM execution of the redeem script.
+ */
+export function verifyP2shRedeemScript(
+  transaction: BchTransaction,
+  inputIndex: number,
+  source: BchSourceOutput,
+): void {
+  if (!isP2sh20Script(source.scriptPubKey) && !isP2sh32Script(source.scriptPubKey)) {
+    throw new Error('source output is not P2SH20 or P2SH32');
+  }
+  const input = transaction.inputs[inputIndex];
+  if (input === undefined) throw new Error('invalid input index');
+  const decoded = decodeAuthenticationInstructions(input.scriptSig);
+  if (authenticationInstructionsAreMalformed(decoded)) {
+    throw new Error('P2SH unlocking script is malformed');
+  }
+  if (!authenticationInstructionsArePushInstructions(decoded)) {
+    throw new Error('P2SH unlocking script is not push-only');
+  }
+  const pushes = decoded.map((instruction) => instruction.data);
+  const redeemScript = pushes.at(-1) ?? new Uint8Array();
+  const committed = isP2sh20Script(source.scriptPubKey)
+    ? hash160(redeemScript)
+    : libauthHash256(redeemScript);
+  const expected = source.scriptPubKey.slice(2, -1);
+  if (!equalBytes(committed, expected)) {
+    throw new Error('P2SH redeem script commitment mismatch');
+  }
 }
 
 function verifyTransactionScripts(transaction: BchTransaction, sources: BchSourceOutput[]): void {

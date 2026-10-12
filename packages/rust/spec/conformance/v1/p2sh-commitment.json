@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "p2sh20-redeem-script-commitment",
+      "inputIndex": 0,
+      "sourceValue": "100000",
+      "sourceScriptPubKey": "a914da1745e9b549bd0bfa1a569971c77eba30cd5a4b87",
+      "redeemScript": "51",
+      "rawTransaction": "0200000001111111111111111111111111111111111111111111111111111111111111111100000000020151ffffffff01a0860100000000001976a914222222222222222222222222222222222222222288ac00000000",
+      "txid": "4745ea90d12658aa3ca1835d569712c6b97a6eb2bc00cc0d339e8a3932041021",
+      "serializedSize": 87,
+      "expected": "accept"
+    },
+    {
+      "id": "p2sh32-redeem-script-commitment",
+      "inputIndex": 0,
+      "sourceValue": "100000",
+      "sourceScriptPubKey": "aa20953ccfa596a6c6d39e5980194539124fdcff116a571455a212baed811f585ee087",
+      "redeemScript": "51",
+      "rawTransaction": "0200000001111111111111111111111111111111111111111111111111111111111111111100000000020151ffffffff01a0860100000000001976a914222222222222222222222222222222222222222288ac00000000",
+      "txid": "4745ea90d12658aa3ca1835d569712c6b97a6eb2bc00cc0d339e8a3932041021",
+      "serializedSize": 87,
+      "expected": "accept"
+    },
+    {
+      "id": "p2sh-redeem-script-mismatch",
+      "inputIndex": 0,
+      "sourceValue": "100000",
+      "sourceScriptPubKey": "a91469d7ef8f42a25e8791bb37d5fb48456f102a3cb987",
+      "redeemScript": "51",
+      "rawTransaction": "0200000001111111111111111111111111111111111111111111111111111111111111111100000000020151ffffffff01a0860100000000001976a914222222222222222222222222222222222222222288ac00000000",
+      "txid": "4745ea90d12658aa3ca1835d569712c6b97a6eb2bc00cc0d339e8a3932041021",
+      "serializedSize": 87,
+      "expected": "reject",
+      "errorCode": "p2sh-redeem-commitment-mismatch"
+    },
+    {
+      "id": "p2sh-non-push-unlocking",
+      "inputIndex": 0,
+      "sourceValue": "100000",
+      "sourceScriptPubKey": "a914da1745e9b549bd0bfa1a569971c77eba30cd5a4b87",
+      "redeemScript": "51",
+      "rawTransaction": "02000000011111111111111111111111111111111111111111111111111111111111111111000000000176ffffffff01a0860100000000001976a914222222222222222222222222222222222222222288ac00000000",
+      "txid": "18e109238ba7a207748dc0ef4b485db88ac135599ee20ef0bb58337e16eb5cfb",
+      "serializedSize": 86,
+      "expected": "reject",
+      "errorCode": "p2sh-non-push-unlocking"
+    }
+  ]
+}

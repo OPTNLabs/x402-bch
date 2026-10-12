@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "sourceFixture": "provider-observation.json",
+  "cases": [
+    {
+      "id": "source-output-vout-zero",
+      "providerCase": "matches-provider-bytes",
+      "sourceTxid": "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa",
+      "vout": 0,
+      "expectedObservation": "match",
+      "expectedValue": "1000",
+      "expectedScriptPubKey": "76a914222222222222222222222222222222222222222288ac"
+    },
+    {
+      "id": "source-output-vout-one",
+      "providerCase": "matches-provider-bytes",
+      "sourceTxid": "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa",
+      "vout": 1,
+      "expectedObservation": "match",
+      "expectedValue": "98774",
+      "expectedScriptPubKey": "76a91479b000887626b294a914501a4cd226b58b23598388ac"
+    },
+    {
+      "id": "source-output-provider-missing",
+      "providerCase": "rejects-missing-provider-observation",
+      "sourceTxid": "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa",
+      "vout": 0,
+      "expectedObservation": "missing",
+      "expectedValue": null,
+      "expectedScriptPubKey": null
+    },
+    {
+      "id": "source-output-txid-mismatch",
+      "providerCase": "matches-provider-bytes",
+      "sourceTxid": "0000000000000000000000000000000000000000000000000000000000000000",
+      "vout": 0,
+      "expectedObservation": "mismatch",
+      "expectedValue": null,
+      "expectedScriptPubKey": null
+    },
+    {
+      "id": "source-output-vout-not-found",
+      "providerCase": "matches-provider-bytes",
+      "sourceTxid": "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa",
+      "vout": 9,
+      "expectedObservation": "notFound",
+      "expectedValue": null,
+      "expectedScriptPubKey": null
+    },
+    {
+      "id": "source-output-malformed-provider",
+      "providerCase": "rejects-invalid-candidate",
+      "sourceTxid": "not-a-txid",
+      "vout": 0,
+      "expectedObservation": "mismatch",
+      "expectedValue": null,
+      "expectedScriptPubKey": null
+    }
+  ]
+}

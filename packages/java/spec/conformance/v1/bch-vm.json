@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "profile": "bch-bounded-v1",
+  "cases": [
+    {
+      "id": "equal-accept",
+      "unlockingScript": "01aa",
+      "lockingScript": "01aa87",
+      "expectedAccepted": true,
+      "expectedError": null
+    },
+    {
+      "id": "hash160-accept",
+      "unlockingScript": "01aa",
+      "lockingScript": "a91458d179ca6112752d00dc9b89ea4f55a585195e2687",
+      "expectedAccepted": true,
+      "expectedError": null
+    },
+    {
+      "id": "dup-equalverify-accept",
+      "unlockingScript": "01aa",
+      "lockingScript": "768851",
+      "expectedAccepted": true,
+      "expectedError": null
+    },
+    {
+      "id": "small-int-equal-accept",
+      "unlockingScript": "",
+      "lockingScript": "515187",
+      "expectedAccepted": true,
+      "expectedError": null
+    },
+    {
+      "id": "pushdata1-accept",
+      "unlockingScript": "4c01aa",
+      "lockingScript": "01aa87",
+      "expectedAccepted": true,
+      "expectedError": null
+    },
+    {
+      "id": "false-result",
+      "unlockingScript": "",
+      "lockingScript": "00",
+      "expectedAccepted": false,
+      "expectedError": "FALSE"
+    },
+    {
+      "id": "equalverify-failure",
+      "unlockingScript": "01aa",
+      "lockingScript": "01bb88",
+      "expectedAccepted": false,
+      "expectedError": "EQUALVERIFY"
+    },
+    {
+      "id": "stack-underflow",
+      "unlockingScript": "76",
+      "lockingScript": "51",
+      "expectedAccepted": false,
+      "expectedError": "INVALID_STACK_OPERATION"
+    },
+    {
+      "id": "cleanstack-required",
+      "unlockingScript": "01aa",
+      "lockingScript": "51",
+      "expectedAccepted": false,
+      "expectedError": "CLEANSTACK"
+    },
+    {
+      "id": "bad-opcode",
+      "unlockingScript": "",
+      "lockingScript": "ff",
+      "expectedAccepted": false,
+      "expectedError": "BAD_OPCODE"
+    },
+    {
+      "id": "truncated-push",
+      "unlockingScript": "02aa",
+      "lockingScript": "51",
+      "expectedAccepted": false,
+      "expectedError": "TRUNCATED_PUSH"
+    },
+    {
+      "id": "op-return",
+      "unlockingScript": "",
+      "lockingScript": "6a",
+      "expectedAccepted": false,
+      "expectedError": "OP_RETURN"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "confirmed-policy-accepted",
+      "candidateValid": true,
+      "providerObservation": "match",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "expectedOutcome": "accepted"
+    },
+    {
+      "id": "mempool-waits-for-confirmations",
+      "candidateValid": true,
+      "providerObservation": "match",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "mempool",
+      "expectedOutcome": "pending"
+    },
+    {
+      "id": "no-proof-waits-after-double-spend-proof",
+      "candidateValid": true,
+      "providerObservation": "match",
+      "strategy": "noDoubleSpendProof",
+      "status": "mempool",
+      "doubleSpendProof": true,
+      "expectedOutcome": "pending"
+    },
+    {
+      "id": "provider-mismatch-rejected",
+      "candidateValid": true,
+      "providerObservation": "mismatch",
+      "strategy": "mempool",
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "expectedOutcome": "rejected"
+    },
+    {
+      "id": "missing-observation-remains-pending",
+      "candidateValid": true,
+      "providerObservation": "missing",
+      "strategy": "mempool",
+      "status": "unknown",
+      "expectedOutcome": "pending"
+    },
+    {
+      "id": "conflicted-status-rejected",
+      "candidateValid": true,
+      "providerObservation": "match",
+      "strategy": "mempool",
+      "status": "conflicted",
+      "expectedOutcome": "rejected"
+    },
+    {
+      "id": "invalid-candidate-rejected",
+      "candidateValid": false,
+      "providerObservation": "missing",
+      "strategy": "mempool",
+      "status": "unknown",
+      "expectedOutcome": "rejected"
+    },
+    {
+      "id": "not-found-remains-pending",
+      "candidateValid": true,
+      "providerObservation": "missing",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "notFound",
+      "expectedOutcome": "pending"
+    }
+  ]
+}

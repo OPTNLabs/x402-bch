@@ -13,6 +13,7 @@ import {
   decodeBchAddressScript,
   getRequestHashCommitment,
   parseTransaction,
+  assertProviderTransactionId,
   transactionId,
   verifyPayment,
   type BchPolicy,
@@ -25,6 +26,7 @@ import type {
   ExactBchRequirements,
 } from '../../types';
 import { InMemoryBchSettlementStore, type BchSettlementStore } from '../../settlementStore';
+import { acceptsBchSettlement } from '../../settlementPolicy';
 
 /**
  * x402 exact facilitator scheme for BCH.
@@ -128,10 +130,7 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     const observed = await this.provider.getTransaction?.(candidateTxid);
     if (observed !== undefined) {
       try {
-        const observedTransaction = parseTransaction(observed);
-        if (transactionId(observedTransaction).toLowerCase() !== candidateTxid.toLowerCase()) {
-          throw new Error('provider returned a transaction with a mismatched txid');
-        }
+        assertProviderTransactionId(candidateTxid, observed);
         const verified = await this.verifyPayment(
           { ...payload, payload: { ...payload.payload, transaction: bytesToBase64(observed) } },
           requirements,
@@ -304,15 +303,18 @@ export class ExactBchFacilitatorScheme implements SchemeNetworkFacilitator {
     txid: string,
     status: Awaited<ReturnType<BchProvider['getTransactionStatus']>>,
   ): Promise<boolean> {
-    if (this.strategy.kind === 'mempool')
-      return status.kind === 'mempool' || status.kind === 'confirmed';
     if (this.strategy.kind === 'noDoubleSpendProof') {
-      if (status.kind === 'confirmed') return true;
-      return status.kind === 'mempool' && !(await this.provider.hasDoubleSpendProof(txid));
+      if (status.kind !== 'mempool') return acceptsBchSettlement(this.strategy, status);
+      return acceptsBchSettlement(
+        this.strategy,
+        status,
+        undefined,
+        await this.provider.hasDoubleSpendProof(txid),
+      );
     }
-    if (status.kind !== 'confirmed') return false;
+    if (this.strategy.kind === 'mempool') return acceptsBchSettlement(this.strategy, status);
     const tip = await this.provider.getTipHeight();
-    return tip - status.height + 1 >= this.strategy.count;
+    return acceptsBchSettlement(this.strategy, status, tip);
   }
 }
 

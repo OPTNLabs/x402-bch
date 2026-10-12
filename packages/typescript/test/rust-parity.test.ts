@@ -69,7 +69,7 @@ function commitmentLength(item: OfflineCase): number {
 }
 
 describe('offline vectors from the Rust x402-chain-bch crate', () => {
-  it('covers the 128-byte commitment limit on every destination', () => {
+  it('covers the shared 40-byte commitment policy on every destination', () => {
     expect(vectors.offline).toBe(true);
     expect(cases).toHaveLength(27);
     for (const destination of ['p2pkh', 'p2sh20', 'p2sh32']) {

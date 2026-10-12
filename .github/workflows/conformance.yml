@@ -24,12 +24,16 @@ jobs:
         with:
           rust-src-dir: packages/rust
       - name: Install native dependencies
-        run: sudo apt-get update && sudo apt-get install -y g++ python3 cmake make
+        run: sudo apt-get update && sudo apt-get install -y g++ python3 cmake make libgmp-dev
       - name: Install JavaScript dependencies
         run: npm ci --prefix packages/typescript
       - name: Run cross-language parity
+        env:
+          X402_REQUIRE_GO: '1'
         run: node tools/check-parity.mjs
       - name: Run TypeScript checks
         run: npm --prefix packages/typescript run check
       - name: Run Rust checks
-        run: cargo test --manifest-path packages/rust/Cargo.toml --locked -p x402-chain-bch --lib
+        run: |
+          cargo fmt --manifest-path packages/rust/Cargo.toml -- --check
+          cargo test --manifest-path packages/rust/Cargo.toml --locked --all-features --lib

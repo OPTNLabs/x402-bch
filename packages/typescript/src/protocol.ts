@@ -38,6 +38,9 @@ export function validatePaymentPayload(
     if (accepted[field] !== expected[field])
       throw new Error(`accepted requirements mismatch: ${field}`);
   }
+  if (stableSerialize(accepted.extra) !== stableSerialize(expected.extra)) {
+    throw new Error('accepted requirements mismatch: extra');
+  }
   const transaction = payload.payload?.transaction;
   if (typeof transaction !== 'string') throw new Error('transaction is required');
   if (
@@ -58,3 +61,15 @@ export function requestHash(canonicalRequest: string): string {
 
 /** Type helper for adapters that construct the x402 payload incrementally. */
 export type BchPaymentPayload = PaymentPayload & ExactBchPaymentPayload;
+
+/** Deterministically compare JSON-like protocol extension objects across languages. */
+function stableSerialize(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableSerialize).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.entries(value as Record<string, unknown>)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${stableSerialize(entry)}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value) ?? 'null';
+}

@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "mempool-strategy-accepts-mempool",
+      "strategy": "mempool",
+      "status": "mempool",
+      "expectedAccepted": true
+    },
+    {
+      "id": "mempool-strategy-accepts-confirmed",
+      "strategy": "mempool",
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "expectedAccepted": true
+    },
+    {
+      "id": "confirmations-rejects-mempool",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "mempool",
+      "expectedAccepted": false
+    },
+    {
+      "id": "confirmations-accepts-one-confirmation",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "expectedAccepted": true
+    },
+    {
+      "id": "confirmations-rejects-shallow-confirmation",
+      "strategy": "confirmations",
+      "confirmations": 2,
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "expectedAccepted": false
+    },
+    {
+      "id": "confirmations-accepts-two-confirmations",
+      "strategy": "confirmations",
+      "confirmations": 2,
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 101,
+      "expectedAccepted": true
+    },
+    {
+      "id": "confirmations-rejects-tip-before-block",
+      "strategy": "confirmations",
+      "confirmations": 1,
+      "status": "confirmed",
+      "height": 101,
+      "tipHeight": 100,
+      "expectedAccepted": false
+    },
+    {
+      "id": "no-proof-strategy-accepts-clean-mempool",
+      "strategy": "noDoubleSpendProof",
+      "status": "mempool",
+      "doubleSpendProof": false,
+      "expectedAccepted": true
+    },
+    {
+      "id": "no-proof-strategy-rejects-mempool-proof",
+      "strategy": "noDoubleSpendProof",
+      "status": "mempool",
+      "doubleSpendProof": true,
+      "expectedAccepted": false
+    },
+    {
+      "id": "no-proof-strategy-accepts-confirmed",
+      "strategy": "noDoubleSpendProof",
+      "status": "confirmed",
+      "height": 100,
+      "tipHeight": 100,
+      "doubleSpendProof": true,
+      "expectedAccepted": true
+    },
+    {
+      "id": "all-strategies-reject-not-found",
+      "strategy": "mempool",
+      "status": "notFound",
+      "expectedAccepted": false
+    },
+    {
+      "id": "all-strategies-reject-unknown",
+      "strategy": "mempool",
+      "status": "unknown",
+      "expectedAccepted": false
+    },
+    {
+      "id": "all-strategies-reject-conflicted",
+      "strategy": "mempool",
+      "status": "conflicted",
+      "expectedAccepted": false
+    }
+  ]
+}

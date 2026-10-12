@@ -1,8 +1,5 @@
-[workspace]
-resolver = "3"
-members = ["x402-chain-bch"]
-
-[workspace.package]
+[package]
+name = "x402-chain-bch"
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
@@ -12,13 +9,40 @@ homepage = "https://github.com/OPTNLabs/x402-bch"
 authors = ["OPTN Labs"]
 keywords = ["bitcoin-cash", "payments", "x402", "cashtokens", "http-402"]
 categories = ["cryptography::cryptocurrencies", "finance"]
+description = "Bitcoin Cash exact payment support for the x402 payment protocol"
+readme = "README.md"
 
-[workspace.dependencies]
+[dependencies]
 alloy-primitives = { version = "1.4.1" }
-async-trait = { version = "0.1" }
+bip39 = { version = "2.2.2" }
+x402-types = { version = "2.0.2" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = ["raw_value"] }
+async-trait = { version = "0.1" }
+hmac = { version = "0.12.1" }
 thiserror = { version = "2.0" }
+base64 = { version = "0.22.1" }
+hex = { version = "0.4" }
+ripemd = { version = "0.1.3" }
+secp256k1 = { version = "0.31.1" }
+sha2 = { version = "0.10.9" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "1.35", features = ["io-util", "net", "sync", "rt-multi-thread"] }
-# Published protocol types. The BCH implementation in this repository is the one this package ships.
-x402-types = { version = "2.0.2" }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"], optional = true }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"], optional = true }
+tokio-tungstenite = { version = "0.28", default-features = false, features = ["connect", "rustls-tls-webpki-roots"], optional = true }
+webpki-roots = { version = "1", optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.2", features = ["js"] }
+js-sys = "0.3.77"
+tokio = { version = "1.35", default-features = false, features = ["sync"] }
+wasm-bindgen = "0.2.100"
+wasm-bindgen-futures = "0.4.50"
+
+[features]
+websocket = ["dep:futures-util", "dep:rustls", "dep:tokio-tungstenite", "dep:webpki-roots"]
+
+[lib]
+crate-type = ["rlib", "cdylib"]

@@ -22,7 +22,7 @@ or validate the contract's later spending conditions.
 
 ## Rust
 
-The Rust SDK is the `x402-chain-bch` crate in [`packages/rust/x402-chain-bch`](packages/rust/x402-chain-bch).
+The Rust SDK is the `x402-chain-bch` crate in [`packages/rust`](packages/rust).
 Protocol message types come from published [`x402-types` 2.0.2](https://crates.io/crates/x402-types).
 This crate is not on crates.io yet.
 
@@ -64,6 +64,17 @@ those local fixtures and runs the package checks together:
 node tools/check-parity.mjs
 ```
 
+The staged capability gates and remaining cross-language work are tracked in
+[`PARITY_PLAN.md`](PARITY_PLAN.md).
+
+The portable parity surface currently includes the `bch-bounded-v1` VM profile,
+provider-fact and source-output projection, and deterministic
+settlement-integration decisions in all six languages. These cover stack
+authorization, provider txid identity, authoritative `(txid, vout)` lookup,
+replay binding, pending responses, and same-transaction retry behavior. Full
+transaction-dependent BCH VM execution and provider transports remain
+explicitly separate from this offline contract.
+
 ## BCH transaction model
 
 Unlike account-based networks, BCH does not have a balance, nonce, or
@@ -88,6 +99,11 @@ checks input/output value, complete CashToken state conservation, signatures,
 network, payment output, fee/dust policy, and transaction identity before
 broadcasting the same raw transaction. It does not add inputs, rewrite
 outputs, or create BCH change after signing.
+
+When the server advertises `extra.requestHash`, the client commits the
+32-byte hash in a zero-value `OP_RETURN 0x20 <hash>` output. The facilitator
+checks that commitment before accepting the payment, so the paid resource is
+bound to the signed UTXO transaction rather than only to local request state.
 
 The exact-payment validator requires exactly one matching merchant output, but
 it may carry additional wallet or application outputs up to the configured
@@ -140,12 +156,13 @@ client.register('bch:*', clientScheme);
 CashToken, `token.amount` contains the token quantity and `token.category`
 contains the category. For an NFT it additionally contains
 `nft.capability` (`none`, `mutable`, or `minting`) and a commitment of 0 to
-128 bytes. When a CashToken price omits `value`, the server and client fill a
-size-aware default: the greater of 1,000 satoshis, the policy dust threshold,
-and that output's standard relay dust. A 128-byte commitment can make the
-relay dust larger than 1,000 satoshis. An explicit `value` is preserved and
-rejected when it is below the output's dust threshold. Native BCH outputs keep
-the 546-satoshi dust floor.
+40 bytes under the shared portable x402 policy. BCHN's post-upgrade consensus
+path permits commitments through 128 bytes, but that wider range is not yet
+part of cross-language x402 parity. When a CashToken price omits `value`, the
+server and client fill a size-aware default: the greater of 1,000 satoshis,
+the policy dust threshold, and that output's standard relay dust. An explicit
+`value` is preserved and rejected when it is below the output's dust threshold.
+Native BCH outputs keep the 546-satoshi dust floor.
 
 `BchSigner` is retained for integrations that already own UTXO selection and
 transaction construction. `FulcrumProvider` implements the Electrum Cash

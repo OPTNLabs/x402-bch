@@ -31,6 +31,12 @@ repository root, the equivalent cross-language parity command is:
 node tools/check-parity.mjs
 ```
 
+The cross-language runner uses Rust/Cargo, Go 1.22+, Java 21, Python 3, CMake,
+and a C++ compiler with GMP development headers. It runs the package-local
+tests and compares every committed fixture byte-for-byte. A local run reports
+and skips only a missing Go toolchain; CI installs Go and is the required
+no-skip release evidence.
+
 The package uses Libauth for BCH primitives. Do not copy low-level BCH
 transaction, CashToken, or signing logic from another implementation when a
 Libauth primitive is available.
@@ -51,7 +57,7 @@ packages/typescript/src/
 packages/typescript/examples/ focused client, server, wallet, and provider examples
 packages/typescript/test/     deterministic fixtures and unit tests
 packages/typescript/spec/     TypeScript-local conformance fixtures
-packages/rust/                Cargo workspace and Rust SDK
+packages/rust/                Rust SDK crate (`x402-chain-bch`), source in `src/`
 packages/rust/spec/           Rust-local conformance fixtures
 packages/go/                  Go protocol-core package
 packages/go/spec/             Go-local conformance fixtures
@@ -63,6 +69,28 @@ packages/cpp/                 C++ protocol-core package
 packages/cpp/spec/            C++-local conformance fixtures
 tools/check-parity.mjs        repository-level cross-language parity runner
 ```
+
+The shared v1 fixtures include payment requirements, transaction
+serialization/txids, CashAddr/script forms, request-hash OP_RETURN commitments,
+a signed BCH ForkID P2PKH vector, P2SH20/P2SH32 redeem-script commitment
+vectors, fungible CashTokens, and a
+zero-amount NFT transfer cases with `none`, `mutable`, and `minting` capabilities
+and a 40-byte portable x402 policy cap. The settlement-policy fixture covers
+mempool, confirmation-depth, double-spend-proof, and provider-status outcomes;
+the provider-observation fixture requires raw-byte txid recomputation before a
+provider response can be treated as chain evidence. The `bch-bounded-v1` VM
+fixture covers portable stack/equality/HASH160 behavior and stable failures;
+it does not claim full transaction-dependent BCH VM execution. The settlement-
+integration fixture covers replay binding, claim conflicts, lost-broadcast
+retry, pending txid preservation, and no-second-broadcast decisions without
+performing network I/O. The settlement-provider fixture additionally derives
+provider observation from raw bytes in every language; it never treats a local
+txid as chain evidence. The provider-source-output fixture covers authoritative
+`(txid, vout)` projection without requiring RPC transport.
+BCHN's post-upgrade consensus path
+permits a wider range, which is not yet a cross-language gate. Add a fixture to
+every package directory and extend each package-local test when adding a new
+parity gate; do not import another language package's fixture at runtime.
 
 ## BCH implementation rules
 

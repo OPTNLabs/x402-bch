@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "mainnet-p2pkh",
+      "network": "bch:bitcoincash",
+      "address": "bitcoincash:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zye3kwllue",
+      "scriptPubKey": "76a914111111111111111111111111111111111111111188ac",
+      "tokenSupport": false
+    },
+    {
+      "id": "chipnet-p2pkh",
+      "network": "bch:bchtest",
+      "address": "bchtest:qqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyarjfagm9",
+      "scriptPubKey": "76a914111111111111111111111111111111111111111188ac",
+      "tokenSupport": false
+    },
+    {
+      "id": "mainnet-p2sh20",
+      "network": "bch:bitcoincash",
+      "address": "bitcoincash:pqg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyw5tpcu8y",
+      "scriptPubKey": "a914111111111111111111111111111111111111111187",
+      "tokenSupport": false
+    },
+    {
+      "id": "mainnet-p2sh32",
+      "network": "bch:bitcoincash",
+      "address": "bitcoincash:pv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zy9u6qkr5a",
+      "scriptPubKey": "aa20222222222222222222222222222222222222222222222222222222222222222287",
+      "tokenSupport": false
+    },
+    {
+      "id": "mainnet-p2sh32-token",
+      "network": "bch:bitcoincash",
+      "address": "bitcoincash:rv3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyh0xp0zdk",
+      "scriptPubKey": "aa20222222222222222222222222222222222222222222222222222222222222222287",
+      "tokenSupport": true
+    }
+  ]
+}

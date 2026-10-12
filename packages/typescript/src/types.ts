@@ -187,6 +187,7 @@ export type BchTransactionStatus =
   | { kind: 'notFound' }
   | { kind: 'mempool' }
   | { kind: 'confirmed'; height: number }
+  | { kind: 'conflicted' }
   | { kind: 'unknown' };
 
 /** Normalized provider outpoint spend state. */
