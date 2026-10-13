@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "redactedValue": "[redacted]",
+  "cases": [
+    {
+      "id": "invalid-requirements",
+      "stage": "protocol",
+      "code": "requirements_invalid",
+      "message": "payment requirements are invalid",
+      "input": { "network": "bch:bchtest", "transaction": "deadbeef", "mnemonic": "secret" },
+      "expectedContext": {
+        "network": "bch:bchtest",
+        "transaction": "[redacted]",
+        "mnemonic": "[redacted]"
+      }
+    },
+    {
+      "id": "provider-mismatch",
+      "stage": "provider",
+      "code": "transaction_identity_mismatch",
+      "message": "provider transaction does not match submitted transaction",
+      "input": {
+        "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rawTransaction": "deadbeef",
+        "vout": "0"
+      },
+      "expectedContext": {
+        "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rawTransaction": "[redacted]",
+        "vout": "0"
+      }
+    }
+  ]
+}

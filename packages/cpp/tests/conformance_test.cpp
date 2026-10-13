@@ -3,7 +3,67 @@
 #include <iostream>
 #include <regex>
 #include <string>
+#include <tuple>
 #include "x402_bch.hpp"
+#include "x402_bch_sdk.hpp"
+#include "x402_bch/address.hpp"
+#include "x402_bch/builder.hpp"
+#include "x402_bch/client.hpp"
+#include "x402_bch/crypto.hpp"
+#include "x402_bch/facilitator.hpp"
+#include "x402_bch/payment.hpp"
+#include "x402_bch/protocol.hpp"
+#include "x402_bch/provider.hpp"
+#include "x402_bch/settlement.hpp"
+#include "x402_bch/server.hpp"
+#include "x402_bch/transaction.hpp"
+#include "x402_bch/vm.hpp"
+#include "x402_bch/wallet.hpp"
+
+namespace {
+struct SdkWallet final : x402bch::Wallet {
+  std::vector<uint8_t> raw;
+  x402bch::TransactionRequest request;
+  std::vector<uint8_t> create_payment(const x402bch::TransactionRequest& value) override {
+    request = value;
+    return raw;
+  }
+};
+
+struct SdkSigner final : x402bch::Signer {
+  std::vector<uint8_t> public_key() const override { return std::vector<uint8_t>(33, 0x11); }
+  std::vector<uint8_t> sign_digest(const std::vector<uint8_t>&) override { return {0x30, 0x06, 0x02, 0x01, 0x01, 0x02, 0x01, 0x01}; }
+  std::string address(const std::string&) const override { return "bitcoincash:qq3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygrg4dtdzf"; }
+};
+
+struct SdkProvider final : x402bch::Provider {
+  int broadcasts = 0;
+  std::string network() const override { return "bch:bitcoincash"; }
+  std::vector<x402bch::Utxo> list_utxos(const std::string&) override { return {}; }
+  x402bch::TransactionOutput source_output(const std::string&, uint32_t) override {
+    return {100000, {}, std::nullopt};
+  }
+  std::string outpoint_status(const std::string&, uint32_t) override { return "unspent"; }
+  std::string broadcast(const std::vector<uint8_t>& raw) override {
+    broadcasts++;
+    return x402bch::transaction_id(x402bch::encode_base64(raw));
+  }
+  std::optional<std::vector<uint8_t>> transaction(const std::string&) override { return std::nullopt; }
+  x402bch::ProviderStatus transaction_status(const std::string&) override { return {"confirmed", 100}; }
+  uint64_t tip_height() override { return 100; }
+  bool has_double_spend_proof(const std::string&) override { return false; }
+};
+
+struct FailingTransport final : x402bch::FulcrumTransport {
+  std::string request(const std::string&, const std::string&) override {
+    throw std::runtime_error("offline");
+  }
+};
+
+struct WorkingTransport final : x402bch::FulcrumTransport {
+  std::string request(const std::string&, const std::string&) override { return "ok"; }
+};
+}  // namespace
 
 int main() {
   std::ifstream input("spec/conformance/v1/payment-requirements.json");
@@ -24,6 +84,67 @@ int main() {
   payload.transaction = "bad";
   try { x402bch::validate_payment_payload(payload, requirements); return 1; }
   catch (const std::invalid_argument&) {}
+  std::ifstream server_input("spec/conformance/v1/server-requirements.json");
+  const std::string server_json((std::istreambuf_iterator<char>(server_input)), {});
+  if (server_json.find("\"id\": \"native-default\"") == std::string::npos ||
+      server_json.find("\"id\": \"nft-only-cashtoken\"") == std::string::npos) return 1;
+  const auto native_requirements = x402bch::build_native_requirements(
+      "bch:bchtest", "bchtest:merchant", "1000");
+  if (native_requirements.version != 2 || native_requirements.scheme != "exact" ||
+      native_requirements.network != "bch:bchtest" || native_requirements.amount != "1000" ||
+      native_requirements.asset != "BCH" || native_requirements.pay_to != "bchtest:merchant" ||
+      native_requirements.max_timeout_seconds != 300 ||
+      native_requirements.asset_transfer_method != "native") return 1;
+  const auto token_requirements = x402bch::build_cash_token_requirements(
+      "bch:bchtest", "bchtest:tokenmerchant",
+      "2222222222222222222222222222222222222222222222222222222222222222", "0", "1000",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "none",
+      x402bch::hex_to_bytes("5a5a5a5a"));
+  if (token_requirements.asset_transfer_method != "cashtoken" ||
+      token_requirements.token_value != "1000" ||
+      token_requirements.token_category != "2222222222222222222222222222222222222222222222222222222222222222" ||
+      token_requirements.token_amount != "0" || token_requirements.token_capability != "none" ||
+      token_requirements.token_commitment != x402bch::hex_to_bytes("5a5a5a5a")) return 1;
+  std::ifstream sdk_input("spec/conformance/v1/sdk-lifecycle.json");
+  const std::string sdk_json((std::istreambuf_iterator<char>(sdk_input)), {});
+  if (sdk_json.find("\"version\": 1") == std::string::npos ||
+      sdk_json.find("\"walletRequest\"") == std::string::npos) return 1;
+  const auto sdk_requirements = x402bch::build_native_requirements(
+      "bch:bitcoincash", "bitcoincash:qq3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygrg4dtdzf", "1000");
+  const auto sdk_encoded = "AgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABqRzBEAiATJrlQh+1HHiXNlhiWdL97/QnR0aAE//NQGIuj0NB4AAIgO7sholeiC2XV4xGiBYgm8x/lzDrqhumDiMjzVjDE+oZBIQMbhMVWexJkQJldPtWqugVl1x4YNGBIGf+cF/Xp1d0Hj/////8C6AMAAAAAAAAZdqkUIiIiIiIiIiIiIiIiIiIiIiIiIiKIrNaBAQAAAAAAGXapFHmwAIh2JrKUqRRQGkzSJrWLI1mDiKwAAAAA";
+  SdkWallet sdk_wallet;
+  sdk_wallet.raw = x402bch::decode_base64(sdk_encoded);
+  SdkProvider sdk_provider;
+  const auto sdk_payload = x402bch::ExactBchClient(sdk_wallet, sdk_provider).create_payment_payload(sdk_requirements);
+  if (sdk_wallet.request.network != "mainnet" || sdk_wallet.request.value != "1000") return 1;
+  x402bch::InMemorySettlementStore sdk_store;
+  x402bch::ExactBchFacilitator sdk_facilitator(sdk_provider, sdk_store);
+  if (!sdk_facilitator.verify(sdk_payload, sdk_requirements).is_valid) return 1;
+  if (!sdk_facilitator.settle(sdk_payload, sdk_requirements).success || sdk_provider.broadcasts != 1) return 1;
+  SdkSigner sdk_signer;
+  const auto built = x402bch::build_and_sign_native_payment(
+      {{std::string(64, 'a'), 0, 5000, x402bch::hex_to_bytes("76a914111111111111111111111111111111111111111188ac"), std::nullopt, std::nullopt}},
+      x402bch::hex_to_bytes("76a914333333333333333333333333333333333333333388ac"), 1000, sdk_signer, "mainnet");
+  if (built.empty()) return 1;
+  FailingTransport failing_transport;
+  WorkingTransport working_transport;
+  x402bch::FailoverFulcrumTransport failover({&failing_transport, &working_transport});
+  if (failover.request("server.version", "[]") != "ok") return 1;
+  const std::string hd_mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+  const std::vector<std::tuple<std::string, uint32_t, uint32_t, std::string, std::string>> hd_vectors = {
+      {"bch:bchtest", 1, 0, "bchtest:qqaz6s295ncfs53m86qj0uw6sl8u2kuw0ymst35fx4", "02a7451395735369f2ecdfc829c0f774e88ef1303dfe5b2f04dbaab30a535dfdd6"},
+      {"bch:bchtest", 1, 1, "bchtest:qqwtwwfqkkkr3arquwx7k6ztn39yprlncq2gq6et74", "0320282ac6b3782721b1742c294530a9f250413361abbff659acc8352bc4c1f3f1"},
+      {"bch:bitcoincash", 145, 0, "bitcoincash:qqyx49mu0kkn9ftfj6hje6g2wfer34yfnq5tahq3q6", "02bbe7dbcdf8b2261530a867df7180b17a90b482f74f2736b8a30d3f756e42e217"},
+      {"bch:bitcoincash", 145, 1, "bitcoincash:qr8aeharupyrmhfu0d4tdmsnc5y8cfk47y6qrsjsrx", "02f178b9410d11e47e10bef8a8e4bc53e48d9ae15864a024a54f87a802dad5f514"}};
+  for (const auto& vector : hd_vectors) {
+    const auto derived = x402bch::derive_bch_wallet_address(hd_mnemonic, std::get<0>(vector), std::get<2>(vector), 0, 0, {}, std::get<1>(vector));
+    if (derived.address != std::get<3>(vector) || x402bch::bytes_to_hex(derived.public_key) != std::get<4>(vector)) return 1;
+  }
+  bool rejected = false;
+  try { (void)x402bch::derive_bch_wallet_address("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon zoo", "bch:bchtest", 0, 0, 0, {}, std::nullopt); } catch (const std::exception&) { rejected = true; }
+  if (!rejected) throw std::runtime_error("invalid BIP39 checksum must be rejected");
+  x402bch::Secp256k1BchSigner hd_signer(hd_mnemonic, "bch:bchtest");
+  if (hd_signer.address("bch:bchtest") != std::get<3>(hd_vectors[0]) || x402bch::bytes_to_hex(hd_signer.public_key()) != std::get<4>(hd_vectors[0]) || hd_signer.sign_digest(std::vector<uint8_t>(32)).empty()) return 1;
   x402bch::validate_transaction_envelope("AgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABqRzBEAiATJrlQh+1HHiXNlhiWdL97/QnR0aAE//NQGIuj0NB4AAIgO7sholeiC2XV4xGiBYgm8x/lzDrqhumDiMjzVjDE+oZBIQMbhMVWexJkQJldPtWqugVl1x4YNGBIGf+cF/Xp1d0Hj/////8C6AMAAAAAAAAZdqkUIiIiIiIiIiIiIiIiIiIiIiIiIiKIrNaBAQAAAAAAGXapFHmwAIh2JrKUqRRQGkzSJrWLI1mDiKwAAAAA");
   try { x402bch::validate_transaction_envelope("AQID"); return 1; }
   catch (const std::invalid_argument&) {}

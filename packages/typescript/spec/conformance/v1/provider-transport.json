@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "protocol": "electrum-cash-json-rpc",
+  "framing": "newline-delimited-json",
+  "cases": [
+    {
+      "id": "server-version",
+      "method": "server.version",
+      "params": ["x402-bch", "1.0"],
+      "response": { "id": 1, "result": ["fulcrum-test", "1.0"] }
+    },
+    {
+      "id": "rpc-error",
+      "method": "blockchain.transaction.get",
+      "params": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+      "response": { "id": 1, "error": { "code": -5, "message": "transaction not found" } }
+    },
+    {
+      "id": "null-result",
+      "method": "blockchain.transaction.dsproof.get",
+      "params": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+      "response": { "id": 1, "result": null }
+    }
+  ]
+}

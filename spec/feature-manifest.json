@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "x402-bch-sdk-1",
+  "languages": ["typescript", "rust", "go", "java", "python", "cpp"],
+  "evidenceStates": ["source", "fixture", "mocknet", "provider", "mempool", "confirmed", "runtime"],
+  "statusValues": ["complete", "partial", "missing", "runtime-only"],
+  "features": [
+    {
+      "id": "protocol.requirements",
+      "title": "x402 requirements and payment-payload binding",
+      "roles": ["server", "client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/payment-requirements.json", "spec/conformance/v1/server-requirements.json"],
+      "requiredEvidence": ["fixture"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "protocol.resource-hash",
+      "title": "canonical resource/request hash and transaction commitment",
+      "roles": ["server", "client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/request-hash.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "transaction.envelope",
+      "title": "canonical BCH transaction parsing, serialization, and txid",
+      "roles": ["client", "facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/transaction.json"],
+      "requiredEvidence": ["fixture"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "transaction.native-bch",
+      "title": "native BCH value, fee, dust, change, and output policy",
+      "roles": ["client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/transaction.json", "spec/conformance/v1/sdk-lifecycle.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "transaction.cashtokens",
+      "title": "CashToken prefix, fungible, NFT, capability, and conservation rules",
+      "roles": ["client", "facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/cashtoken.json", "spec/conformance/v1/cashtoken-nft.json", "spec/conformance/v1/cashtoken-capabilities.json", "spec/conformance/v1/cashtoken-negative.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "authorization.p2pkh",
+      "title": "BCH ForkID P2PKH signature verification",
+      "roles": ["client", "facilitator", "signer"],
+      "fixtures": ["spec/conformance/v1/p2pkh-signature.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "authorization.p2sh-commitment",
+      "title": "P2SH20/P2SH32 redeem-script commitment validation",
+      "roles": ["client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/p2sh-commitment.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "vm.bounded",
+      "title": "bounded BCH VM stack, equality, HASH160, and clean-stack profile",
+      "roles": ["facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/bch-vm.json"],
+      "requiredEvidence": ["fixture"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "settlement.policy",
+      "title": "mempool, confirmation, conflict, and double-spend settlement policy",
+      "roles": ["facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/settlement-policy.json", "spec/conformance/v1/settlement-outcome.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "settlement.provider-identity",
+      "title": "provider-returned bytes and txid reconciliation",
+      "roles": ["facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/provider-observation.json", "spec/conformance/v1/settlement-provider.json", "spec/conformance/v1/provider-source-output.json"],
+      "requiredEvidence": ["fixture", "mocknet", "provider"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "settlement.recovery",
+      "title": "replay binding, pending recovery, and no-second-broadcast behavior",
+      "roles": ["facilitator", "settlement-store", "provider"],
+      "fixtures": ["spec/conformance/v1/settlement-integration.json", "spec/conformance/v1/sdk-lifecycle.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "roles.wallet-boundary",
+      "title": "external wallet transaction-request and signed-payload boundary",
+      "roles": ["client", "wallet"],
+      "fixtures": ["spec/conformance/v1/sdk-lifecycle.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "roles.hd-signer",
+      "title": "optional BIP39/BIP44 derivation and signer adapters",
+      "roles": ["wallet", "signer", "client"],
+      "fixtures": ["spec/conformance/v1/bip39-english.txt", "spec/conformance/v1/hd-wallet.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "provider.injected",
+      "title": "injected provider and transport failover boundary",
+      "roles": ["provider", "facilitator", "wallet"],
+      "fixtures": ["spec/conformance/v1/provider-source-output.json", "spec/conformance/v1/sdk-lifecycle.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "provider.fulcrum-native",
+      "title": "native Fulcrum transport boundary, failover, and response mapping",
+      "roles": ["provider"],
+      "fixtures": ["spec/conformance/v1/provider-transport.json"],
+      "requiredEvidence": ["mocknet", "provider"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "provider.bchn-rpc",
+      "title": "direct BCHN JSON-RPC and mempool/script-validation boundary",
+      "roles": ["provider", "facilitator"],
+      "fixtures": ["spec/conformance/v1/provider-transport.json"],
+      "requiredEvidence": ["mocknet", "provider"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "integration.mocknet-ledger",
+      "title": "deterministic mocknet UTXO ledger and spend-conflict behavior",
+      "roles": ["provider", "client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/mocknet.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "covenant.registered-profiles",
+      "title": "registered covenant profile identity and successor execution",
+      "roles": ["server", "client", "facilitator", "provider"],
+      "fixtures": ["spec/conformance/v1/covenant-profiles.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "runtime.http-contract",
+      "title": "portable HTTP 402, retry, verification, and settlement flow",
+      "roles": ["server", "client", "facilitator"],
+      "fixtures": ["spec/conformance/v1/http-flow.json"],
+      "requiredEvidence": ["fixture", "mocknet", "runtime"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "runtime.browser-wasm",
+      "title": "runtime-specific browser and WASM core builds",
+      "roles": ["client", "wallet", "provider"],
+      "fixtures": [],
+      "requiredEvidence": ["runtime"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "runtime-only", "python": "runtime-only", "cpp": "runtime-only"}
+    },
+    {
+      "id": "diagnostics.structured",
+      "title": "stable structured error codes, stages, and redacted diagnostics",
+      "roles": ["server", "client", "provider", "facilitator"],
+      "fixtures": ["spec/conformance/v1/diagnostics.json"],
+      "requiredEvidence": ["fixture", "mocknet"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    },
+    {
+      "id": "release.api-inventory",
+      "title": "public API inventory, package smoke tests, and install checks",
+      "roles": ["server", "client", "wallet", "provider", "facilitator"],
+      "fixtures": [],
+      "requiredEvidence": ["runtime"],
+      "coverage": {"typescript": "complete", "rust": "complete", "go": "complete", "java": "complete", "python": "complete", "cpp": "complete"}
+    }
+  ]
+}

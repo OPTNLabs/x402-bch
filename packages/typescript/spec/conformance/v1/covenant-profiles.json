@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "profile": {
+    "id": "x402-bch/recursive-ticket",
+    "family": "recursive-state",
+    "profileVersion": 1,
+    "network": "bch:bchtest",
+    "constructorParameters": {
+      "domain": "x402-bch",
+      "version": "1"
+    },
+    "successorPolicy": {
+      "lockingBytecode": "51",
+      "maxFee": "100",
+      "outputIndex": 0,
+      "stateTransition": "epoch-plus-one",
+      "token": "preserve",
+      "value": "preserve-minus-fee"
+    },
+    "descriptorHash": "fba46d05764137264160f0fdd5f2126de0609f00bceb7a7b996d4fe06f770f62",
+    "lockingBytecodeHash": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260",
+    "successorPolicyHash": "bd272f1e231a1c34eb2ee188e4a51e34860c9513ececb58e4176dbd5817cd132"
+  },
+  "cases": [
+    {
+      "id": "accept-native-fee",
+      "expected": "accept",
+      "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "successorOutputIndex": 0,
+      "fee": "50",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "1000",
+        "epoch": "1",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      },
+      "successor": {
+        "lockingBytecode": "51",
+        "value": "950",
+        "epoch": "2",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      }
+    },
+    {
+      "id": "accept-token-state-preserved",
+      "expected": "accept",
+      "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "successorOutputIndex": 0,
+      "fee": "1",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "2000",
+        "epoch": "8",
+        "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "token": {
+          "category": "1111111111111111111111111111111111111111111111111111111111111111",
+          "amount": "7",
+          "nft": null
+        }
+      },
+      "successor": {
+        "lockingBytecode": "51",
+        "value": "1999",
+        "epoch": "9",
+        "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "token": {
+          "category": "1111111111111111111111111111111111111111111111111111111111111111",
+          "amount": "7",
+          "nft": null
+        }
+      }
+    },
+    {
+      "id": "reject-locking-bytecode",
+      "expected": "reject",
+      "errorCode": "locking-bytecode-mismatch",
+      "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "successorOutputIndex": 0,
+      "fee": "50",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "1000",
+        "epoch": "1",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      },
+      "successor": {
+        "lockingBytecode": "52",
+        "value": "950",
+        "epoch": "2",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      }
+    },
+    {
+      "id": "reject-epoch-transition",
+      "expected": "reject",
+      "errorCode": "state-transition-invalid",
+      "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "successorOutputIndex": 0,
+      "fee": "50",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "1000",
+        "epoch": "1",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      },
+      "successor": {
+        "lockingBytecode": "51",
+        "value": "950",
+        "epoch": "3",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      }
+    },
+    {
+      "id": "reject-fee-limit",
+      "expected": "reject",
+      "errorCode": "fee-exceeds-limit",
+      "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "successorOutputIndex": 0,
+      "fee": "101",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "1000",
+        "epoch": "1",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      },
+      "successor": {
+        "lockingBytecode": "51",
+        "value": "899",
+        "epoch": "2",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": null
+      }
+    },
+    {
+      "id": "reject-token-state",
+      "expected": "reject",
+      "errorCode": "token-state-mismatch",
+      "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "successorOutputIndex": 0,
+      "fee": "1",
+      "source": {
+        "lockingBytecode": "51",
+        "value": "2000",
+        "epoch": "8",
+        "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "token": {
+          "category": "1111111111111111111111111111111111111111111111111111111111111111",
+          "amount": "7",
+          "nft": null
+        }
+      },
+      "successor": {
+        "lockingBytecode": "51",
+        "value": "1999",
+        "epoch": "9",
+        "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "token": {
+          "category": "2222222222222222222222222222222222222222222222222222222222222222",
+          "amount": "7",
+          "nft": null
+        }
+      }
+    }
+  ]
+}

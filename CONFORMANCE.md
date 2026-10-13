@@ -3,34 +3,53 @@
 Each language package contains its own copy of the protocol fixture under
 `spec/conformance/v1`. Every package can build and test without importing code
 or files from another language package. The root parity tool compares those
-fixtures and runs the package-local conformance commands.
+fixtures and runs the package-local tests. It executes the complete TypeScript
+reference suite (currently 229 tests), while the other languages execute the
+same portable fixture gates plus their language-native SDK and adapter tests.
 
-This gate does not claim equal feature depth. Full portable SDK parity is
-implemented as capability gates: a capability is complete only after shared
-positive and negative vectors pass in every language. Browser/WASM,
-WalletConnect, HTTP, Fulcrum, and BCHN integrations are adapters over that
-portable surface, not literal APIs required in every language. See
+Full portable SDK parity is implemented as capability gates: a capability is
+complete only after shared positive and negative vectors pass in every
+language. The authoritative status is the machine-readable
+[`spec/feature-manifest.json`](spec/feature-manifest.json), not a prose claim.
+Browser/WASM and framework adapters remain runtime-specific, while native
+Fulcrum, BCHN, and mocknet boundaries are tracked explicitly. See
 [`PARITY_PLAN.md`](PARITY_PLAN.md) for the scope and sequence of those gates.
+
+Run the strict inventory without executing package tests:
+
+```bash
+node tools/check-feature-manifest.mjs
+X402_STRICT_PARITY=1 node tools/check-feature-manifest.mjs
+```
+
+The second command is the release gate. It should pass for the declared
+portable SDK contract. C++ ships a native plain-TCP Fulcrum transport and
+exposes the same caller-owned transport boundary as the other SDKs; TLS/WSS
+is an application transport extension. Rust browser bindings are compiled by
+CI after installing `wasm32-unknown-unknown`; a host without that target may
+run the aggregate suite with the WASM check explicitly skipped.
 
 | Language   | Package path                   | Status                       |
 | ---------- | ------------------------------ | ---------------------------- |
 | TypeScript | `packages/typescript`          | portable SDK reference       |
 | Rust       | `packages/rust`                | portable SDK reference       |
-| Go         | `packages/go`                  | protocol-core implementation |
-| Java       | `packages/java`                | protocol-core implementation |
-| Python     | `packages/python`              | protocol-core implementation |
-| C++        | `packages/cpp`                 | protocol-core implementation |
+| Go         | `packages/go`                  | native SDK; strict gaps tracked |
+| Java       | `packages/java`                | native SDK; strict gaps tracked |
+| Python     | `packages/python`              | native SDK; strict gaps tracked |
+| C++        | `packages/cpp`                 | native SDK; strict gaps tracked |
 
 Every package exposes the same wallet-agnostic protocol-core behaviors:
 requirements validation, x402 v2 payment-payload binding, non-empty base64
 transaction-envelope validation, SHA-256 request commitments, conventional
-BCH txid derivation, and the pure BCH settlement-acceptance policy. The Rust
-and TypeScript packages additionally include
-transaction construction/validation, wallet boundaries, provider integration,
-and settlement behavior. Shared P2PKH signature verification is now a
-protocol-core gate; arbitrary BCH VM execution, signing, and provider
-transport remain explicit language-specific adapters rather than silently
-divergent implementations.
+BCH txid derivation, and the pure BCH settlement-acceptance policy. All six
+packages include the declared protocol-core, wallet-boundary, and settlement
+policy surface. They now also expose native BCHN HTTP JSON-RPC and
+deterministic mocknet UTXO adapters. Shared P2PKH signature verification is a
+protocol-core gate; arbitrary transaction-dependent BCH VM execution,
+HTTP/framework integration, browser/WASM packaging, and release API inventory
+remain separate manifest obligations. Registered covenant profile identity and
+successor transition validation are covered; this does not claim arbitrary
+CashScript execution.
 
 Current capability matrix:
 
@@ -51,9 +70,15 @@ Current capability matrix:
 | Deterministic settlement retry/orchestration | pass | pass | pass | pass | pass | pass |
 | Provider-fact settlement projection | pass | pass | pass | pass | pass | pass |
 | Provider source-output projection | pass | pass | pass | pass | pass | pass |
+| Server requirement construction | pass | pass | pass | pass | pass | pass |
+| Wallet-to-payload client boundary | pass | pass | pass | pass | pass | pass |
+| Injected Fulcrum transport failover | pass | pass | pass | pass | pass | pass |
 | CashToken prefix and fungible conservation | pass | pass | pass | pass | pass | pass |
 | CashToken NFT/capability conservation | pass | pass | pass | pass | pass | pass |
-| Provider/facilitator transport and source-output settlement | pass | pass | adapter boundary | adapter boundary | adapter boundary | adapter boundary |
+| Native Fulcrum transport boundary and source-output settlement | pass | pass | pass | pass | pass | pass (TCP; TLS caller-owned) |
+| Native BCHN JSON-RPC/testmempoolaccept boundary | pass | pass | pass | pass | pass | pass |
+| Deterministic mocknet UTXO ledger | pass | pass | pass | pass | pass | pass |
+| Registered covenant profile identity and successor transition | pass | pass | pass | pass | pass | pass |
 
 The shared signed P2PKH fixture covers BCH ForkID ECDSA, payer-key binding, and mutated-signature
 rejection across all six executable packages. The shared NFT fixture covers
@@ -94,6 +119,19 @@ source-output lookup implementation.
 The provider-source-output fixture additionally proves `(txid, vout)` lookup
 against provider bytes and distinguishes missing, mismatched, and out-of-range
 outputs. It remains transport-neutral; it does not perform RPC calls.
+
+The executable test layers are intentionally asymmetric while the portable
+contract is shared: TypeScript is the most comprehensive reference suite and
+currently runs 229 Vitest cases. Rust runs its full crate regression suite
+(104 tests passed, with three live-provider tests ignored unless an endpoint
+is configured). Go runs its package tests plus every shared fixture loop. Python
+runs its shared conformance runner plus 13 SDK/provider tests. Java runs the
+conformance, grouped-module, and seven-case SDK adapter programs. C++ runs the
+shared conformance executable plus a twelve-case SDK adapter executable. The
+language-native adapter cases cover the same high-risk role boundaries; the
+TypeScript-only wallet-shape, offline-vector, and broader provider suites are
+deliberately retained as additional reference coverage.
+
 BCHN's post-upgrade consensus path permits up to 128 bytes; the wider
 41–128-byte range and its policy/dust vectors remain intentionally outside the
 portable x402 policy cap for now. The shared negative fixture covers the
@@ -103,15 +141,17 @@ signature gate is intentionally P2PKH-only; non-P2PKH script checks are
 delegated to an optional BCHN provider call. These protocol-core rows do not
 claim full in-process BCH VM parity.
 
-The remaining work is adapter and release work, not a missing shared verdict:
+The remaining work is release and scope work:
 
-1. add provider/source-output fake adapters for Go, Java, Python, and C++ when
-   those packages have consumers that need them;
-2. add a separate full transaction-dependent VM/covenant vector set only when
+1. install/validate the Rust `wasm32-unknown-unknown` target in CI and run the
+   browser/WASM smoke gate without weakening the source-level boundary;
+2. run the no-skip CI gate on every release and complete security review of
+   each language-native crypto/provider adapter;
+3. add a separate full transaction-dependent VM/covenant vector set only when
    every language can support the same semantics and resource limits;
-3. decide whether the wider BCHN 41–128-byte commitment policy belongs in the
+4. decide whether the wider BCHN 41–128-byte commitment policy belongs in the
    portable x402 policy, then add its policy and dust vectors if so;
-4. run the no-skip CI gate on every release and keep live provider, mempool,
+5. keep live provider, mempool,
    broadcast, and confirmation evidence separate from offline conformance.
 
 Each gate must compare stable normalized fields (`case_id`, acceptance,
@@ -127,7 +167,7 @@ Parity roadmap:
 | 2. BCH transaction core | Lossless parsing/serialization, native value policy, standard CashAddr/script forms | complete* |
 | 3. CashToken core | Prefix codec, fungible conservation, NFT conservation, mutable/minting vectors, then negative cases | positive and initial negative coverage complete; broader negatives and 41–128-byte range next |
 | 4. Script authorization | Shared signed P2PKH, P2SH20/P2SH32 commitment, and bounded VM vectors | P2PKH, P2SH commitment, and `bch-bounded-v1` VM profile complete; transaction-dependent VM spending remains an explicit follow-up |
-| 5. Integration behavior | Source-output lookup, provider truth, facilitator settlement, replay/pending outcomes | Deterministic retry/orchestration contract complete in all six; provider/source-output/facilitator adapters remain TypeScript/Rust only for now |
+| 5. Integration behavior | Source-output lookup, provider truth, facilitator settlement, replay/pending outcomes | Deterministic retry/orchestration contract and injected provider/facilitator adapter regressions execute in all six; live transport evidence remains operator-owned |
 | 6. Release gate | CI executes every package, no skipped language, identical normalized verdicts | CI configured; later capability phases remain |
 
 “Complete*” for phase 2 means the protocol-core surface is covered; it does

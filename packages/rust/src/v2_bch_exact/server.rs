@@ -19,6 +19,20 @@ impl V2BchExact {
         amount: u64,
         network: BchChainReference,
     ) -> v2::PriceTag {
+        Self::price_tag_with_request_hash(pay_to, amount, network, None)
+    }
+
+    /// Build a native BCH price with an optional canonical-request commitment.
+    pub fn price_tag_with_request_hash(
+        pay_to: impl Into<String>,
+        amount: u64,
+        network: BchChainReference,
+        request_hash: Option<String>,
+    ) -> v2::PriceTag {
+        let extra = BchExtra {
+            request_hash,
+            ..BchExtra::default()
+        };
         v2::PriceTag {
             requirements: v2::PaymentRequirements {
                 scheme: ExactScheme.to_string(),
@@ -28,15 +42,14 @@ impl V2BchExact {
                 max_timeout_seconds: 300,
                 asset: "BCH".to_string(),
                 extra: Some(
-                    serde_json::to_value(BchExtra::default()).expect("BCH extra is serializable"),
+                    serde_json::to_value(extra.clone()).expect("BCH extra is serializable"),
                 ),
             },
             enricher: Some(Arc::new(
-                |price_tag: &mut v2::PriceTag, _supported: &proto::SupportedResponse| {
+                move |price_tag: &mut v2::PriceTag, _supported: &proto::SupportedResponse| {
                     if price_tag.requirements.extra.is_none() {
                         price_tag.requirements.extra = Some(
-                            serde_json::to_value(BchExtra::default())
-                                .expect("BCH extra is serializable"),
+                            serde_json::to_value(extra.clone()).expect("BCH extra is serializable"),
                         );
                     }
                 },
@@ -57,7 +70,7 @@ impl V2BchExact {
         token_output_value: Option<u64>,
         network: BchChainReference,
     ) -> v2::PriceTag {
-        Self::cash_token_nft_price_tag(
+        Self::cash_token_nft_price_tag_with_request_hash(
             pay_to,
             category,
             amount,
@@ -65,6 +78,28 @@ impl V2BchExact {
             token_output_value,
             network,
             BchPolicy::default(),
+            None,
+        )
+    }
+
+    /// Build a fungible CashToken price with an optional request commitment.
+    pub fn cash_token_price_tag_with_request_hash(
+        pay_to: impl Into<String>,
+        category: impl Into<String>,
+        amount: u64,
+        token_output_value: Option<u64>,
+        network: BchChainReference,
+        request_hash: Option<String>,
+    ) -> v2::PriceTag {
+        Self::cash_token_nft_price_tag_with_request_hash(
+            pay_to,
+            category,
+            amount,
+            None,
+            token_output_value,
+            network,
+            BchPolicy::default(),
+            request_hash,
         )
     }
 
@@ -80,6 +115,29 @@ impl V2BchExact {
         token_output_value: Option<u64>,
         network: BchChainReference,
         policy: BchPolicy,
+    ) -> v2::PriceTag {
+        Self::cash_token_nft_price_tag_with_request_hash(
+            pay_to,
+            category,
+            amount,
+            nft,
+            token_output_value,
+            network,
+            policy,
+            None,
+        )
+    }
+
+    /// Build a CashToken price with optional NFT state and request commitment.
+    pub fn cash_token_nft_price_tag_with_request_hash(
+        pay_to: impl Into<String>,
+        category: impl Into<String>,
+        amount: u64,
+        nft: Option<BchNft>,
+        token_output_value: Option<u64>,
+        network: BchChainReference,
+        policy: BchPolicy,
+        request_hash: Option<String>,
     ) -> v2::PriceTag {
         let pay_to = pay_to.into();
         let category = category.into();
@@ -117,7 +175,7 @@ impl V2BchExact {
         let extra = BchExtra {
             asset_transfer_method: "cashtoken".to_string(),
             payment_flow: "upfront".to_string(),
-            request_hash: None,
+            request_hash,
             token_output_value: Some(value.to_string()),
             token: Some(BchTokenRequest {
                 category: category.clone(),
@@ -151,5 +209,98 @@ impl V2BchExact {
             crate::address::CashAddrError::UnsupportedPrefix(requirements.network.to_string())
         })?;
         CashAddr::decode_script(&requirements.pay_to, network).map(|_| ())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use base64::Engine;
+
+    #[test]
+    fn server_requirements_cover_the_shared_role_fixture() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../../spec/conformance/v1/server-requirements.json"
+        ))
+        .unwrap();
+        assert_eq!(fixture["version"], 1);
+        assert_eq!(fixture["cases"].as_array().unwrap().len(), 4);
+        for id in [
+            "native-default",
+            "native-request-hash",
+            "fungible-cashtoken-explicit-value",
+            "nft-only-cashtoken",
+        ] {
+            assert!(
+                fixture["cases"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|case| case["id"] == id)
+            );
+        }
+
+        let native = V2BchExact::price_tag_with_request_hash(
+            "bchtest:merchant",
+            1000,
+            BchChainReference::CHIPNET,
+            None,
+        )
+        .requirements;
+        assert_eq!(native.scheme, "exact");
+        assert_eq!(native.network.to_string(), "bch:bchtest");
+        assert_eq!(native.amount, "1000");
+        assert_eq!(native.asset, "BCH");
+        assert_eq!(native.pay_to, "bchtest:merchant");
+        assert_eq!(native.max_timeout_seconds, 300);
+        assert_eq!(native.extra.unwrap()["assetTransferMethod"], "native");
+
+        let nft = BchNft {
+            capability: BchTokenCapability::None,
+            commitment: vec![0x5a, 0x5a, 0x5a, 0x5a],
+        };
+        let token = V2BchExact::cash_token_nft_price_tag_with_request_hash(
+            "bchtest:tokenmerchant",
+            "2222222222222222222222222222222222222222222222222222222222222222",
+            0,
+            Some(nft),
+            Some(1000),
+            BchChainReference::CHIPNET,
+            BchPolicy::default(),
+            Some("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".to_string()),
+        )
+        .requirements;
+        let extra = token.extra.unwrap();
+        assert_eq!(token.scheme, "exact");
+        assert_eq!(
+            token.asset,
+            "2222222222222222222222222222222222222222222222222222222222222222"
+        );
+        assert_eq!(extra["assetTransferMethod"], "cashtoken");
+        assert_eq!(extra["value"], "1000");
+        assert_eq!(
+            extra["requestHash"],
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        );
+        assert_eq!(extra["token"]["amount"], "0");
+        assert_eq!(extra["token"]["nft"]["commitment"], "5a5a5a5a");
+    }
+
+    #[test]
+    fn sdk_lifecycle_fixture_has_a_parseable_wallet_transaction() {
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../spec/conformance/v1/sdk-lifecycle.json"))
+                .unwrap();
+        assert_eq!(fixture["version"], 1);
+        assert_eq!(fixture["walletRequest"]["network"], "mainnet");
+        assert_eq!(fixture["walletRequest"]["value"], "1000");
+        assert!(fixture["settlement"]["accepted"].as_bool().unwrap());
+        let encoded = fixture["transaction"]["base64"].as_str().unwrap();
+        let raw = base64::engine::general_purpose::STANDARD
+            .decode(encoded)
+            .unwrap();
+        let transaction = crate::transaction::BchTransaction::parse(&raw).unwrap();
+        assert_eq!(transaction.inputs.len(), 1);
+        assert_eq!(transaction.outputs.len(), 2);
     }
 }
