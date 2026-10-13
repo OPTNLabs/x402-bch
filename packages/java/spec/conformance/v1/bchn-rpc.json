@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "protocol": "bchn-json-rpc",
+  "transport": "http-json-rpc",
+  "cases": [
+    {
+      "id": "testmempoolaccept-allowed",
+      "method": "testmempoolaccept",
+      "params": [["010203"]],
+      "response": {
+        "id": 1,
+        "result": [
+          {
+            "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "allowed": true
+          }
+        ]
+      },
+      "expected": { "allowed": true, "reason": null }
+    },
+    {
+      "id": "testmempoolaccept-rejected",
+      "method": "testmempoolaccept",
+      "params": [["010203"]],
+      "response": {
+        "id": 1,
+        "result": [
+          {
+            "txid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "allowed": false,
+            "reject-reason": "mandatory-script-verify-flag-failed"
+          }
+        ]
+      },
+      "expected": { "allowed": false, "reason": "mandatory-script-verify-flag-failed" }
+    },
+    {
+      "id": "rpc-error",
+      "method": "getrawtransaction",
+      "params": ["cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"],
+      "response": {
+        "id": 1,
+        "error": { "code": -5, "message": "No such mempool or blockchain transaction" }
+      },
+      "expected": { "errorCode": -5 }
+    }
+  ]
+}

@@ -13,6 +13,18 @@ behavior; transaction-dependent VM execution, signing, and provider transport
 remain explicit adapter boundaries. The pure settlement
 acceptance policy is also covered by the shared mempool, confirmation-depth,
 double-spend-proof, and provider-status fixture.
+The package exposes `BchWallet`, `BchSigner`, `BchUtxo`, `BchProvider`, `ExactBchClient`,
+`ExactBchSignerClient`, `ExactBchFacilitator`, and `BchSettlementStore` role boundaries matching the
+TypeScript/Rust SDK. Wallets own keys and UTXO selection; providers remain the
+source of chain truth, and concrete transports are caller-injected.
+`FailoverFulcrumTransport` provides sequential retry across caller-supplied
+Electrum Cash transports without selecting or trusting public endpoints.
+Grouped imports are available under `protocol`, `transaction`, `wallet`,
+`builder`, `provider`, `settlement`, `server`, `client`, `facilitator`, and
+`sdk`; the root package is retained for compatibility.
+`BuildAndSignNativePayment` provides the explicit-UTXO native BCH builder;
+fees, change, BCH ForkID signing, and post-build policy validation are kept
+deterministic while private keys remain inside the injected signer.
 Provider-returned raw transactions can be checked against a candidate txid
 with `ProviderTransactionMatches`; this is an identity check, not a provider
 transport or confirmation claim. The deterministic settlement-integration
@@ -28,3 +40,7 @@ The package is standalone and keeps its conformance fixture under
 ```bash
 go test ./...
 ```
+
+The SDK tests also exercise settlement-store claim retention, provider-
+observed retry without rebroadcast, request-hash construction, CashToken
+payments that use an ordinary BCH fee UTXO, and Fulcrum CashToken UTXO mapping.
