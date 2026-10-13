@@ -207,6 +207,16 @@ func AssertRequestHashCommitment(transaction Transaction, requestHash string) er
 	return nil
 }
 
+// RequestHashScript builds the canonical zero-value OP_RETURN commitment
+// output used by the signer-backed SDK builders.
+func RequestHashScript(requestHash string) ([]byte, error) {
+	value, err := hex.DecodeString(requestHash)
+	if err != nil || len(value) != 32 {
+		return nil, fmt.Errorf("request hash must be 32-byte hexadecimal")
+	}
+	return append([]byte{0x6a, 0x20}, value...), nil
+}
+
 func isP2PKHScript(script []byte) bool {
 	return len(script) == 25 && script[0] == 0x76 && script[1] == 0xa9 && script[2] == 0x14 && script[23] == 0x88 && script[24] == 0xac
 }

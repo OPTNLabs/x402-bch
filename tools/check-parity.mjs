@@ -7,6 +7,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
+await import('./check-feature-manifest.mjs');
+await import('./check-api-inventory.mjs');
 const fixtureRelativePath = 'spec/conformance/v1/payment-requirements.json';
 const transactionFixtureRelativePath = 'spec/conformance/v1/transaction.json';
 const addressFixtureRelativePath = 'spec/conformance/v1/addresses.json';
@@ -24,6 +26,16 @@ const bchVmFixtureRelativePath = 'spec/conformance/v1/bch-vm.json';
 const settlementIntegrationFixtureRelativePath = 'spec/conformance/v1/settlement-integration.json';
 const settlementProviderFixtureRelativePath = 'spec/conformance/v1/settlement-provider.json';
 const providerSourceOutputFixtureRelativePath = 'spec/conformance/v1/provider-source-output.json';
+const serverRequirementsFixtureRelativePath = 'spec/conformance/v1/server-requirements.json';
+const sdkLifecycleFixtureRelativePath = 'spec/conformance/v1/sdk-lifecycle.json';
+const hdWalletFixtureRelativePath = 'spec/conformance/v1/hd-wallet.json';
+const covenantProfilesFixtureRelativePath = 'spec/conformance/v1/covenant-profiles.json';
+const providerTransportFixtureRelativePath = 'spec/conformance/v1/provider-transport.json';
+const bchnRpcFixtureRelativePath = 'spec/conformance/v1/bchn-rpc.json';
+const mocknetFixtureRelativePath = 'spec/conformance/v1/mocknet.json';
+const diagnosticsFixtureRelativePath = 'spec/conformance/v1/diagnostics.json';
+const httpFlowFixtureRelativePath = 'spec/conformance/v1/http-flow.json';
+const bip39WordListRelativePath = 'spec/conformance/v1/bip39-english.txt';
 const packageFixtures = [
   ['TypeScript', 'packages/typescript'],
   ['Rust', 'packages/rust'],
@@ -84,6 +96,36 @@ const settlementProviderFixture = JSON.parse(canonicalSettlementProviderText);
 const canonicalProviderSourceOutputPath = join(root, packageFixtures[0][1], providerSourceOutputFixtureRelativePath);
 const canonicalProviderSourceOutputText = await readFile(canonicalProviderSourceOutputPath, 'utf8');
 const providerSourceOutputFixture = JSON.parse(canonicalProviderSourceOutputText);
+const canonicalServerRequirementsPath = join(root, packageFixtures[0][1], serverRequirementsFixtureRelativePath);
+const canonicalServerRequirementsText = await readFile(canonicalServerRequirementsPath, 'utf8');
+const serverRequirementsFixture = JSON.parse(canonicalServerRequirementsText);
+const canonicalSdkLifecyclePath = join(root, packageFixtures[0][1], sdkLifecycleFixtureRelativePath);
+const canonicalSdkLifecycleText = await readFile(canonicalSdkLifecyclePath, 'utf8');
+const sdkLifecycleFixture = JSON.parse(canonicalSdkLifecycleText);
+const canonicalHdWalletPath = join(root, packageFixtures[0][1], hdWalletFixtureRelativePath);
+const canonicalHdWalletText = await readFile(canonicalHdWalletPath, 'utf8');
+const hdWalletFixture = JSON.parse(canonicalHdWalletText);
+const canonicalCovenantProfilesPath = join(root, packageFixtures[0][1], covenantProfilesFixtureRelativePath);
+const canonicalCovenantProfilesText = await readFile(canonicalCovenantProfilesPath, 'utf8');
+const covenantProfilesFixture = JSON.parse(canonicalCovenantProfilesText);
+const canonicalProviderTransportPath = join(root, packageFixtures[0][1], providerTransportFixtureRelativePath);
+const canonicalProviderTransportText = await readFile(canonicalProviderTransportPath, 'utf8');
+const providerTransportFixture = JSON.parse(canonicalProviderTransportText);
+const canonicalBchnRpcPath = join(root, packageFixtures[0][1], bchnRpcFixtureRelativePath);
+const canonicalBchnRpcText = await readFile(canonicalBchnRpcPath, 'utf8');
+const bchnRpcFixture = JSON.parse(canonicalBchnRpcText);
+const canonicalMocknetPath = join(root, packageFixtures[0][1], mocknetFixtureRelativePath);
+const canonicalMocknetText = await readFile(canonicalMocknetPath, 'utf8');
+const mocknetFixture = JSON.parse(canonicalMocknetText);
+const canonicalDiagnosticsPath = join(root, packageFixtures[0][1], diagnosticsFixtureRelativePath);
+const canonicalDiagnosticsText = await readFile(canonicalDiagnosticsPath, 'utf8');
+const diagnosticsFixture = JSON.parse(canonicalDiagnosticsText);
+const canonicalHttpFlowPath = join(root, packageFixtures[0][1], httpFlowFixtureRelativePath);
+const canonicalHttpFlowText = await readFile(canonicalHttpFlowPath, 'utf8');
+const httpFlowFixture = JSON.parse(canonicalHttpFlowText);
+const canonicalBip39Path = join(root, packageFixtures[0][1], bip39WordListRelativePath);
+const canonicalBip39Text = await readFile(canonicalBip39Path, 'utf8');
+if (canonicalBip39Text.trimEnd().split('\n').length !== 2048) throw new Error('invalid BIP39 English wordlist');
 
 if (fixture.version !== 1 || !Array.isArray(fixture.cases) || fixture.cases.length < 1) {
   throw new Error('invalid conformance fixture');
@@ -461,6 +503,233 @@ for (const sourceCase of providerSourceOutputFixture.cases) {
     throw new Error(`${sourceCase.id}: invalid provider source-output case`);
   }
 }
+if (
+  serverRequirementsFixture.version !== 1 ||
+  !Array.isArray(serverRequirementsFixture.cases) ||
+  serverRequirementsFixture.cases.length !== 4
+) {
+  throw new Error('invalid server requirements fixture');
+}
+for (const serverCase of serverRequirementsFixture.cases) {
+  if (
+    !serverCase.id ||
+    !['native', 'cashtoken'].includes(serverCase.input?.kind) ||
+    !['bch:bitcoincash', 'bch:bchtest'].includes(serverCase.input?.network) ||
+    typeof serverCase.input?.payTo !== 'string' ||
+    !/^(0|[1-9][0-9]*)$/.test(serverCase.input?.amount ?? '') ||
+    serverCase.expected?.x402Version !== 2 ||
+    serverCase.expected?.scheme !== 'exact' ||
+    serverCase.expected?.maxTimeoutSeconds !== 300
+  ) {
+    throw new Error(`${serverCase.id}: invalid server requirements case`);
+  }
+}
+if (
+  sdkLifecycleFixture.version !== 1 ||
+  sdkLifecycleFixture.requirements?.x402Version !== 2 ||
+  sdkLifecycleFixture.requirements?.scheme !== 'exact' ||
+  sdkLifecycleFixture.requirements?.extra?.paymentFlow !== 'upfront' ||
+  sdkLifecycleFixture.walletRequest?.network !== 'mainnet' ||
+  sdkLifecycleFixture.walletRequest?.value !== '1000' ||
+  !/^[A-Za-z0-9+/]+={0,2}$/.test(sdkLifecycleFixture.transaction?.base64 ?? '') ||
+  sdkLifecycleFixture.settlement?.accepted !== true ||
+  sdkLifecycleFixture.settlement?.replayAccepted !== false
+) {
+  throw new Error('invalid SDK lifecycle fixture');
+}
+if (
+  hdWalletFixture.version !== 1 ||
+  typeof hdWalletFixture.mnemonic !== 'string' ||
+  !Array.isArray(hdWalletFixture.vectors) ||
+  hdWalletFixture.vectors.length !== 4 ||
+  hdWalletFixture.vectors.some((vector) =>
+    !['bch:bitcoincash', 'bch:bchtest'].includes(vector.network) ||
+    !Number.isInteger(vector.coinType) ||
+    ![0, 1].includes(vector.change) ||
+    !Number.isInteger(vector.index) ||
+    !/^m\/44'\/[0-9]+'\/0'\/[01]\/[0-9]+$/.test(vector.path) ||
+    !/^(bitcoincash|bchtest):[qpzry9x8gf2tvdw0s3jn54khce6mua7l]+$/.test(vector.address) ||
+    !/^[0-9a-f]{66}$/.test(vector.publicKey),
+  )
+) {
+  throw new Error('invalid HD wallet fixture');
+}
+if (
+  covenantProfilesFixture.version !== 1 ||
+  !covenantProfilesFixture.profile ||
+  !Array.isArray(covenantProfilesFixture.cases) ||
+  covenantProfilesFixture.cases.length !== 6
+) {
+  throw new Error('invalid covenant profile fixture');
+}
+const covenantProfile = covenantProfilesFixture.profile;
+if (
+  covenantProfile.id !== 'x402-bch/recursive-ticket' ||
+  covenantProfile.family !== 'recursive-state' ||
+  covenantProfile.profileVersion !== 1 ||
+  covenantProfile.network !== 'bch:bchtest' ||
+  covenantProfile.successorPolicy?.lockingBytecode !== '51' ||
+  covenantProfile.successorPolicy?.outputIndex !== 0 ||
+  covenantProfile.successorPolicy?.stateTransition !== 'epoch-plus-one' ||
+  covenantProfile.successorPolicy?.token !== 'preserve' ||
+  covenantProfile.successorPolicy?.value !== 'preserve-minus-fee'
+) {
+  throw new Error('invalid covenant profile identity');
+}
+const canonicalJson = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+};
+const sha256Hex = (value) => createHash('sha256').update(value).digest('hex');
+const descriptor = {
+  id: covenantProfile.id,
+  family: covenantProfile.family,
+  profileVersion: covenantProfile.profileVersion,
+  network: covenantProfile.network,
+  constructorParameters: covenantProfile.constructorParameters,
+  successorPolicy: covenantProfile.successorPolicy,
+};
+if (sha256Hex(canonicalJson(descriptor)) !== covenantProfile.descriptorHash) {
+  throw new Error('covenant descriptor hash mismatch');
+}
+if (
+  sha256Hex(Buffer.from(covenantProfile.successorPolicy.lockingBytecode, 'hex')) !==
+  covenantProfile.lockingBytecodeHash
+) {
+  throw new Error('covenant locking bytecode hash mismatch');
+}
+if (sha256Hex(canonicalJson(covenantProfile.successorPolicy)) !== covenantProfile.successorPolicyHash) {
+  throw new Error('covenant successor policy hash mismatch');
+}
+for (const covenantCase of covenantProfilesFixture.cases) {
+  if (
+    !covenantCase.id ||
+    !['accept', 'reject'].includes(covenantCase.expected) ||
+    !/^[0-9a-f]{64}$/.test(covenantCase.requestHash) ||
+    covenantCase.successorOutputIndex !== 0 ||
+    !/^(0|[1-9][0-9]*)$/.test(covenantCase.fee) ||
+    !covenantCase.source ||
+    !covenantCase.successor ||
+    !/^[0-9a-f]+$/.test(covenantCase.source.lockingBytecode) ||
+    !/^[0-9a-f]+$/.test(covenantCase.successor.lockingBytecode) ||
+    !/^(0|[1-9][0-9]*)$/.test(covenantCase.source.value) ||
+    !/^(0|[1-9][0-9]*)$/.test(covenantCase.successor.value) ||
+    !/^(0|[1-9][0-9]*)$/.test(covenantCase.source.epoch) ||
+    !/^(0|[1-9][0-9]*)$/.test(covenantCase.successor.epoch)
+  ) {
+    throw new Error(`${covenantCase.id}: invalid covenant transition case`);
+  }
+  if (covenantCase.expected === 'reject' && typeof covenantCase.errorCode !== 'string') {
+    throw new Error(`${covenantCase.id}: rejection error code is required`);
+  }
+}
+if (
+  providerTransportFixture.version !== 1 ||
+  providerTransportFixture.protocol !== 'electrum-cash-json-rpc' ||
+  providerTransportFixture.framing !== 'newline-delimited-json' ||
+  !Array.isArray(providerTransportFixture.cases) ||
+  providerTransportFixture.cases.length !== 3
+) {
+  throw new Error('invalid provider transport fixture');
+}
+for (const providerCase of providerTransportFixture.cases) {
+  if (!providerCase.id || typeof providerCase.method !== 'string' || !Array.isArray(providerCase.params) || !providerCase.response) {
+    throw new Error(`${providerCase.id ?? 'provider-case'}: invalid provider transport case`);
+  }
+  if (providerCase.response.id !== 1 || (!('result' in providerCase.response) && !('error' in providerCase.response))) {
+    throw new Error(`${providerCase.id}: invalid provider response envelope`);
+  }
+}
+if (
+  bchnRpcFixture.version !== 1 ||
+  bchnRpcFixture.protocol !== 'bchn-json-rpc' ||
+  bchnRpcFixture.transport !== 'http-json-rpc' ||
+  !Array.isArray(bchnRpcFixture.cases) ||
+  bchnRpcFixture.cases.length !== 3
+) {
+  throw new Error('invalid BCHN RPC fixture');
+}
+for (const bchnCase of bchnRpcFixture.cases) {
+  if (
+    !bchnCase.id ||
+    typeof bchnCase.method !== 'string' ||
+    !Array.isArray(bchnCase.params) ||
+    !bchnCase.response ||
+    bchnCase.response.id !== 1 ||
+    (!('result' in bchnCase.response) && !('error' in bchnCase.response)) ||
+    !bchnCase.expected
+  ) {
+    throw new Error(`${bchnCase.id ?? 'bchn-case'}: invalid BCHN RPC case`);
+  }
+  if (bchnCase.method === 'testmempoolaccept' && typeof bchnCase.expected.allowed !== 'boolean') {
+    throw new Error(`${bchnCase.id}: invalid testmempoolaccept expectation`);
+  }
+  if ('errorCode' in bchnCase.expected && !Number.isInteger(bchnCase.expected.errorCode)) {
+    throw new Error(`${bchnCase.id}: invalid BCHN RPC error expectation`);
+  }
+}
+if (
+  mocknetFixture.version !== 1 ||
+  mocknetFixture.network !== 'bch:bchtest' ||
+  !Number.isInteger(mocknetFixture.tipHeight) ||
+  !/^bchtest:/.test(mocknetFixture.address) ||
+  !/^[0-9a-f]+$/.test(mocknetFixture.payerScriptPubKey) ||
+  !/^[0-9a-f]+$/.test(mocknetFixture.merchantScriptPubKey) ||
+  !Array.isArray(mocknetFixture.initialUtxos) ||
+  mocknetFixture.initialUtxos.length !== 2 ||
+  !mocknetFixture.spend ||
+  !mocknetFixture.conflict
+) {
+  throw new Error('invalid mocknet fixture');
+}
+for (const utxo of mocknetFixture.initialUtxos) {
+  if (!/^[0-9a-f]{64}$/.test(utxo.txid) || !Number.isInteger(utxo.vout) || !/^(0|[1-9][0-9]*)$/.test(utxo.value) || !/^[0-9a-f]+$/.test(utxo.scriptPubKey)) {
+    throw new Error('invalid mocknet initial UTXO');
+  }
+}
+for (const transaction of [mocknetFixture.spend, mocknetFixture.conflict]) {
+  if (!/^[0-9a-f]{64}$/.test(transaction.txid) || !/^[0-9a-f]+$/.test(transaction.rawTransaction) || !Array.isArray(transaction.inputs) || !Array.isArray(transaction.outputs)) {
+    throw new Error('invalid mocknet transaction');
+  }
+}
+if (
+  diagnosticsFixture.version !== 1 ||
+  diagnosticsFixture.redactedValue !== '[redacted]' ||
+  !Array.isArray(diagnosticsFixture.cases) ||
+  diagnosticsFixture.cases.length !== 2
+) {
+  throw new Error('invalid diagnostics fixture');
+}
+for (const diagnosticCase of diagnosticsFixture.cases) {
+  if (!diagnosticCase.id || !diagnosticCase.stage || !diagnosticCase.code || !diagnosticCase.message || !diagnosticCase.input || !diagnosticCase.expectedContext) {
+    throw new Error(`${diagnosticCase.id ?? 'diagnostic-case'}: invalid diagnostics case`);
+  }
+  for (const [key, value] of Object.entries(diagnosticCase.expectedContext)) {
+    if (['transaction', 'rawTransaction', 'mnemonic'].includes(key) && value !== '[redacted]') {
+      throw new Error(`${diagnosticCase.id}: sensitive diagnostic context is not redacted`);
+    }
+  }
+}
+if (
+  httpFlowFixture.version !== 1 ||
+  httpFlowFixture.headers?.paymentRequired !== 'PAYMENT-REQUIRED' ||
+  httpFlowFixture.headers?.paymentSignature !== 'PAYMENT-SIGNATURE' ||
+  httpFlowFixture.headers?.paymentResponse !== 'PAYMENT-RESPONSE' ||
+  !/^[A-Za-z0-9+/]+={0,2}$/.test(httpFlowFixture.paymentRequired) ||
+  !/^[A-Za-z0-9+/]+={0,2}$/.test(httpFlowFixture.paymentSignature) ||
+  !Array.isArray(httpFlowFixture.flow) ||
+  httpFlowFixture.flow.length !== 2 ||
+  httpFlowFixture.flow[0].status !== 402 ||
+  httpFlowFixture.flow[1].status !== 200
+) {
+  throw new Error('invalid HTTP flow fixture');
+}
 for (const testCase of fixture.cases) {
   const { requirements, expected } = testCase;
   if (requirements.x402Version !== 2) throw new Error(`${testCase.name}: x402 version`);
@@ -563,9 +832,57 @@ for (const [language, packagePath] of packageFixtures.slice(1)) {
   if (packageProviderSourceOutputText !== canonicalProviderSourceOutputText) {
     throw new Error(`${language} provider source-output fixture differs from the TypeScript fixture`);
   }
+  const serverRequirementsPath = join(root, packagePath, serverRequirementsFixtureRelativePath);
+  const packageServerRequirementsText = await readFile(serverRequirementsPath, 'utf8');
+  if (packageServerRequirementsText !== canonicalServerRequirementsText) {
+    throw new Error(`${language} server requirements fixture differs from the TypeScript fixture`);
+  }
+  const packageSdkLifecyclePath = join(root, packagePath, sdkLifecycleFixtureRelativePath);
+  const packageSdkLifecycleText = await readFile(packageSdkLifecyclePath, 'utf8');
+  if (packageSdkLifecycleText !== canonicalSdkLifecycleText) {
+    throw new Error(`${language} SDK lifecycle fixture differs from the TypeScript fixture`);
+  }
+  const packageHdWalletPath = join(root, packagePath, hdWalletFixtureRelativePath);
+  const packageHdWalletText = await readFile(packageHdWalletPath, 'utf8');
+  if (packageHdWalletText !== canonicalHdWalletText) {
+    throw new Error(`${language} HD wallet fixture differs from the TypeScript fixture`);
+  }
+  const packageCovenantProfilesPath = join(root, packagePath, covenantProfilesFixtureRelativePath);
+  const packageCovenantProfilesText = await readFile(packageCovenantProfilesPath, 'utf8');
+  if (packageCovenantProfilesText !== canonicalCovenantProfilesText) {
+    throw new Error(`${language} covenant profile fixture differs from the TypeScript fixture`);
+  }
+  const packageProviderTransportPath = join(root, packagePath, providerTransportFixtureRelativePath);
+  const packageProviderTransportText = await readFile(packageProviderTransportPath, 'utf8');
+  if (packageProviderTransportText !== canonicalProviderTransportText) {
+    throw new Error(`${language} provider transport fixture differs from the TypeScript fixture`);
+  }
+  const packageBchnRpcPath = join(root, packagePath, bchnRpcFixtureRelativePath);
+  const packageBchnRpcText = await readFile(packageBchnRpcPath, 'utf8');
+  if (packageBchnRpcText !== canonicalBchnRpcText) {
+    throw new Error(`${language} BCHN RPC fixture differs from the TypeScript fixture`);
+  }
+  const packageMocknetPath = join(root, packagePath, mocknetFixtureRelativePath);
+  const packageMocknetText = await readFile(packageMocknetPath, 'utf8');
+  if (packageMocknetText !== canonicalMocknetText) {
+    throw new Error(`${language} mocknet fixture differs from the TypeScript fixture`);
+  }
+  const packageDiagnosticsPath = join(root, packagePath, diagnosticsFixtureRelativePath);
+  const packageDiagnosticsText = await readFile(packageDiagnosticsPath, 'utf8');
+  if (packageDiagnosticsText !== canonicalDiagnosticsText) {
+    throw new Error(`${language} diagnostics fixture differs from the TypeScript fixture`);
+  }
+  const packageHttpFlowPath = join(root, packagePath, httpFlowFixtureRelativePath);
+  const packageHttpFlowText = await readFile(packageHttpFlowPath, 'utf8');
+  if (packageHttpFlowText !== canonicalHttpFlowText) {
+    throw new Error(`${language} HTTP flow fixture differs from the TypeScript fixture`);
+  }
+  const packageBip39Path = join(root, packagePath, bip39WordListRelativePath);
+  const packageBip39Text = await readFile(packageBip39Path, 'utf8');
+  if (packageBip39Text !== canonicalBip39Text) throw new Error(`${language} BIP39 wordlist differs from the TypeScript fixture`);
 }
 console.log(
-  `conformance fixtures: ${fixture.cases.length} wire cases + ${cashTokenNegativeFixture.cases.length} negative CashToken cases + ${p2pkhSignatureFixture.cases.length} P2PKH signature cases + ${requestHashFixture.cases.length} request-hash cases + ${p2shCommitmentFixture.cases.length} P2SH commitment cases + ${settlementPolicyFixture.cases.length} settlement-policy cases + ${providerObservationFixture.cases.length} provider-observation cases + ${settlementOutcomeFixture.cases.length} settlement-outcome cases + ${bchVmFixture.cases.length} BCH VM cases + ${settlementIntegrationFixture.cases.length} settlement-integration cases + ${settlementProviderFixture.cases.length} provider-fact settlement cases + ${providerSourceOutputFixture.cases.length} provider source-output cases validated across ${packageFixtures.length} packages`,
+  `conformance fixtures: ${fixture.cases.length} wire cases + ${cashTokenNegativeFixture.cases.length} negative CashToken cases + ${p2pkhSignatureFixture.cases.length} P2PKH signature cases + ${requestHashFixture.cases.length} request-hash cases + ${p2shCommitmentFixture.cases.length} P2SH commitment cases + ${settlementPolicyFixture.cases.length} settlement-policy cases + ${providerObservationFixture.cases.length} provider-observation cases + ${settlementOutcomeFixture.cases.length} settlement-outcome cases + ${bchVmFixture.cases.length} BCH VM cases + ${settlementIntegrationFixture.cases.length} settlement-integration cases + ${settlementProviderFixture.cases.length} provider-fact settlement cases + ${providerSourceOutputFixture.cases.length} provider source-output cases + ${serverRequirementsFixture.cases.length} server-requirement cases + 1 SDK lifecycle case + ${hdWalletFixture.vectors.length} HD wallet vectors + ${covenantProfilesFixture.cases.length} covenant-profile cases + ${providerTransportFixture.cases.length} provider-transport cases + ${bchnRpcFixture.cases.length} BCHN RPC cases + 1 deterministic mocknet ledger case + ${diagnosticsFixture.cases.length} diagnostics cases + 1 HTTP flow case validated across ${packageFixtures.length} packages`,
 );
 
 function resolveCommand(command) {
@@ -583,8 +900,11 @@ function run(command, args, cwd) {
   execFileSync(command, args, { cwd, stdio: 'inherit' });
 }
 
-run('npm', ['run', 'test:conformance'], join(root, 'packages/typescript'));
+// TypeScript is the most comprehensive reference suite. Run every test file;
+// the conformance cases are included in that full run.
+run('npm', ['test'], join(root, 'packages/typescript'));
 run('python3', ['tests/run_conformance.py'], join(root, 'packages/python'));
+run('python3', ['tests/run_sdk.py'], join(root, 'packages/python'));
 run('make', ['test'], join(root, 'packages/java'));
 
 const cppBuild = mkdtempSync(join(tmpdir(), 'x402-bch-cpp-'));
@@ -614,6 +934,15 @@ if (cargoCommand) {
     ['test', '--manifest-path', 'Cargo.toml', '--locked', '--all-features', '--lib'],
     join(root, 'packages/rust'),
   );
+  if (process.env.X402_REQUIRE_WASM === '1' || process.env.CI === 'true') {
+    run(
+      cargoCommand,
+      ['check', '--manifest-path', 'Cargo.toml', '--locked', '--all-features', '--target', 'wasm32-unknown-unknown'],
+      join(root, 'packages/rust'),
+    );
+  } else {
+    console.warn('Rust WASM target check not run locally; set X402_REQUIRE_WASM=1 when the target is installed');
+  }
 } else {
   console.warn('cargo toolchain unavailable; Rust conformance test not run');
 }

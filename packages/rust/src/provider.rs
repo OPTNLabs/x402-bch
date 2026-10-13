@@ -167,6 +167,95 @@ pub trait BchNodeRpc: Send + Sync {
     async fn request(&self, method: &str, params: Value) -> Result<Value, BchProviderError>;
 }
 
+/// Direct BCHN JSON-RPC over an HTTP endpoint.
+///
+/// This intentionally supports plain HTTP for local/private BCHN deployments;
+/// applications that require TLS should put a certificate-validating proxy or
+/// an application-specific transport behind `BchNodeRpc`.
+#[cfg(not(target_arch = "wasm32"))]
+#[derive(Clone, Debug)]
+pub struct BchnHttpRpc {
+    host: String,
+    port: u16,
+    path: String,
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+impl BchnHttpRpc {
+    pub fn connect(url: &str) -> Result<Self, BchProviderError> {
+        let authority = url.strip_prefix("http://").ok_or_else(|| {
+            BchProviderError::InvalidResponse("BCHN RPC URL must use http://".to_string())
+        })?;
+        let (authority, path) = authority.split_once('/').unwrap_or((authority, ""));
+        let (host, port) = authority.rsplit_once(':').ok_or_else(|| {
+            BchProviderError::InvalidResponse("BCHN RPC URL must include a port".to_string())
+        })?;
+        let port = port.parse::<u16>().map_err(|_| {
+            BchProviderError::InvalidResponse("BCHN RPC URL has an invalid port".to_string())
+        })?;
+        if host.is_empty() || port == 0 {
+            return Err(BchProviderError::InvalidResponse(
+                "BCHN RPC URL has an invalid host or port".to_string(),
+            ));
+        }
+        Ok(Self {
+            host: host.to_string(),
+            port,
+            path: format!("/{}", path),
+        })
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[async_trait]
+impl BchNodeRpc for BchnHttpRpc {
+    async fn request(&self, method: &str, params: Value) -> Result<Value, BchProviderError> {
+        let mut stream = TcpStream::connect((self.host.as_str(), self.port))
+            .await
+            .map_err(|error| BchProviderError::Transport(error.to_string()))?;
+        let body = serde_json::to_vec(&json!({
+            "jsonrpc": "1.0",
+            "id": 1,
+            "method": method,
+            "params": params,
+        }))
+        .map_err(|error| BchProviderError::InvalidResponse(error.to_string()))?;
+        let request = format!(
+            "POST {} HTTP/1.1\r\nHost: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+            self.path,
+            self.host,
+            body.len()
+        );
+        stream
+            .write_all(request.as_bytes())
+            .await
+            .map_err(|error| BchProviderError::Transport(error.to_string()))?;
+        stream
+            .write_all(&body)
+            .await
+            .map_err(|error| BchProviderError::Transport(error.to_string()))?;
+        stream
+            .shutdown()
+            .await
+            .map_err(|error| BchProviderError::Transport(error.to_string()))?;
+        let mut response = Vec::new();
+        stream
+            .read_to_end(&mut response)
+            .await
+            .map_err(|error| BchProviderError::Transport(error.to_string()))?;
+        let separator = response
+            .windows(4)
+            .position(|window| window == b"\r\n\r\n")
+            .ok_or_else(|| {
+                BchProviderError::InvalidResponse("BCHN HTTP response has no body".to_string())
+            })?;
+        let body = &response[separator + 4..];
+        let response: Value = serde_json::from_slice(body)
+            .map_err(|error| BchProviderError::InvalidResponse(error.to_string()))?;
+        json_rpc_result(response)
+    }
+}
+
 /// Sequentially retries Fulcrum requests across caller-provided transports.
 ///
 /// Endpoint construction, TLS certificate validation, and endpoint ordering
@@ -887,6 +976,8 @@ fn is_missing_transaction(error: &BchProviderError) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
     use std::sync::{Arc, Mutex};
 
     struct FixedNode(Result<Value, BchProviderError>);
@@ -937,6 +1028,44 @@ mod tests {
             None
         );
         assert_eq!(answer(Some(FixedNode(Ok(json!({ "busy": true }))))), None);
+    }
+
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn bchn_http_rpc_round_trip_uses_local_node() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let worker = std::thread::spawn(move || {
+            let (mut socket, _) = listener.accept().unwrap();
+            let mut request = Vec::new();
+            let mut chunk = [0u8; 1024];
+            while !request.windows(4).any(|window| window == b"\r\n\r\n") {
+                let count = socket.read(&mut chunk).unwrap();
+                if count == 0 {
+                    break;
+                }
+                request.extend_from_slice(&chunk[..count]);
+            }
+            let response_body = r#"{"result":[{"allowed":true,"txid":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}],"id":1}"#;
+            write!(
+                socket,
+                "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                response_body.len(),
+                response_body
+            )
+            .unwrap();
+        });
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+        let rpc = BchnHttpRpc::connect(&format!("http://{address}/"))
+            .expect("local BCHN endpoint should parse");
+        let result = runtime
+            .block_on(rpc.request("testmempoolaccept", json!([["010203"]])))
+            .unwrap();
+        assert_eq!(result[0]["allowed"], true);
+        worker.join().unwrap();
     }
 
     #[derive(Clone)]

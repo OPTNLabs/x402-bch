@@ -10,6 +10,8 @@ from test_wire import test_wire_core
 from x402_bch import (
     CashToken,
     accepts_bch_settlement,
+    build_cash_token_requirements,
+    build_native_requirements,
     assert_request_hash_commitment,
     decode_cash_address,
     encode_cash_address,
@@ -29,10 +31,37 @@ from x402_bch import (
     verify_cash_token_payment,
     verify_p2sh_redeem_script,
     verify_p2pkh_input,
+    profile_hashes_match,
+    validate_covenant_transition,
+    ExactBchClient,
+    ExactBchFacilitator,
+    FailoverFulcrumTransport,
+    to_transaction_request,
 )
 
 test_payment_requirements_fixture()
 test_wire_core()
+server_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/server-requirements.json").read_text())
+for server_case in server_fixture["cases"]:
+    server_input = server_case["input"]
+    if server_input["kind"] == "native":
+        actual_requirements = build_native_requirements(
+            server_input["network"],
+            server_input["payTo"],
+            server_input["amount"],
+            server_input.get("requestHash"),
+        )
+    else:
+        actual_requirements = build_cash_token_requirements(
+            server_input["network"],
+            server_input["payTo"],
+            server_input["category"],
+            server_input["amount"],
+            server_input.get("value"),
+            server_input.get("requestHash"),
+            server_input.get("nft"),
+        )
+    assert actual_requirements == {"x402Version": 2, **server_case["expected"]}, server_case["id"]
 request_hash_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/request-hash.json").read_text())
 for request_hash_case in request_hash_fixture["cases"]:
     request_hash_transaction = parse_transaction(
@@ -63,6 +92,14 @@ for p2sh_case in p2sh_fixture["cases"]:
     else:
         if p2sh_case["expected"] != "accept":
             raise AssertionError(f"P2SH case accepted: {p2sh_case['id']}")
+covenant_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/covenant-profiles.json").read_text())
+assert profile_hashes_match(covenant_fixture["profile"])
+for covenant_case in covenant_fixture["cases"]:
+    result = validate_covenant_transition(covenant_fixture["profile"], covenant_case)
+    if covenant_case["expected"] == "accept":
+        assert result == {"accepted": True}, covenant_case["id"]
+    else:
+        assert result == {"accepted": False, "errorCode": covenant_case["errorCode"]}, covenant_case["id"]
 settlement_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/settlement-policy.json").read_text())
 for settlement_case in settlement_fixture["cases"]:
     accepted = accepts_bch_settlement(
@@ -216,6 +253,75 @@ except ValueError:
     pass
 else:
     raise AssertionError("cross-network CashAddr accepted")
+
+sdk_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/sdk-lifecycle.json").read_text())
+sdk_raw = base64.b64decode(sdk_fixture["transaction"]["base64"], validate=True)
+
+
+class _SdkWallet:
+    def __init__(self):
+        self.request = None
+
+    def create_payment(self, request):
+        self.request = request
+        return sdk_raw
+
+
+class _SdkProvider:
+    network = sdk_fixture["requirements"]["network"]
+
+    def __init__(self):
+        self.broadcasts = 0
+
+    def list_utxos(self, _address):
+        return []
+
+    def get_source_output(self, _txid, _vout):
+        return {"value": "100000"}
+
+    def get_outpoint_status(self, _txid, _vout):
+        return "unspent"
+
+    def broadcast(self, _raw):
+        self.broadcasts += 1
+        return sdk_fixture["transaction"]["txid"]
+
+    def get_transaction(self, _txid):
+        return None
+
+    def get_transaction_status(self, _txid):
+        return {"kind": "confirmed", "height": sdk_fixture["settlement"]["height"]}
+
+    def get_tip_height(self):
+        return sdk_fixture["settlement"]["tipHeight"]
+
+    def has_double_spend_proof(self, _txid):
+        return False
+
+
+sdk_wallet = _SdkWallet()
+sdk_provider = _SdkProvider()
+sdk_request = to_transaction_request(sdk_fixture["requirements"])
+assert sdk_request.network == sdk_fixture["walletRequest"]["network"]
+assert sdk_request.value == sdk_fixture["walletRequest"]["value"]
+sdk_payload = ExactBchClient(sdk_wallet, sdk_provider).create_payment_payload(sdk_fixture["requirements"])
+assert sdk_payload["accepted"] == sdk_fixture["requirements"]
+assert ExactBchFacilitator(sdk_provider).verify(sdk_payload, sdk_fixture["requirements"])["isValid"]
+assert ExactBchFacilitator(sdk_provider).settle(sdk_payload, sdk_fixture["requirements"])["success"]
+assert sdk_provider.broadcasts == 1
+
+
+class _FailingTransport:
+    def request(self, _method, _params):
+        raise RuntimeError("offline")
+
+
+class _WorkingTransport:
+    def request(self, _method, _params):
+        return "ok"
+
+
+assert FailoverFulcrumTransport([_FailingTransport(), _WorkingTransport()]).request("server.version", []) == "ok"
 token_fixture = json.loads((Path(__file__).parents[1] / "spec/conformance/v1/cashtoken.json").read_text())
 token_transaction = base64.b64encode(bytes.fromhex(token_fixture["rawTransaction"])).decode()
 token_parsed = parse_transaction(token_transaction)

@@ -60,6 +60,19 @@ tests, and local conformance fixture. Packages do not import source files or
 test fixtures from one another. The repository-level parity command compares
 those local fixtures and runs the package checks together:
 
+Each SDK is split by responsibility. Go exposes grouped `protocol`,
+`transaction`, `wallet`, `builder`, `provider`, `settlement`, `server`, and
+`sdk` packages; Python exposes corresponding `x402_bch` modules; Java exposes
+grouped `x402bch` entrypoints; and C++ installs grouped headers under
+`x402_bch/`. The historical root entrypoints remain supported compatibility
+surfaces.
+
+All six SDKs expose both client boundaries: an external-wallet client that
+receives one complete signed transaction, and a signer-backed client/builder
+path that selects explicit provider UTXOs. Both paths validate the returned
+transaction against provider source outputs and enforce an optional
+request-hash OP_RETURN commitment before returning the x402 payload.
+
 ```bash
 node tools/check-parity.mjs
 ```
@@ -67,13 +80,21 @@ node tools/check-parity.mjs
 The staged capability gates and remaining cross-language work are tracked in
 [`PARITY_PLAN.md`](PARITY_PLAN.md).
 
+The strict machine-readable inventory is
+[`spec/feature-manifest.json`](spec/feature-manifest.json). Inspect it with
+`node tools/check-feature-manifest.mjs`; `X402_STRICT_PARITY=1` makes any
+partial or missing language capability fail. The aggregate parity runner
+checks the same inventory before package tests.
+
 The portable parity surface currently includes the `bch-bounded-v1` VM profile,
-provider-fact and source-output projection, and deterministic
-settlement-integration decisions in all six languages. These cover stack
-authorization, provider txid identity, authoritative `(txid, vout)` lookup,
-replay binding, pending responses, and same-transaction retry behavior. Full
-transaction-dependent BCH VM execution and provider transports remain
-explicitly separate from this offline contract.
+server requirement construction, wallet-to-payload client boundaries,
+provider-fact/source-output projection, deterministic settlement-integration
+decisions, HD derivation/signing, explicit-UTXO builders, Fulcrum failover,
+native BCHN `testmempoolaccept` mapping, and a deterministic mocknet UTXO
+ledger in all six languages. Browser/WASM, HTTP/framework integration, and
+arbitrary transaction-dependent VM/CashScript execution remain explicit
+manifest gates rather than being inferred from the protocol core; registered
+covenant profile transitions are covered by the shared covenant fixture.
 
 ## BCH transaction model
 

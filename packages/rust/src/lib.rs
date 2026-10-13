@@ -12,6 +12,10 @@
 
 pub mod address;
 pub mod chain;
+pub mod covenant;
+pub mod diagnostics;
+pub mod http;
+pub mod mocknet;
 pub mod provider;
 pub mod script_vm;
 pub mod settlement;
@@ -22,14 +26,19 @@ pub mod v2_bch_exact;
 mod regression;
 
 pub use chain::{BCH_NAMESPACE, BchChainReference, BchChainReferenceFormatError};
-#[cfg(not(target_arch = "wasm32"))]
-pub use provider::FulcrumTcpTransport;
+pub use covenant::{
+    CovenantErrorCode, CovenantNftState, CovenantProfile, CovenantState, CovenantTokenState,
+    CovenantTransition, SuccessorPolicy, profile_hashes_match, validate_covenant_transition,
+};
+pub use mocknet::{MocknetProvider, MocknetTransaction};
 #[cfg(all(feature = "websocket", not(target_arch = "wasm32")))]
 pub use provider::FulcrumWebSocketTransport;
 pub use provider::{
     BchChainProvider, BchNodeRpc, BchOutpointStatus, BchProviderError, BchTransactionStatus,
     BchUtxo, FailoverFulcrumTransport, FulcrumProvider, FulcrumTransport,
 };
+#[cfg(not(target_arch = "wasm32"))]
+pub use provider::{BchnHttpRpc, FulcrumTcpTransport};
 #[cfg(target_arch = "wasm32")]
 mod wasm;
 pub use script_vm::{BchVmResult, evaluate_bch_vm};

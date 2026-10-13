@@ -33,6 +33,76 @@ public final class ConformanceTest {
     catch (IllegalArgumentException expected) {}
     try { X402Bch.validatePaymentPayload(2, "!!!!", requirements, requirements); throw new AssertionError("invalid payload accepted"); }
     catch (IllegalArgumentException expected) {}
+    String serverRequirements = Files.readString(Path.of("spec/conformance/v1/server-requirements.json"));
+    if (!serverRequirements.contains("\"id\": \"native-default\"") ||
+        !serverRequirements.contains("\"id\": \"nft-only-cashtoken\""))
+      throw new AssertionError("invalid server requirements fixture");
+    Map<String, Object> nativeExpected = new HashMap<>();
+    nativeExpected.put("x402Version", 2); nativeExpected.put("scheme", "exact");
+    nativeExpected.put("network", "bch:bchtest"); nativeExpected.put("amount", "1000");
+    nativeExpected.put("asset", "BCH"); nativeExpected.put("payTo", "bchtest:merchant");
+    nativeExpected.put("maxTimeoutSeconds", 300);
+    nativeExpected.put("extra", Map.of("assetTransferMethod", "native", "paymentFlow", "upfront"));
+    if (!X402Bch.buildNativeRequirements("bch:bchtest", "bchtest:merchant", "1000", null).equals(nativeExpected))
+      throw new AssertionError("native server requirements mismatch");
+    Map<String, Object> tokenExpected = new HashMap<>();
+    tokenExpected.put("x402Version", 2); tokenExpected.put("scheme", "exact");
+    tokenExpected.put("network", "bch:bchtest"); tokenExpected.put("amount", "0");
+    tokenExpected.put("asset", "2222222222222222222222222222222222222222222222222222222222222222");
+    tokenExpected.put("payTo", "bchtest:tokenmerchant"); tokenExpected.put("maxTimeoutSeconds", 300);
+    tokenExpected.put("extra", Map.of(
+        "assetTransferMethod", "cashtoken", "paymentFlow", "upfront", "value", "1000",
+        "requestHash", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "token", Map.of("category", "2222222222222222222222222222222222222222222222222222222222222222",
+            "amount", "0", "nft", Map.of("capability", "none", "commitment", "5a5a5a5a"))));
+    if (!X402Bch.buildCashTokenRequirements(
+        "bch:bchtest", "bchtest:tokenmerchant",
+        "2222222222222222222222222222222222222222222222222222222222222222", "0", "1000",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        new X402Bch.NftState("none", decodeHex("5a5a5a5a"))).equals(tokenExpected))
+      throw new AssertionError("CashToken server requirements mismatch");
+    String sdkLifecycle = Files.readString(Path.of("spec/conformance/v1/sdk-lifecycle.json"));
+    var sdkMatcher = Pattern.compile("\\\"base64\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"").matcher(sdkLifecycle);
+    if (!sdkMatcher.find()) throw new AssertionError("invalid SDK lifecycle fixture");
+    String sdkBase64 = sdkMatcher.group(1);
+    Map<String, Object> sdkRequirements = X402Bch.buildNativeRequirements(
+        "bch:bitcoincash", "bitcoincash:qq3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygrg4dtdzf", "1000", null);
+    byte[] sdkRaw = Base64.getDecoder().decode(sdkBase64);
+    X402BchSdk.Wallet sdkWallet = request -> sdkRaw;
+    X402BchSdk.Provider sdkProvider = new X402BchSdk.Provider() {
+      public String network() { return "bch:bitcoincash"; }
+      public List<X402BchSdk.Utxo> listUtxos(String address) { return List.of(); }
+      public X402Bch.TransactionOutput sourceOutput(String txid, int vout) { return new X402Bch.TransactionOutput(new java.math.BigInteger("100000"), new byte[0]); }
+      public String outpointStatus(String txid, int vout) { return "unspent"; }
+      public String broadcast(byte[] raw) { return "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa"; }
+      public byte[] transaction(String txid) { return null; }
+      public X402BchSdk.Status transactionStatus(String txid) { return new X402BchSdk.Status("confirmed", 100); }
+      public long tipHeight() { return 100; }
+      public boolean hasDoubleSpendProof(String txid) { return false; }
+    };
+    var sdkPayload = new X402BchSdk.ExactBchClient(sdkWallet, sdkProvider).createPaymentPayload(sdkRequirements);
+    X402BchSdk.TransactionRequest sdkRequest = X402BchSdk.toTransactionRequest(sdkRequirements);
+    if (!sdkRequest.network().equals("mainnet") || !sdkRequest.value().equals("1000") ||
+        !sdkPayload.get("accepted").equals(sdkRequirements)) throw new AssertionError("SDK lifecycle mismatch");
+    X402BchSdk.FulcrumTransport failingTransport = (method, params) -> { throw new Exception("offline"); };
+    X402BchSdk.FulcrumTransport workingTransport = (method, params) -> "ok";
+    if (!"ok".equals(new X402BchSdk.FailoverFulcrumTransport(
+        List.of(failingTransport, workingTransport)).request("server.version", List.of())))
+      throw new AssertionError("Fulcrum failover mismatch");
+    String hdMnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    String[][] hdVectors = {
+      {"bch:bchtest", "1", "0", "bchtest:qqaz6s295ncfs53m86qj0uw6sl8u2kuw0ymst35fx4", "02a7451395735369f2ecdfc829c0f774e88ef1303dfe5b2f04dbaab30a535dfdd6"},
+      {"bch:bchtest", "1", "1", "bchtest:qqwtwwfqkkkr3arquwx7k6ztn39yprlncq2gq6et74", "0320282ac6b3782721b1742c294530a9f250413361abbff659acc8352bc4c1f3f1"},
+      {"bch:bitcoincash", "145", "0", "bitcoincash:qqyx49mu0kkn9ftfj6hje6g2wfer34yfnq5tahq3q6", "02bbe7dbcdf8b2261530a867df7180b17a90b482f74f2736b8a30d3f756e42e217"},
+      {"bch:bitcoincash", "145", "1", "bitcoincash:qr8aeharupyrmhfu0d4tdmsnc5y8cfk47y6qrsjsrx", "02f178b9410d11e47e10bef8a8e4bc53e48d9ae15864a024a54f87a802dad5f514"}
+    };
+    for (String[] vector : hdVectors) {
+      X402BchSdk.WalletAddress derived = X402BchSdk.deriveBchWalletAddress(hdMnemonic, vector[0], Integer.parseInt(vector[2]), 0, 0, "", Integer.parseInt(vector[1]));
+      if (!derived.address().equals(vector[3]) || !hex(derived.publicKey()).equals(vector[4])) throw new AssertionError("HD wallet vector mismatch");
+    }
+    X402BchSdk.Secp256k1BchSigner hdSigner = new X402BchSdk.Secp256k1BchSigner(hdMnemonic, "bch:bchtest", "", 0, 0, 0);
+    if (!hdSigner.address("bch:bchtest").equals(hdVectors[0][3]) || !hex(hdSigner.publicKey()).equals(hdVectors[0][4]) || hdSigner.signDigest(new byte[32])[0] != 0x30)
+      throw new AssertionError("HD signer mismatch");
     X402Bch.validateTransactionEnvelope("AgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABqRzBEAiATJrlQh+1HHiXNlhiWdL97/QnR0aAE//NQGIuj0NB4AAIgO7sholeiC2XV4xGiBYgm8x/lzDrqhumDiMjzVjDE+oZBIQMbhMVWexJkQJldPtWqugVl1x4YNGBIGf+cF/Xp1d0Hj/////8C6AMAAAAAAAAZdqkUIiIiIiIiIiIiIiIiIiIiIiIiIiKIrNaBAQAAAAAAGXapFHmwAIh2JrKUqRRQGkzSJrWLI1mDiKwAAAAA");
     try { X402Bch.validateTransactionEnvelope("AQID"); throw new AssertionError("incomplete envelope accepted"); }
     catch (IllegalArgumentException expected) {}
@@ -308,6 +378,11 @@ public final class ConformanceTest {
     }
     if (vmCases != 12) throw new AssertionError("invalid BCH VM fixture");
 
+    boolean rejected = false;
+    try {
+      X402BchSdk.deriveBchWalletAddress("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon zoo", "bch:bchtest", 0, 0, 0, "", null);
+    } catch (Exception expected) { rejected = true; }
+    if (!rejected) throw new AssertionError("invalid BIP39 checksum must be rejected");
     System.out.println("java conformance fixture: ok");
   }
 

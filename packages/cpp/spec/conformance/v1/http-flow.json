@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "headers": {
+    "paymentRequired": "PAYMENT-REQUIRED",
+    "paymentSignature": "PAYMENT-SIGNATURE",
+    "paymentResponse": "PAYMENT-RESPONSE"
+  },
+  "paymentRequired": "eyJ4NDAyVmVyc2lvbiI6Miwic2NoZW1lIjoiZXhhY3QiLCJuZXR3b3JrIjoiYmNoOmJjaHRlc3QiLCJhbW91bnQiOiIxMDAwIiwiYXNzZXQiOiJCQ0giLCJwYXlUbyI6ImJjaHRlc3Q6bWVyY2hhbnQiLCJtYXhUaW1lb3V0U2Vjb25kcyI6MzAwLCJleHRyYSI6eyJhc3NldFRyYW5zZmVyTWV0aG9kIjoibmF0aXZlIiwicGF5bWVudEZsb3ciOiJ1cGZyb250In19",
+  "paymentSignature": "eyJ4NDAyVmVyc2lvbiI6MiwicGF5bG9hZCI6eyJ0cmFuc2FjdGlvbiI6IkFRSUQifSwiYWNjZXB0ZWQiOnsieDQwMlZlcnNpb24iOjIsInNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImJjaDpiY2h0ZXN0IiwiYW1vdW50IjoiMTAwMCIsImFzc2V0IjoiQkNIIiwicGF5VG8iOiJiY2h0ZXN0Om1lcmNoYW50IiwibWF4VGltZW91dFNlY29uZHMiOjMwMCwiZXh0cmEiOnsiYXNzZXRUcmFuc2Zlck1ldGhvZCI6Im5hdGl2ZSIsInBheW1lbnRGbG93IjoidXBmcm9udCJ9fX0=",
+  "flow": [
+    { "step": "request-without-payment", "status": 402, "responseHeader": "paymentRequired" },
+    {
+      "step": "retry-with-payment",
+      "status": 200,
+      "requestHeader": "paymentSignature",
+      "responseHeader": "paymentResponse"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "x402-bch-sdk-1",
+  "packages": {
+    "typescript": {"root": "packages/typescript", "required": ["package.json", "src/index.ts", "src/exact/client/index.ts", "src/exact/server/index.ts", "src/exact/facilitator/index.ts"], "roles": ["server", "client", "wallet", "provider", "facilitator"]},
+    "rust": {"root": "packages/rust", "required": ["Cargo.toml", "src/lib.rs", "src/v2_bch_exact/client.rs", "src/v2_bch_exact/server.rs", "src/v2_bch_exact/facilitator.rs"], "roles": ["server", "client", "wallet", "provider", "facilitator"]},
+    "go": {"root": "packages/go", "required": ["go.mod", "sdk.go", "server.go", "provider_core.go", "settlement.go"], "roles": ["server", "client", "wallet", "provider", "facilitator"]},
+    "java": {"root": "packages/java", "required": ["Makefile", "src/main/java/X402Bch.java", "src/main/java/X402BchSdk.java", "src/main/java/x402bch/server/Server.java", "src/main/java/x402bch/provider/Provider.java"], "roles": ["server", "client", "wallet", "provider", "facilitator"]},
+    "python": {"root": "packages/python", "required": ["pyproject.toml", "src/x402_bch/__init__.py", "src/x402_bch/server.py", "src/x402_bch/provider.py", "src/x402_bch/facilitator.py"], "roles": ["server", "client", "wallet", "provider", "facilitator"]},
+    "cpp": {"root": "packages/cpp", "required": ["CMakeLists.txt", "include/x402_bch.hpp", "include/x402_bch_sdk.hpp", "src/server.cpp", "src/sdk_provider.cpp"], "roles": ["server", "client", "wallet", "provider", "facilitator"]}
+  }
+}

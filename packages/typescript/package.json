@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
-    "test:conformance": "vitest run test/protocol.test.ts test/settlementPolicy.test.ts test/bchVm.test.ts test/settlementIntegration.test.ts test/providerSourceOutput.test.ts",
+    "test:conformance": "vitest run test/protocol.test.ts test/server.test.ts test/sdkLifecycle.test.ts test/settlementPolicy.test.ts test/bchVm.test.ts test/settlementIntegration.test.ts test/providerSourceOutput.test.ts",
     "test:chipnet": "node scripts/chipnet-smoke.mjs",
     "test:watch": "vitest",
     "check": "npm test && npm run typecheck && npm run typecheck:examples && npm run lint:check && npm run format:check && npm run build",
@@ -69,6 +69,14 @@
     "./exact/facilitator": {
       "types": "./dist/esm/exact/facilitator/index.d.ts",
       "import": "./dist/esm/exact/facilitator/index.js"
+    },
+    "./provider/node": {
+      "types": "./dist/esm/provider/node.d.ts",
+      "import": "./dist/esm/provider/node.js"
+    },
+    "./provider/bchn": {
+      "types": "./dist/esm/provider/bchn.d.ts",
+      "import": "./dist/esm/provider/bchn.js"
     }
   },
   "files": [

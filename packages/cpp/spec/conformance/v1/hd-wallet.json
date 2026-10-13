@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+  "vectors": [
+    {
+      "network": "bch:bchtest",
+      "coinType": 1,
+      "change": 0,
+      "index": 0,
+      "path": "m/44'/1'/0'/0/0",
+      "address": "bchtest:qqaz6s295ncfs53m86qj0uw6sl8u2kuw0ymst35fx4",
+      "publicKey": "02a7451395735369f2ecdfc829c0f774e88ef1303dfe5b2f04dbaab30a535dfdd6"
+    },
+    {
+      "network": "bch:bchtest",
+      "coinType": 1,
+      "change": 1,
+      "index": 0,
+      "path": "m/44'/1'/0'/1/0",
+      "address": "bchtest:qqwtwwfqkkkr3arquwx7k6ztn39yprlncq2gq6et74",
+      "publicKey": "0320282ac6b3782721b1742c294530a9f250413361abbff659acc8352bc4c1f3f1"
+    },
+    {
+      "network": "bch:bitcoincash",
+      "coinType": 145,
+      "change": 0,
+      "index": 0,
+      "path": "m/44'/145'/0'/0/0",
+      "address": "bitcoincash:qqyx49mu0kkn9ftfj6hje6g2wfer34yfnq5tahq3q6",
+      "publicKey": "02bbe7dbcdf8b2261530a867df7180b17a90b482f74f2736b8a30d3f756e42e217"
+    },
+    {
+      "network": "bch:bitcoincash",
+      "coinType": 145,
+      "change": 1,
+      "index": 0,
+      "path": "m/44'/145'/0'/1/0",
+      "address": "bitcoincash:qr8aeharupyrmhfu0d4tdmsnc5y8cfk47y6qrsjsrx",
+      "publicKey": "02f178b9410d11e47e10bef8a8e4bc53e48d9ae15864a024a54f87a802dad5f514"
+    }
+  ]
+}

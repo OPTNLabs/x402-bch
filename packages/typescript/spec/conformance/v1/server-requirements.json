@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "native-default",
+      "input": {
+        "kind": "native",
+        "network": "bch:bchtest",
+        "payTo": "bchtest:merchant",
+        "amount": "1000"
+      },
+      "expected": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bchtest",
+        "amount": "1000",
+        "asset": "BCH",
+        "payTo": "bchtest:merchant",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "native",
+          "paymentFlow": "upfront"
+        }
+      }
+    },
+    {
+      "id": "native-request-hash",
+      "input": {
+        "kind": "native",
+        "network": "bch:bitcoincash",
+        "payTo": "bitcoincash:merchant",
+        "amount": "2500",
+        "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bitcoincash",
+        "amount": "2500",
+        "asset": "BCH",
+        "payTo": "bitcoincash:merchant",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "native",
+          "paymentFlow": "upfront",
+          "requestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    {
+      "id": "fungible-cashtoken-explicit-value",
+      "input": {
+        "kind": "cashtoken",
+        "network": "bch:bchtest",
+        "payTo": "bchtest:tokenmerchant",
+        "category": "1111111111111111111111111111111111111111111111111111111111111111",
+        "amount": "1000",
+        "value": "1200"
+      },
+      "expected": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bchtest",
+        "amount": "1000",
+        "asset": "1111111111111111111111111111111111111111111111111111111111111111",
+        "payTo": "bchtest:tokenmerchant",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "value": "1200",
+          "token": {
+            "category": "1111111111111111111111111111111111111111111111111111111111111111",
+            "amount": "1000"
+          }
+        }
+      }
+    },
+    {
+      "id": "nft-only-cashtoken",
+      "input": {
+        "kind": "cashtoken",
+        "network": "bch:bchtest",
+        "payTo": "bchtest:tokenmerchant",
+        "category": "2222222222222222222222222222222222222222222222222222222222222222",
+        "amount": "0",
+        "value": "1000",
+        "nft": {
+          "capability": "none",
+          "commitment": "5a5a5a5a"
+        },
+        "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "expected": {
+        "x402Version": 2,
+        "scheme": "exact",
+        "network": "bch:bchtest",
+        "amount": "0",
+        "asset": "2222222222222222222222222222222222222222222222222222222222222222",
+        "payTo": "bchtest:tokenmerchant",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "assetTransferMethod": "cashtoken",
+          "paymentFlow": "upfront",
+          "requestHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "value": "1000",
+          "token": {
+            "category": "2222222222222222222222222222222222222222222222222222222222222222",
+            "amount": "0",
+            "nft": {
+              "capability": "none",
+              "commitment": "5a5a5a5a"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

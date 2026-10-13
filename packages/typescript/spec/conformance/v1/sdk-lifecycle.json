@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "requirements": {
+    "x402Version": 2,
+    "scheme": "exact",
+    "network": "bch:bitcoincash",
+    "amount": "1000",
+    "asset": "BCH",
+    "payTo": "bitcoincash:qq3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygrg4dtdzf",
+    "maxTimeoutSeconds": 300,
+    "extra": {
+      "assetTransferMethod": "native",
+      "paymentFlow": "upfront"
+    }
+  },
+  "walletRequest": {
+    "network": "mainnet",
+    "payTo": "bitcoincash:qq3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygrg4dtdzf",
+    "value": "1000",
+    "asset": "BCH"
+  },
+  "transaction": {
+    "base64": "AgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABqRzBEAiATJrlQh+1HHiXNlhiWdL97/QnR0aAE//NQGIuj0NB4AAIgO7sholeiC2XV4xGiBYgm8x/lzDrqhumDiMjzVjDE+oZBIQMbhMVWexJkQJldPtWqugVl1x4YNGBIGf+cF/Xp1d0Hj/////8C6AMAAAAAAAAZdqkUIiIiIiIiIiIiIiIiIiIiIiIiIiKIrNaBAQAAAAAAGXapFHmwAIh2JrKUqRRQGkzSJrWLI1mDiKwAAAAA",
+    "txid": "de2093f78f568994b413f9d4ca413a0b27bffb3177a35ee8e15d5e3dc9c26baa"
+  },
+  "settlement": {
+    "strategy": "confirmations",
+    "status": "confirmed",
+    "height": 100,
+    "tipHeight": 100,
+    "confirmations": 1,
+    "accepted": true,
+    "replayStatus": "mempool",
+    "replayAccepted": false
+  }
+}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -62,6 +63,83 @@ public final class X402Bch {
     public final byte[] scriptPubKey;
     public final boolean tokenSupport;
     public Address(byte[] scriptPubKey, boolean tokenSupport) { this.scriptPubKey = scriptPubKey; this.tokenSupport = tokenSupport; }
+  }
+
+  /** Build the server-side x402 exact offer for native BCH. */
+  public static Map<String, Object> buildNativeRequirements(
+      String network, String payTo, String amount, String requestHash) {
+    validateServerInputs(network, payTo, amount);
+    Map<String, Object> extra = new LinkedHashMap<>();
+    extra.put("assetTransferMethod", "native");
+    extra.put("paymentFlow", "upfront");
+    if (requestHash != null) {
+      validateRequestHash(requestHash);
+      extra.put("requestHash", requestHash);
+    }
+    Map<String, Object> result = baseRequirements(network, payTo, amount, "BCH");
+    result.put("extra", extra);
+    return result;
+  }
+
+  /** Build the server-side fungible or NFT CashToken offer. */
+  public static Map<String, Object> buildCashTokenRequirements(
+      String network, String payTo, String category, String amount, String value,
+      String requestHash, NftState nft) {
+    validateServerInputs(network, payTo, amount);
+    if (!Pattern.matches("[0-9a-fA-F]{64}", category))
+      throw new IllegalArgumentException("CashToken category must be 32-byte hexadecimal");
+    if (value == null) value = "1000";
+    if (!Pattern.matches("(0|[1-9][0-9]*)", value))
+      throw new IllegalArgumentException("CashToken value must be canonical satoshis");
+    Map<String, Object> token = new LinkedHashMap<>();
+    token.put("category", category);
+    token.put("amount", amount);
+    if (nft != null) {
+      if (!(nft.capability.equals("none") || nft.capability.equals("mutable") || nft.capability.equals("minting")))
+        throw new IllegalArgumentException("CashToken NFT capability is invalid");
+      if (nft.commitment.length > 40) throw new IllegalArgumentException("CashToken commitment is too large");
+      Map<String, Object> nftValue = new LinkedHashMap<>();
+      nftValue.put("capability", nft.capability);
+      nftValue.put("commitment", hex(nft.commitment));
+      token.put("nft", nftValue);
+    }
+    Map<String, Object> extra = new LinkedHashMap<>();
+    extra.put("assetTransferMethod", "cashtoken");
+    extra.put("paymentFlow", "upfront");
+    extra.put("value", value);
+    extra.put("token", token);
+    if (requestHash != null) {
+      validateRequestHash(requestHash);
+      extra.put("requestHash", requestHash);
+    }
+    Map<String, Object> result = baseRequirements(network, payTo, amount, category);
+    result.put("extra", extra);
+    return result;
+  }
+
+  private static Map<String, Object> baseRequirements(String network, String payTo, String amount, String asset) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    result.put("x402Version", 2);
+    result.put("scheme", "exact");
+    result.put("network", network);
+    result.put("amount", amount);
+    result.put("asset", asset);
+    result.put("payTo", payTo);
+    result.put("maxTimeoutSeconds", 300);
+    return result;
+  }
+
+  private static void validateServerInputs(String network, String payTo, String amount) {
+    if (!(network.equals("bch:bitcoincash") || network.equals("bch:bchtest")))
+      throw new IllegalArgumentException("unsupported BCH network");
+    if (payTo == null || payTo.isEmpty()) throw new IllegalArgumentException("payTo is required");
+    if (!Pattern.matches("(0|[1-9][0-9]*)", amount))
+      throw new IllegalArgumentException("amount must be a canonical decimal string");
+  }
+
+  private static void validateRequestHash(String requestHash) {
+    if (!Pattern.matches("[0-9a-fA-F]{64}", requestHash))
+      throw new IllegalArgumentException("requestHash must be 32-byte hexadecimal");
   }
   public static void validateRequirements(int version, String scheme, String amount, Map<String, Object> extra) {
     if ((version != 0 && version != 2) || !"exact".equals(scheme) || !Pattern.matches("[0-9]+", amount) || !"upfront".equals(extra.get("paymentFlow"))) throw new IllegalArgumentException("unsupported x402 requirements");
@@ -406,6 +484,16 @@ public final class X402Bch {
     }
   }
 
+  /** Build the canonical zero-value OP_RETURN request commitment script. */
+  public static byte[] requestHashScript(String requestHash) {
+    if (!Pattern.matches("[0-9a-fA-F]{64}", requestHash))
+      throw new IllegalArgumentException("request hash must be 32-byte hexadecimal");
+    byte[] result = new byte[34]; result[0] = 0x6a; result[1] = 0x20;
+    byte[] value = decodeHex(requestHash);
+    System.arraycopy(value, 0, result, 2, 32);
+    return result;
+  }
+
   private static byte[] doubleSha256(byte[] value) throws Exception { MessageDigest sha256 = MessageDigest.getInstance("SHA-256"); return sha256.digest(sha256.digest(value)); }
   private static byte[] hash160(byte[] value) throws Exception { MessageDigest sha256 = MessageDigest.getInstance("SHA-256"); return ripemd160(sha256.digest(value)); }
 
@@ -441,6 +529,16 @@ public final class X402Bch {
   private static Point multiply(BigInteger scalar, Point point) { Point result = new Point(null, null, true); while (scalar.signum() > 0) { if (scalar.testBit(0)) result = add(result, point); point = add(point, point); scalar = scalar.shiftRight(1); } return result; }
   private static Point decodePublicKey(byte[] encoded) { if (encoded.length != 33 || ((encoded[0] & 0xff) != 2 && (encoded[0] & 0xff) != 3)) throw new IllegalArgumentException("invalid compressed public key"); BigInteger x = new BigInteger(1, Arrays.copyOfRange(encoded, 1, encoded.length)); if (x.compareTo(SECP_P) >= 0) throw new IllegalArgumentException("invalid compressed public key"); BigInteger rhs = mod(x.multiply(x).multiply(x).add(BigInteger.valueOf(7)), SECP_P); BigInteger y = pow(rhs, SECP_P.add(BigInteger.ONE).divide(BigInteger.valueOf(4)), SECP_P); if (!y.multiply(y).mod(SECP_P).equals(rhs)) throw new IllegalArgumentException("invalid compressed public key"); if (y.testBit(0) != ((encoded[0] & 1) == 1)) y = SECP_P.subtract(y); return new Point(x, y, false); }
   private static boolean verifySecp256k1(byte[] digest, BigInteger r, BigInteger s, Point publicKey) { if (r.signum() <= 0 || r.compareTo(SECP_N) >= 0 || s.signum() <= 0 || s.compareTo(SECP_N) >= 0) return false; BigInteger inverse = s.modInverse(SECP_N); BigInteger e = new BigInteger(1, digest); Point point = add(multiply(e.multiply(inverse).mod(SECP_N), SECP_G), multiply(r.multiply(inverse).mod(SECP_N), publicKey)); return !point.infinity && point.x.mod(SECP_N).equals(r); }
+
+  static byte[] compressedPublicKey(byte[] privateKey) {
+    Point point = multiply(new BigInteger(1, privateKey), SECP_G);
+    if (point.infinity) throw new IllegalArgumentException("invalid secp256k1 private key");
+    byte[] x = point.x.toByteArray(); byte[] result = new byte[33]; result[0] = (byte)(point.y.testBit(0) ? 3 : 2);
+    System.arraycopy(x, Math.max(0, x.length - 32), result, 1 + Math.max(0, 32 - x.length), Math.min(32, x.length));
+    return result;
+  }
+
+  static byte[] hash160Public(byte[] value) throws Exception { return hash160(value); }
 
   private static byte[] ripemd160(byte[] message) {
     int[] rLeft = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,7,4,13,1,10,6,15,3,12,0,9,5,2,14,11,8,3,10,14,4,9,15,8,1,2,7,0,6,13,11,5,12,1,9,11,10,0,8,12,4,13,3,7,15,14,5,6,2,4,0,5,9,7,12,2,10,14,1,3,8,11,6,15,13}; int[] rRight = {5,14,7,0,9,2,11,4,13,6,15,8,1,10,3,12,6,11,3,7,0,13,5,10,14,15,8,12,4,9,1,2,15,5,1,3,7,14,6,9,11,8,12,2,10,0,4,13,8,6,4,1,3,11,15,0,5,12,2,13,9,7,10,14,12,15,10,4,1,5,8,7,6,2,13,14,0,3,9,11}; int[] sLeft = {11,14,15,12,5,8,7,9,11,13,14,15,6,7,9,8,7,6,8,13,11,9,7,15,7,12,15,9,11,7,13,12,11,13,6,7,14,9,13,15,14,8,13,6,5,12,7,5,11,12,14,15,14,15,9,8,9,14,5,6,8,6,5,12,9,15,5,11,6,8,13,12,5,12,13,14,11,8,5,6}; int[] sRight = {8,9,9,11,13,15,15,5,7,7,8,11,14,14,12,6,9,13,15,7,12,8,9,11,7,7,12,7,6,15,13,11,9,7,15,11,8,6,6,14,12,13,5,14,13,13,7,5,15,5,8,11,14,14,6,14,6,9,12,9,12,5,15,8,8,5,12,9,12,5,14,6,8,13,6,5,15,13,11,11}; int[] kLeft = {0,0x5a827999,0x6ed9eba1,0x8f1bbcdc,0xa953fd4e}; int[] kRight = {0x50a28be6,0x5c4dd124,0x6d703ef3,0x7a6d76e9,0}; byte[] data = Arrays.copyOf(message, ((message.length + 9 + 63) / 64) * 64); data[message.length] = (byte)0x80; long bitLength = (long)message.length * 8; for (int index = 0; index < 8; index++) data[data.length - 8 + index] = (byte)(bitLength >>> (8 * index)); int[] h = {0x67452301,0xefcdab89,0x98badcfe,0x10325476,0xc3d2e1f0};
